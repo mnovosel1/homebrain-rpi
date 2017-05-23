@@ -1,8 +1,8 @@
 #!/bin/bash
 
-/srv/housebrain/lan/dbbackup.php
-/srv/housebrain/heating/getTempSet.php
-/srv/housebrain/heating/dbbackup.php
+/srv/HomeBrain/lan/dbbackup.php
+/srv/HomeBrain/heating/getTempSet.php
+/srv/HomeBrain/heating/dbbackup.php
 
 
 /sbin/shutdown -r now

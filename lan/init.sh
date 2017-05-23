@@ -14,10 +14,16 @@ fi
 if [ ! -f $DIR/var/srvWakeTime.log ]; then
   if [ -f $DIR/var_sav/srvWakeTime.log ]; then
     cp $DIR/var_sav/srvWakeTime.log $DIR/var/srvWakeTime.log
-    cp $DIR/var_sav/home.log $DIR/var/home.log
   else
     touch $DIR/var/srvWakeTime.log
-    touch $DIR/var/home.log
+  fi
+fi
+
+if [ ! -f $DIR/var/dailyCronWake.log ]; then
+  if [ -f $DIR/var_sav/dailyCronWake.log ]; then
+    cp $DIR/var_sav/dailyCronWake.log $DIR/var/dailyCronWake.log
+  else
+    touch $DIR/var/dailyCronWake.log
   fi
 fi
 

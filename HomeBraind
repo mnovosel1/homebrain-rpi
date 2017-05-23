@@ -20,7 +20,7 @@ while true ; do
 
       $(( minute%5 )))
         /usr/bin/php $DIR/lan/lan.php
-        /srv/HomeBrain/lan/wakeCheck.sh
+        $DIR/lan/wakeCheck.sh
       ;;
 
       *)

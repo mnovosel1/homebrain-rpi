@@ -29,6 +29,7 @@ $heatingOn  = $temp['heatingOn'];
 
 if ( true || date("i")%5 == 0 ) {
   //$tempOut = round(exec($path ."/heating/getOutTemp.py"), 0);
+  
   /*
   $tempOut = explode(':', exec('curl -s -X GET http://api.wunderground.com/api/65bdc72ba6b054fd/geolookup/conditions/q/Europe/Samobor.json | sed \'s/\\\\\//\//g\' | sed \'s/[{}]//g\' | awk -v k="text" \'{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}\' | sed \'s/\"\:\"/\|/g\' | sed \'s/[\,]/ /g\' | sed \'s/\"//g\' | grep -w temp_c'));
   $tempOut = $tempOut[1];

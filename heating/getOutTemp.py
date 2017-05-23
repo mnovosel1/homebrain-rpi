@@ -15,4 +15,5 @@ meteo=urllib.urlopen(url).read()
 meteo=meteo.decode('utf-8')
 weather=json.loads(meteo)
 
-print (weather['currently']['temperature'])
+"print (weather['currently']['temperature'])
+print 23

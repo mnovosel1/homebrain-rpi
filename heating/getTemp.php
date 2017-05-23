@@ -35,7 +35,7 @@ if ( true || date("i")%5 == 0 ) {
   $tempOut = $tempOut[1];
   */
 
-  $tempOut = 24;
+  $tempOut = exec('/usr/bin/php '.$path.'/heating/getOutTemp.php');
 }
 
 echo $oldLog ."|". $tempSet ."|". $tempIn ."|". $tempOut ."|". $heatingOn ."|". $humidIn;

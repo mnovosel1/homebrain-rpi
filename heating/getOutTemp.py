@@ -1,8 +1,5 @@
 #!/usr/bin/python
 
-print 23
-exit
-
 import urllib
 import json
 
@@ -16,6 +13,6 @@ url="https://api.darksky.net/forecast/"+apikey+"/"+lati+","+longi+"?units=si"
 
 meteo=urllib.urlopen(url).read()
 meteo=meteo.decode('utf-8')
-#weather=json.loads(meteo)
+weather=json.loads(meteo)
 
-#print (weather['currently']['temperature'])
+print (weather['currently']['temperature'])

@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+print 23
+exit
+
 import urllib
 import json
 
@@ -15,5 +18,4 @@ meteo=urllib.urlopen(url).read()
 meteo=meteo.decode('utf-8')
 weather=json.loads(meteo)
 
-#print (weather['currently']['temperature'])
-print 23
+print (weather['currently']['temperature'])

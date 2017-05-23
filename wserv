@@ -1,0 +1,22 @@
+#!/usr/bin/php
+<?php
+error_reporting(0);
+
+$path = dirname(__FILE__);
+$configs = parse_ini_file($path .'/heating/config.ini');
+
+switch ($argv[1])
+{
+    case 'getemp':
+        echo file_get_contents($path .'/var/lastTemp.dat');
+        break;
+
+    case 'boost':
+        if ( $argv[2] > 0 && $argv[3] > 0 )
+          file_put_contents($path .'/var/tempBoost.dat', $argv[2] .'|'. $argv[3] );
+        break;
+        
+    default:
+}
+
+?>

@@ -1,0 +1,14 @@
+#!/usr/bin/php
+
+<?php
+
+$time = "It's ";
+
+if ( date("i") > 0 ) {
+	$time .= date("i")*1 . " minutes past ";
+}
+
+$time .= date("H") . " o clock";
+
+exec('/usr/bin/espeak "' . $time . '"');
+?>

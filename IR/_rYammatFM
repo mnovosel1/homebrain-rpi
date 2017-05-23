@@ -1,0 +1,9 @@
+#!/bin/bash
+
+mpc clear
+mpc add http://192.240.102.131:9107/
+mpc play
+
+irsend SEND_ONCE Yamaha SYSTEM_POWER
+sleep 1;
+irsend SEND_ONCE Yamaha D-TV_CBL_INPUT

@@ -1,0 +1,14 @@
+#!/bin/bash
+
+/srv/housebrain/lan/kodiWake.sh
+
+# sck1 on
+#/srv/housebrain/IR/kmap_433 sock1_on
+
+irsend SEND_START SonyTV POWER
+sleep 1
+irsend SEND_STOP SonyTV POWER
+
+irsend SEND_ONCE Yamaha SYSTEM_POWER
+sleep 1;
+irsend SEND_ONCE Yamaha D-TV_CBL_INPUT

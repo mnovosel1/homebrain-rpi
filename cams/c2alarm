@@ -1,0 +1,48 @@
+#!/bin/bash
+
+serverlive=$(ping -c1 10.10.10.100 | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}');
+c2active=$(cat /root/cams/c2active.log);
+c2alarm=$(cat /root/cams/c2.log);
+
+case "$1" in
+
+  "c2on")
+      echo 1 > /root/cams/c2active.log;
+      date +%c | /usr/bin/mail -a "From: rpi@bubulescu.org" -s "C2 turned on" marijo@bubulescu.org;
+      if [ $((c2alarm)) -gt 0  ]; then
+        if [ $((serverlive)) -lt 1  ]; then
+          /root/srvwake.sh;
+        else
+          ssh 10.10.10.100 -p 9022 "/root/cams/camchkalarm";
+        fi
+      fi
+      exit 0;
+      ;;
+  "c2off")
+      echo 0 > /root/cams/c2active.log;
+      date +%c | /usr/bin/mail -a "From: rpi@bubulescu.org" -s "C2 turned off" marijo@bubulescu.org;
+      exit 0;
+      ;;
+  "c2stop")
+      if [ $((serverlive)) -gt 0 ]; then
+        ssh 10.10.10.100 -p 9022 "/root/cams/c2rec off";
+        date +%c | /usr/bin/mail -a "From: rpi@bubulescu.org" -s "C2 stopped" marijo@bubulescu.org;
+      else
+        date +%c | /usr/bin/mail -a "From: rpi@bubulescu.org" -s "Server not awake.." marijo@bubulescu.org;
+      fi
+      exit 0;
+      ;;
+esac
+
+
+echo 1 > /root/cams/c2.log
+
+if [ $((c2active)) -gt 0  ]; then
+  if [ $((serverlive)) -lt 1  ]; then
+    /root/srvwake.sh;
+  else
+    ssh 10.10.10.100 -p 9022 "/root/cams/camchkalarm";
+  fi
+fi
+
+exit 0;

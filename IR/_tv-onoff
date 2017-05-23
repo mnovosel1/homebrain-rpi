@@ -1,0 +1,5 @@
+#!/bin/bash
+
+irsend SEND_START SonyTV POWER
+sleep 1
+irsend SEND_STOP SonyTV POWER

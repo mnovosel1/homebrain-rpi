@@ -1,0 +1,22 @@
+ #!/bin/bash
+
+case "$1" in
+    "sock1_on")
+        /srv/housebrain/433/codesend 7721996
+        ;;
+    "sock1_off")
+        /srv/housebrain/433/codesend 7721987
+        ;;
+    "sock2_on")
+        /srv/housebrain/433/codesend 7697420
+        ;;
+    "sock2_off")
+        /srv/housebrain/433/codesend 7697411
+        ;;
+    "sock3_on")
+        /srv/housebrain/433/codesend 7691276
+        ;;
+    "sock3_off")
+        /srv/housebrain/433/codesend 7691267
+        ;;
+esac

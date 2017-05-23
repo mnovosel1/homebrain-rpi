@@ -1,0 +1,5 @@
+#!/bin/bash
+
+irsend SEND_START Yamaha STANDBY
+sleep 1
+irsend SEND_STOP Yamaha STANDBY

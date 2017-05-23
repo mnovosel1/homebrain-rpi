@@ -3,8 +3,8 @@
 //ČĆŽŠĐčćžšđ
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-$fromName   = "HouseBrain";
-$fromEmail  = "housebrain@bubulescu.org";
+$fromName   = "HomeBrain";
+$fromEmail  = "notifier@bubulescu.org";
 $recipient  = "marijo@bubulescu.org";
 $header     = "From: ". $fromName . " <" . $fromEmail . ">\r\n";
 $header     .= "Content-Type: text/html; charset=UTF-8" . ">\r\n";

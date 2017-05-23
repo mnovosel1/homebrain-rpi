@@ -1,9 +1,9 @@
 #!/bin/bash
 
-/srv/housebrain/lan/kodiWake.sh
+/srv/HomeBrain/lan/kodiWake.sh
 
 # sck1 on
-#/srv/housebrain/IR/kmap_433 sock1_on
+#/srv/HomeBrain/IR/kmap_433 sock1_on
 
 irsend SEND_START SonyTV POWER
 sleep 1

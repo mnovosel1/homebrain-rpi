@@ -2,7 +2,7 @@
 <html lang="hr">
    <head>
       <meta charset="utf-8">
-      <title>HouseBrain</title>
+      <title>HomeBrain</title>
       <link href="css/jquery-ui.min.css" rel="stylesheet">
       <link href="css/c3.css" rel="stylesheet" type="text/css">
 

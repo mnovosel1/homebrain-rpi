@@ -1,9 +1,0 @@
-#!/bin/bash
-
-mpc clear
-mpc add http://161.53.122.184:8000/AAC128.aac
-mpc play
-
-irsend SEND_ONCE Yamaha SYSTEM_POWER
-sleep 1;
-irsend SEND_ONCE Yamaha D-TV_CBL_INPUT

@@ -1,0 +1,8 @@
+DB update
+/srv/HomeBrain/notify/fcm.php MPD upaljen '{"table":"changelog","values": {"timestamp":"2017-10-23 23:06:12","statebefore":"000100","state":"KODI","changedto":"1"}}'
+
+CFG update
+/srv/HomeBrain/notify/fcm.php '{"pages":["multimedia", "grijanje"], "homeUrl":"10.10.10.10"}' 'token'
+
+APP update
+/srv/HomeBrain/notify/fcm.php '{"updates":["index.html", "homebrain.png", "js/homebrain.js", "js/test.js"]}' 'token'

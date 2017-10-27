@@ -5,7 +5,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 //exit();
 
 $path = str_replace('/heating', '', dirname(__FILE__));
-$configs = parse_ini_file($path .'/heating/config.ini');
+$configs = parse_ini_file($path .'/config.ini');
 
 $sendEmail  = false;
 $updateDb   = false;
@@ -44,7 +44,7 @@ $tempSet    = ($tempSet < $configs["TEMPSET_MIN"]) ? $configs["TEMPSET_MIN"] : $
 
 $tempIn     = ( abs(($temps[2]*1)-$last_tempIn) > 10 ) ? $last_tempIn : $temps[2]*1;
 $tempOut    = ( abs(($temps[3]*1)-$last_tempOut) > 15 ) ? $last_tempOut : $temps[3]*1;
-$humidIn    = ( abs(($temps[5]*1)-$last_humidIn) > 25 ) ? $last_humidIn : $temps[5]*1;
+$humidIn    = ( abs(($temps[5]*1)-$last_humidIn) > 10 ) ? $last_humidIn : $temps[5]*1;
 $heatingOn  = $temps[4]*1;
 
 switch (TRUE) {

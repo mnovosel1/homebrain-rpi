@@ -4,7 +4,7 @@
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 $path = str_replace('/heating', '', dirname(__FILE__));
-$configs = parse_ini_file($path .'/heating/config.ini');
+$configs = parse_ini_file($path .'/config.ini');
 
 $db         = new SQLite3($path .'/var/heating.db');
 
@@ -13,7 +13,27 @@ $tempSet = $db->querySingle("SELECT temp
                               WHERE wday = STRFTIME('%w', DATETIME('now', 'localtime'))
                                AND hour = STRFTIME('%H', DATETIME('now', 'localtime'));");
 
-$tempHumidIn = explode('|', exec($path ."/heating/DHT.py"));
+switch (date("n")) {
+    case 4:
+        $tempSet -= 2;
+        break;
+    case 5:
+        $tempSet -= 4;
+        break;
+    case 6:
+    case 7:
+    case 8:
+        $tempSet = $configs["TEMPSET_MIN"];
+        break;
+    case 9:
+        $tempSet -= 4;
+        break;
+    case 10:
+        $tempSet -= 2;
+        break;
+}
+
+$tempHumidIn = explode('|', exec("sudo ".$path ."/heating/DHT.py"));
 $tempIn = $tempHumidIn[0];
 $humidIn = round($tempHumidIn[1], 0);
 
@@ -38,5 +58,6 @@ if ( true || date("i")%5 == 0 ) {
   $tempOut = exec('/usr/bin/php '.$path.'/heating/getOutTemp.php');
 }
 
-echo $oldLog ."|". $tempSet ."|". $tempIn ."|". $tempOut ."|". $heatingOn ."|". $humidIn;
+echo $oldLog ."|". $tempSet ."|". $tempIn ."|". $tempOut ."|". $heatingOn ."|". $humidIn ."|". $configs["TEMPSET_FORCE"];
+
 ?>

@@ -2,12 +2,12 @@
 <?php
 error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
-exit();
+//exit();
 //////////////////////////////////////////////////////
 
 $path = str_replace('/lan', '', dirname(__FILE__));
 
-exec("/usr/bin/ssh 10.10.10.100 -p 9022 \"/root/chkforwake.sh\" > /srv/HomeBrain/var/srvWakeTime.log &");
+//exec("/usr/bin/ssh 10.10.10.100 -p 9022 \"/root/chkforwake.sh\" > /srv/HomeBrain/var/srvWakeTime.log &");
 
 $db = new SQLite3($path .'/var/lan.db');
 $sql = "SELECT mac, name, allwaysOn FROM lanDevices;";

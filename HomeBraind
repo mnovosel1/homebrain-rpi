@@ -1,6 +1,6 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
-. $DIR/heating/config.ini
+. $DIR/config.ini
 
 
 hour=$(( $((10#$(date +'%H')))*1 ))
@@ -9,30 +9,45 @@ lastminute=$(( minute-1 ))
 
 while true ; do
 
-  /usr/bin/php $DIR/heating/heating.php
 
-  if [ $((minute)) -gt $((lastminute)) ]; then
+	if [ $((minute)) -gt $((lastminute)) ]; then
+	
+		/usr/bin/php $DIR/heating/heating.php
 
-    case 0 in
+		case 0 in
 
-      $(( minute )))
-      ;;
+		# svaki sat
+		$(( minute )))
+		;;
 
-      $(( minute%5 )))
-        /usr/bin/php $DIR/lan/lan.php
-        $DIR/lan/wakeCheck.sh
-      ;;
+		# svakih 5 minuta
+		$(( minute%5 )))
+			# /usr/bin/php $DIR/lan/lan.php
+			$DIR/lan/wakeCheck.php
+		;;
 
-      *)
-      ;;
+		# svaki put
+		*)
+		;;
 
-    esac
-  fi
+		esac
+		
+		# svako jutro u 4:15
+		if [ $((hour)) -eq 4 -a $((minute)) -eq 15 ]; then
+		
+			/srv/HomeBrain/dbbackup.php
+			/srv/HomeBrain/lan/dbbackup.php
+			/srv/HomeBrain/heating/getTempSet.php
+			/srv/HomeBrain/heating/dbbackup.php
 
-  lastminute=$(( minute ))
-  sleep 45s
-  
-  hour=$(( $((10#$(date +'%H')))*1 ))
-  minute=$(( $((10#$(date +'%M')))*1 ))
+			sudo /sbin/shutdown -r now			
+		fi
+	fi
+
+	lastminute=$(( minute ))
+	sleep 45s
+
+	hour=$(( $((10#$(date +'%H')))*1 ))
+	minute=$(( $((10#$(date +'%M')))*1 ))
 
 done

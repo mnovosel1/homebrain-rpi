@@ -6,6 +6,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 $fromName   = "HomeBrain";
 $fromEmail  = "notifier@bubulescu.org";
 $recipient  = "marijo@bubulescu.org";
+if ( isset($argv[3]) ) $recipient = $argv[3];
 $header     = "From: ". $fromName . " <" . $fromEmail . ">\r\n";
 $header     .= "Content-Type: text/html; charset=UTF-8" . ">\r\n";
 

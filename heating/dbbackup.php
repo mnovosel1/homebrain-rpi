@@ -4,6 +4,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 $path = str_replace('/heating', '', dirname(__FILE__));
 $configs = parse_ini_file($path .'/heating/config.ini');
+$configglobss = parse_ini_file($path .'/configglobs.ini');
 
 
 $output = '';
@@ -12,7 +13,7 @@ exec('sqlite3 '. $path .'/var/heating.db \'.dump tempLog\' | grep \'^INSERT\'', 
 $sql = '';
 foreach ( $output as $line )
   $sql .= $line . "\n";
-$mysqli = new mysqli("bubulescu.org", "bubul_mn", "5tNjxtteikhqVito6Yv5", "bubul_housebrain");
+$mysqli = new mysqli($configglobss["DB_REPLIC_HOST"], $configglobss["DB_REPLIC_USER"], $configglobss["DB_REPLIC_PASS"], $configglobss["DB_REPLIC_DBNAME"]);
 $mysqli->multi_query(str_replace('INSERT INTO "tempLog"', 'REPLACE INTO tempLog', $sql));
 $mysqli->close();
 
@@ -58,6 +59,6 @@ file_put_contents($path .'/heating/heating.sql', $sqlPre . $sql . $sqlPost);
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 $db = new SQLite3($path .'/var/heating.db'); 
-$db->query("DELETE FROM tempLog WHERE timestamp < datetime(datetime('now', 'localtime'), '-30 DAYS')");
+$db->query("DELETE FROM tempLog WHERE timestamp < datetime(datetime('now', 'localtime'), '-20 DAYS')");
 
 ?>

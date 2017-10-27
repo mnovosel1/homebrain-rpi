@@ -38,14 +38,14 @@
 							$cfgMessage = '{"pages":["multimedia"], "homeUrl":"10.10.10.10"}';
 						exec(DIR . "/notify/fcm.php '".$cfgMessage."' '".$row["token"]."'");
 
+		/*
 		ob_start();
 		echo DIR . "/notify/fcm.php '".$cfgMessage."' '".$row["token"]."'";
 		//echo $sql;
 		//echo $sqlite->lastErrorMsg();
 		//var_dump($verb);
 		$out = ob_get_clean();
-		file_put_contents('newapiDbg.txt', $out . PHP_EOL . PHP_EOL, FILE_APPEND);
-		/*
+		file_put_contents('dbg.api.txt', $out . PHP_EOL . PHP_EOL, FILE_APPEND);
 		*/
 					}
 				}

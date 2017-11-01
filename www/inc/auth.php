@@ -1,6 +1,7 @@
 <?php
 
 $reqtime = floor($_SERVER["REQUEST_TIME"]/20);
+$authOK = false;
 
 /*
 ob_start();
@@ -20,23 +21,25 @@ $out = ob_get_clean();
 file_put_contents('debug.txt', $out . PHP_EOL . PHP_EOL, FILE_APPEND);
 
 
-if ( !isset($_POST["secToken"]) ) header('HTTP/1.0 403 Forbidden');
-
-switch (true) 
-{
-	case ( $_POST['secToken'] == md5('H' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('o' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('m' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('e' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('B' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('r' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('a' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('i' . $reqtime) ):
-	case ( $_POST['secToken'] == md5('n' . $reqtime) ):
-	break;
-	
-	default: header('HTTP/1.0 403 Forbidden');
-}
 */
+if ( isset($_POST["secToken"]) ) {
+
+	switch (true) 
+	{
+		case ( $_POST['secToken'] == md5('H' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('o' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('m' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('e' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('B' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('r' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('a' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('i' . $reqtime) ):
+		case ( $_POST['secToken'] == md5('n' . $reqtime) ):
+		$authOK = true;
+		break;
+		
+		//default: header('HTTP/1.0 403 Forbidden');
+	}
+}
 
 ?>

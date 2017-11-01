@@ -114,7 +114,7 @@ if ( $sendEmail ) {
   $message = "Grijanje je ".$heatingState[$heatingOn]." i podešeno na ".$tempSet."°C.";
   $message .= "\rU kući je temp. ".$tempIn."°C i ". $humidIn ."% vlage, a vani ".$tempOut."°C..";
 
-  include $path .'/notify/email.php';
+  //include $path .'/notify/email.php';
 }
 
 ?>

@@ -29,4 +29,4 @@ fi
 
 
 sleep 3s
-chown -R pi:pi $DIR/var/*
+chown -R brain:brain $DIR/var/*

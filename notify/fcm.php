@@ -82,10 +82,13 @@ while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {
 
 
 	$result = json_decode($result);
-	if ( $result->failure > 0 )
-	{
+	if ( $result->failure > 0 ) {
+
+		$sqlite->busyTimeout(5000);
 		$sqlite->query("DELETE FROM fcm WHERE token = '" . $entry["token"] . "'");		
 	}
 
 	if ( $singleMsg ) break;
 }
+
+$sqlite->close();

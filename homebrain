@@ -1,10 +1,10 @@
 #!/bin/bash
 
-apiurl='http://localhost/api/'
+apiurl='http://10.10.10.10/api/'
 word=HomeBrain
 wlen=${#word}
 rnd=$((RANDOM % wlen))
 timestamp=$(date +%s)
 secToken=$(echo -n ${word:rnd:1}$((timestamp / 20)) | md5sum | cut -d" " -f1)
 
-curl --data 'secToken='$secToken'&param1='$3 $apiurl$1'/'$2 2> /dev/null;
+curl --data 'secToken='$secToken'&param1='"$3" $apiurl"$1"'/'"$2" 2> /dev/null;

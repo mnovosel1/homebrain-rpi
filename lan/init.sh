@@ -27,6 +27,5 @@ if [ ! -f $DIR/var/dailyCronWake.log ]; then
   fi
 fi
 
-
 sleep 3s
 chown -R brain:brain $DIR/var/*

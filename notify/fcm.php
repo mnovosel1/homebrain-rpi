@@ -68,8 +68,7 @@ while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {
 			'Authorization: key=' . API_ACCESS_KEY,
 			'Content-Type: application/json'
 		);
-
-	#Send Reponse To FireBase Server	
+	
 			$ch = curl_init();
 			curl_setopt( $ch,CURLOPT_URL, 'https://fcm.googleapis.com/fcm/send' );
 			curl_setopt( $ch,CURLOPT_POST, true );
@@ -79,7 +78,6 @@ while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {
 			curl_setopt( $ch,CURLOPT_POSTFIELDS, json_encode( $fields ) );
 			$result = curl_exec($ch);
 			curl_close( $ch );
-
 
 	$result = json_decode($result);
 	if ( $result->failure > 0 ) {

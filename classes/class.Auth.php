@@ -1,5 +1,7 @@
 <?php
 
+require_once DIR . "/classes/protected/class.Configs.php";
+
 class Auth {
 
     public static function OK() {
@@ -26,6 +28,22 @@ class Auth {
         }
 
         return false;
+    }
+
+    public static function allowedIP($arrayIPs = []) {
+
+        if ( $arrayIPs[0] == "ANY" ) return true;
+        
+        $allowedIPs[] = Configs::getIP("HomeBrain"); // HomeBrain is allways allowed
+        foreach ( $arrayIPs as $ip )
+            $allowedIPs[] = $ip;
+
+        if ( array_search($_SERVER["REMOTE_ADDR"], $allowedIPs) === false ) {
+            if ( DEBUG ) file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), PHP_EOL. "IP not allowed!" .PHP_EOL . PHP_EOL, FILE_APPEND);
+            return false;
+        }
+
+        else return true;
     }
 }
 

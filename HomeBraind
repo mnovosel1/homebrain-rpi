@@ -23,7 +23,7 @@ while true ; do
 		# svakih 5 minuta
 		$(( minute%5 )))
 			# /usr/bin/php $DIR/lan/lan.php
-			$DIR/lan/wakeCheck.php
+			$DIR/homebrain hbrain wakecheck
 		;;
 
 		# svaki put
@@ -36,11 +36,11 @@ while true ; do
 		if [ $((hour)) -eq 4 -a $((minute)) -eq 15 ]; then
 		
 			/srv/HomeBrain/dbbackup.php
-			/srv/HomeBrain/lan/dbbackup.php
+			# /srv/HomeBrain/lan/dbbackup.php
 			/srv/HomeBrain/heating/getTempSet.php
 			/srv/HomeBrain/heating/dbbackup.php
 
-			sudo /sbin/shutdown -r now			
+			sudo /sbin/shutdown -r now	
 		fi
 	fi
 

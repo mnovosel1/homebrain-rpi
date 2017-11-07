@@ -4,7 +4,7 @@ define('INI_FILE', ".configs");
 class Configs {
 
     public static function get($cfg1, $cfg2 = null) {
-        $configs = self::fetch();
+        $configs = self::getAll();
         if ( $cfg2 === null )
             return $configs[strtoupper($cfg1)];
         else
@@ -24,7 +24,7 @@ class Configs {
         return self::get("FCM", $config);
     }
 
-    private static function fetch() {
+    private static function getAll() {
         return parse_ini_file(DIR.'/'.INI_FILE);
     }
 }

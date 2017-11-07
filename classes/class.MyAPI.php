@@ -1,52 +1,79 @@
 <?php
 
-require_once DIR . "/classes/protected/class.Configs.php";
-
 class MyAPI extends API {
+
+    // Only callable methods are available from HomeBrain CLI
+    private static $callable = array (
+        "HomeBrain::wakecheck",
+        "HomeBrain::user",
+        "HomeServer::power",
+        "HomeServer::wake",
+        "HomeServer::shut",
+        "HomeServer::reboot",
+        "Notifier::notify",
+        "MPD::play"
+    );
+
+    public function __construct($request, $origin) {
+        parent::__construct($request);
+    }
     
-        public function __construct($request, $origin) {    
-            parent::__construct($request);
+    public function __call($name, $args) {        
+        switch (strtolower($name)) {
+            case "hsrv":
+            case "hserv":
+            case "homeserver":
+                $name = "HomeServer";
+            break;
+
+            case "hbrain":
+            case "homebrain":
+                $name = "HomeBrain";
+            break;
+
+            case "mpd":
+                $name = "MPD";
+            break;
+
+            default:
+                $name = ucfirst(strtolower($name));
         }
+
+        $verb = strtolower($this->verb);
         
-        public function __call($name, $args) {
+        if ( false && DEBUG ) { ////////////////////////////////////////////////////////////////////////
             
-            $name = ucfirst($name);
-			$verb = strtolower($this->verb);
+            ob_start();
             
-            if ( DEBUG ) { ////////////////////////////////////////////////////////////////////////
-                
-                    ob_start();
-                    
-                    echo PHP_EOL . date("H:i:s");
+            echo PHP_EOL . date("H:i:s");
+            echo PHP_EOL . "IP " . $_SERVER["REMOTE_ADDR"];
+            echo PHP_EOL . "AUTH " . Auth::OK() . PHP_EOL;
+            
+            echo PHP_EOL . "NAME: ";
+            var_dump($name);
+            
+            echo PHP_EOL . "VERB: ";
+            var_dump($verb);
+        
+            echo PHP_EOL . "POST" . PHP_EOL;
+            var_dump($_POST);
 
-                    echo PHP_EOL . "IP " . $_SERVER["REMOTE_ADDR"];
+            $out = ob_get_clean();
+            file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), $out.PHP_EOL);
 
-                    echo PHP_EOL . "AUTH " . Auth::OK() . PHP_EOL;
-                    
-                    echo PHP_EOL . "NAME: ";
-                    var_dump($name);
-                    
-                    echo PHP_EOL . "VERB: ";
-                    var_dump($this->verb);
-                
-                    echo PHP_EOL . "POST" . PHP_EOL;
-                    var_dump($_POST);
-                
-                    //var_dump(parse_ini_file(DIR.'/config.ini'));
+        } /////////////////////////////////////////////////////////////////////////////////////
 
-                    $out = ob_get_clean();
-                    file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), $out.PHP_EOL);
-
-            } /////////////////////////////////////////////////////////////////////////////////////
-
-            if ( Auth::OK() ) {
-                if ( class_exists($name) && method_exists($name, $this->verb) ) {                    
-					return $name::$verb();
-                }
-            }
-    
-            return false;  
+        if ( Auth::OK() ) {            
+            $ret = "";
+            if ( array_search($name.'::'.$verb, self::$callable) === false ) $ret .= $name.'::'.$verb." not callable ";
+            if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
+            if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
+            if ( $ret == "" ) return $name::$verb();
+            
+            if ( DEBUG ) return $ret;
+            else return null;
         }
     }
+}
 
 ?>

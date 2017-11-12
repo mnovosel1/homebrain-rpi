@@ -80,7 +80,36 @@ class HomeBrain {
             $hbrainuser = exec("who | wc -l");
             return ($hbrainuser > 0) ? true : false;
         }
-    }    
+    }
+    
+    public static function mobAppConfig($token) {
+        
+        $cfgMessage["pages"]    = ["home", "multimedia", "grijanje", "lan", "vrt"];
+        $cfgMessage["homeUrl"]  = "10.10.10.10";
+
+        Notifier::sendFcm ("HomeBrain", "configuring mobile app..", ["configs" => json_encode($cfgMessage)], $token);
+    }
+
+    public static function mobDbUpdate($row) {
+        switch (true) {
+            case (bool)strpos($row["state"], "user"):
+            $msg = ["user is logged off..", "user is logged on!"];
+            break;
+            
+            case (bool)strpos($row["state"], "busy"):
+            $msg = ["is not busy..", "is busy!"];
+            break;
+
+            default:
+            $msg = ["is off..", "is on!"];
+        }
+        //debug_log($row["state"] .", ". $msg[$row["changedto"]] .", ". '{"table":"changelog","values":'.json_encode($row).'}');
+        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("data" => '{"table":"changelog","values":'.(json_encode($row)).'}'));
+    }
+
+    public static function mobAppUpdate() {
+        Notifier::fcmBcast("HomeBrain", "application update..", array("configs" => $_POST["param1"]));
+    }
 }
 
 ?>

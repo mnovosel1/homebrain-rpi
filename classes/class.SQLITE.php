@@ -4,9 +4,18 @@ class SQLITE {
 
     private static $result;
 
-    public static function insert() {
+    public static function insert($table, $attributes, $values, $insertOrReplace = false) {
         // TODO
-        return false;
+        if ( count($attributes) != count($values) ) return false;
+
+        $attributes = implode(", ", $attributes);
+        $values     = implode(", ", $values);
+        
+        $sql = "INSERT";
+        if ( $insertOrReplace ) $sql .= " OR REPLACE";
+        $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";
+
+        return self::query($sql);
     }
 
     public static function fetch() {
@@ -27,7 +36,7 @@ class SQLITE {
             $sql = "SELECT ".substr($attributes, 0, strlen($attributes)-2)." FROM ".func_get_arg(0)." WHERE ".func_get_arg(2);
         }
 
-        if ( self::query($sql) != "OK" ) return false;
+        if ( self::query($sql) != null ) return false;
         return self::$result;
     }
 
@@ -46,28 +55,32 @@ class SQLITE {
         if ( $update ) { 
             $ret = self::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
             self::query("SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 1");
-            Notifier::dbUpdate(self::$result[0]);
+            HomeBrain::mobDbUpdate(self::$result[0]);
             return $ret;
         }
         
         return null;
     }
 
-    protected static function query($sql) {
+    protected static function query($sql, $insert = false) {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
 
-        //debug_log($sql);
+        debug_log($sql);
 
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
-        $tmp = array();
-        while ( $row = $res->fetchArray(SQLITE3_ASSOC) ) {
-            $tmp[] = $row;
+
+        if ( !$insert ) {
+            $tmp = array();
+            while ( $row = $res->fetchArray(SQLITE3_ASSOC) ) {
+                $tmp[] = $row;
+            }
         }
+
         $sqlite->close();
         self::$result = $tmp;
 
-        if ( $ret == "not an error" ) $ret = "OK";
+        if ( $ret == "not an error" ) $ret = null;
 
         return $ret;
     }

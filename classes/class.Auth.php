@@ -7,7 +7,20 @@ class Auth {
         if ( isset($_POST["secToken"]) ) {
 
             $reqtime = floor($_SERVER["REQUEST_TIME"]/20);
-            
+
+            /*
+            debug_log("token rcvd: ".$_POST['secToken']);
+            debug_log(md5('H' . $reqtime));
+            debug_log(md5('o' . $reqtime));
+            debug_log(md5('m' . $reqtime));
+            debug_log(md5('e' . $reqtime));
+            debug_log(md5('B' . $reqtime));
+            debug_log(md5('r' . $reqtime));
+            debug_log(md5('a' . $reqtime));
+            debug_log(md5('i' . $reqtime));
+            debug_log(md5('n' . $reqtime));
+            */
+
             switch (true) 
             {
                 case ( $_POST['secToken'] == md5('H' . $reqtime) ):

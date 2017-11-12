@@ -13,6 +13,7 @@ else error_reporting(E_ALL & ~E_NOTICE);
 function debug_log($what) {
 	if ( !DEBUG ) return;
 	ob_start();
+	//echo "CLASS: " . get_class();
 	var_dump($what);
 	$out = ob_get_clean();
 	file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), $out.PHP_EOL, FILE_APPEND);

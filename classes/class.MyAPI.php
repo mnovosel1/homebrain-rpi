@@ -2,16 +2,18 @@
 
 class MyAPI extends API {
 
-    // Only callable methods are available from HomeBrain CLI
+    // Only callable methods are available from HomeBrain CLI (and Web API)
     private static $callable = array (
+        "Reg::register",
+        "Reg::verify",
         "HomeBrain::wakecheck",
+        "HomeBrain::mobappupdate",
         "HomeBrain::user",
         "HomeServer::power",
         "HomeServer::wake",
         "HomeServer::shut",
         "HomeServer::reboot",
         "Notifier::notify",
-        "Notifier::appupdate",
         "MPD::play"
     );
 
@@ -41,28 +43,6 @@ class MyAPI extends API {
         }
 
         $verb = strtolower($this->verb);
-        
-        if ( false && DEBUG ) { ////////////////////////////////////////////////////////////////////////
-            
-            ob_start();
-            
-            echo PHP_EOL . date("H:i:s");
-            echo PHP_EOL . "IP " . $_SERVER["REMOTE_ADDR"];
-            echo PHP_EOL . "AUTH " . Auth::OK() . PHP_EOL;
-            
-            echo PHP_EOL . "NAME: ";
-            var_dump($name);
-            
-            echo PHP_EOL . "VERB: ";
-            var_dump($verb);
-        
-            echo PHP_EOL . "POST" . PHP_EOL;
-            var_dump($_POST);
-
-            $out = ob_get_clean();
-            file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), $out.PHP_EOL);
-
-        } /////////////////////////////////////////////////////////////////////////////////////
 
         if ( Auth::OK() ) {            
             $ret = "";
@@ -73,7 +53,7 @@ class MyAPI extends API {
             
             if ( DEBUG ) return $ret;
             else return null;
-        }
+        } else if ( DEBUG ) debug_log("AUTH not OK.");
     }
 }
 

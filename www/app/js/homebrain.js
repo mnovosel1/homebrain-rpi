@@ -157,21 +157,39 @@ function getOrdinal(n) {
 function updateOne(values, refresh) {
 	if ( typeof refresh == 'undefined' ) refresh = false;
 	if ( typeof values !== 'object' ) values = JSON.parse(values);
+
 	logCounter++;
-	if ( formatDate(new Date(values["timestamp"])) != logLastDate) {
+	if ( formatDate(new Date(values.timestamp)) != logLastDate) {
 		$('<li data-role="list-divider">'+logLastDate+'<span class="ui-li-count">'+logCounter+'</span></li>').prependTo('#log');
 		if ( refresh ) $('#log').listview('refresh');
 		logCounter = 1;
 	}
 
-	logLastDate	= formatDate(new Date(values["timestamp"]));
-	title 		= '<h3 class="ui-li-heading">' + values["state"] + '</h3>';
-	timestamp 	= '<p class="ui-li-aside"><strong>' + formatTime(new Date(values["timestamp"]))+ " " + '</strong></p>';
-	subtitle 	= '<p style="white-space : normal;"><strong>' + values["statebefore"] + ' </strong>';
-	text 		= "Hey you! HomeBrain je nešto učinio.. HomeBrain je nešto učinio.." + '</p>';
+	switch (true) {
+		case values.state.indexOf("user") > -1:
+		msg = ["user is logged off..", "user is logged on!"];
+		break;
+		
+		case values.state.indexOf("busy") > -1:
+		msg = ["is not busy..", "is busy!"];
+		break;
+		
+		case values.state.indexOf("MPD") > -1:
+		msg = ["stopped playing..", "is playing!"];
+		break;
+
+		default:
+		msg = ["is off..", "is on!"];
+	}
+
+	logLastDate	= formatDate(new Date(values.timestamp));
+	title 		= '<h3 class="ui-li-heading">' + values.state.split(" ")[0] + '</h3>';
+	timestamp 	= '<p class="ui-li-aside"><strong>' + formatTime(new Date(values.timestamp))+ " " + '</strong></p>';
+	subtitle 	= '<p style="white-space: normal;"><strong>' + values.statebefore + ' </strong>';
+	text 		= msg[values.changedto] + '</p>';
 	
 	$('#log li')[0].remove();
-	$('<li>' + title + subtitle+ text + timestamp +'</li>').prependTo('#log');
+	$('<li style="padding: 0 10px;">' + title + subtitle + text + timestamp +'</li>').prependTo('#log');
 	$('<li data-role="list-divider">'+logLastDate+'<span class="ui-li-count">'+logCounter+'</span></li>').prependTo('#log');
 	if ( refresh ) $('#log').listview('refresh');
 

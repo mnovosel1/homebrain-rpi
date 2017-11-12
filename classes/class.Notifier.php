@@ -31,30 +31,9 @@ class Notifier {
         return true;
     }
 
-    public static function dbUpdate($row) {
-        switch (true) {
-            case (bool)strpos($row["state"], "user"):
-            $msg = ["user is logged off..", "user is logged on!"];
-            break;
-            
-            case (bool)strpos($row["state"], "busy"):
-            $msg = ["is not busy..", "is busy!"];
-            break;
-
-            default:
-            $msg = ["is off..", "is on!"];
-        }
-        //debug_log($row["state"] .", ". $msg[$row["changedto"]] .", ". '{"table":"changelog","values":'.json_encode($row).'}');
-        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("data" => '{"table":"changelog","values":'.(json_encode($row)).'}'));
-    }
-
-    public static function appUpdate() {
-        self::fcmBcast("HomeBrain", "application update..", array("configs" => $_POST["param1"]));
-    }
-
-    //* private methods - helpers *////////////////////////////////////////////////////////////////
+    //* private helper methods *///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
-    private static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
+    public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
 
         if ( $ttl === null ) $ttl = 300;

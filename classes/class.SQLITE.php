@@ -38,15 +38,15 @@ class SQLITE {
 
         if ( $table == "states" ) {
             self::query("SELECT `".$attribute."` FROM `states` WHERE ".$condition);
-            if ( $value == self::$result[0][0] ) {
+            if ( $value == self::$result[0][$attribute] ) {
                 $update = false;
             }
         }
 
         if ( $update ) { 
             $ret = self::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
-            self::query("SELECT state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
-            HomeBrain::changedTo(self::$result[0][0], self::$result[0][1]);
+            self::query("SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 1");
+            Notifier::dbUpdate(self::$result[0]);
             return $ret;
         }
         
@@ -61,7 +61,7 @@ class SQLITE {
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
         $tmp = array();
-        while ( $row = $res->fetchArray(SQLITE3_NUM) ) {
+        while ( $row = $res->fetchArray(SQLITE3_ASSOC) ) {
             $tmp[] = $row;
         }
         $sqlite->close();

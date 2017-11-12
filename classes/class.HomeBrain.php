@@ -9,7 +9,7 @@ class HomeBrain {
         $oldStates = array();
         $newStates = array();
 
-        foreach ( $rows as $row ) $oldStates[$row[0]] = ["auto" => $row[1], "active" => $row[2]];
+        foreach ( $rows as $row ) $oldStates[$row["name"]] = ["auto" => $row["auto"], "active" => $row["active"]];
 
         foreach ( $oldStates as $hostName => $values ) {
             $oldState = $values["active"];
@@ -80,26 +80,7 @@ class HomeBrain {
             $hbrainuser = exec("who | wc -l");
             return ($hbrainuser > 0) ? true : false;
         }
-    }
-
-    public static function changedTo($state, $newValue) {
-        debug_log($state);
-        switch (true) {
-            case (bool)strpos($state, "user"):
-            $msg = ["user is logged off..", "user is logged on!"];
-            break;
-            
-            case (bool)strpos($state, "busy"):
-            $msg = ["is not busy..", "is busy!"];
-            break;
-
-            default:
-            $msg = ["is off..", "is on!"];
-            
-        }        
-        Notifier::fcmBcast($state, $msg[$newValue]);
-    }
-    
+    }    
 }
 
 ?>

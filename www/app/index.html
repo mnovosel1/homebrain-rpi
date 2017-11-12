@@ -7,13 +7,12 @@
 	<title>HomeBrainApp</title>
 	
 	<link rel="stylesheet" href="css/themes/default/jquery.mobile-1.4.5.min.css">
-	<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+	<link rel="stylesheet" href="css/themes/default/jquery.mobile.icons-1.4.5.min.css">
 	<link rel="stylesheet" href="themes/homebrain.css" />
 	
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.mobile-1.4.5.js"></script>
     <script src="js/homebrain.js"></script>
-    <script src="js/home.js"></script>
     
 </head>
     <body>
@@ -25,7 +24,7 @@
             <div data-role="content">
                 <!-- header -->
                 <div data-role="header">
-                    <h1>HomeBrain</h1>
+                    <h4>HomeBrain</h4>
                 </div><!-- /header -->
             </div>
             <br><br><br><br><br><br>
@@ -39,28 +38,8 @@
         <div data-role="page" data-title="Home" id="home">
             <div data-role="content">
 
-                <div class="ui-body ui-body-a ui-corner-all">
-                    <ul data-role="listview" data-theme="a" data-dividertheme="b" data-filter="true" data-filter-theme="a" data-filter-placeholder="Search messages...">
-                        <li data-role="list-divider">Friday, October 8, 2010 <span class="ui-li-count">2</span></li>
-                        <li>
-                            <h3>Stephen Weber</h3>
-                            <p><strong>You've been invited to a meeting at Filament Group in Boston, MA</strong></p>
-                            <p>Hey Stephen, if you're available at 10am tomorrow, we've got a meeting with the jQuery team.</p>
-                            <p class="ui-li-aside"><strong>6:24</strong></p>
-                        </li>
-                        <li>
-                            <h3>jQuery Team</h3>
-                            <p><strong>Boston Conference Planning</strong></p>
-                            <p>In preparation for the upcoming conference in Boston, we need to start gathering a list of sponsors and speakers.</p>
-                            <p class="ui-li-aside"><strong>9:18</strong></p>
-                        </li>
-                        <li data-role="list-divider">Thursday, October 7, 2010 <span class="ui-li-count">1</span></li>
-                        <li>
-                            <h3>Avery Walker</h3>
-                        <p><strong>Re: Dinner Tonight</strong></p>
-                        <p>Sure, let's plan on meeting at Highland Kitchen at 8:00 tonight. Can't wait! </p>
-                            <p class="ui-li-aside"><strong>4:48</strong></p>
-                        </li>				
+                <div id="logdiv" class="ui-body ui-body-a ui-corner-all">
+                    <ul id="log" data-role="listview" data-theme="a" data-dividertheme="a" data-filter="true" data-filter-theme="a" data-filter-placeholder="Search log..">
                     </ul>
                 </div>
 
@@ -71,7 +50,7 @@
 <!-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
         <!--        MMUULLTTIIMMEEDDIIAA        -->
-        <div data-role="page" data-title="MultiMedia" id="multimedia">        
+        <div data-role="page" data-title="MultiMedia" id="multimedia">
             <div data-role="content">
 
                 <div class="ui-body ui-body-a ui-corner-all">
@@ -79,7 +58,7 @@
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
-                                    <td><h4>KODI</h4></td>
+                                    <td><h3>KODI</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="checkbox" name="kodi" id="kodi-onoff" value="on">
@@ -89,7 +68,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" id="kodi-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #e9e9e9; padding: .3em;">..</td>
+                                    <td colspan="3" id="kodi-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
                                 </tr>
                             </table>
                         </li>
@@ -100,16 +79,18 @@
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
-                                    <td><h4>Radio</h4></td>
+                                    <td><h3>MPD</h3></td>
                                     <td colspan="2" style="text-align: right;">
-                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="checkbox" name="mpd" id="mpd-onoff" value="on">
-                                            <label for="mpd-onoff" id="lbl-mpd-onoff">...</label>
+                                        <fieldset data-role="controlgroup" data-type="horizontal">
+                                            <select id="mpd-onoff" data-role="flipswitch" data-mini="true">
+                                              <option value="on">on</option>
+                                              <option value="off">off</option>
+                                            </select>
                                         </fieldset>
                                     </td>
                                 </tr>
                                 <tr id="mpd-info-tr">
-                                    <td colspan="3" id="mpd-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #e9e9e9; padding: .3em;">..</td>
+                                    <td colspan="3" id="mpd-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
                                 </tr>
                             </table>
                         </li>
@@ -120,18 +101,30 @@
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
-                                    <td><h4>Pojačalo</h4></td>
+                                    <td><h3>AMP</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="radio" name="amp" id="amp-on" value="on">
-                                            <label for="amp-on" id="lbl-amp-on">uključi</label>
+                                            <label for="amp-on" id="lbl-amp-on">on</label>
                                             <input type="radio" name="amp" id="amp-off" value="off">
-                                            <label for="amp-off" id="lbl-amp-off">isključi</label>
-                                        </fieldset>
+                                            <label for="amp-off" id="lbl-amp-off">off</label>
+                                        </fieldset>                                        
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" style="text-align: right;">
+                                    <td colspan="3" style="text-align: center; background-color: #f0f0f0;"  class="ui-corner-all">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="amp" id="amp-volup2" value="volup2">
+                                            <label for="amp-volup2" id="lbl-amp-volup2">+&nbsp;+</label>
+                                            <input type="radio" name="amp" id="amp-volup1" value="volup1">
+                                            <label for="amp-volup1" id="lbl-amp-volup1">&nbsp;+&nbsp;</label>
+                                            <input type="radio" name="amp" id="amp-mute" value="mute">
+                                            <label for="amp-mute" id="lbl-amp-mute">mute</label>
+                                            <input type="radio" name="amp" id="amp-voldown1" value="voldown1">
+                                            <label for="amp-voldown1" id="lbl-amp-voldown1">&nbsp;-&nbsp;</label>
+                                            <input type="radio" name="amp" id="amp-voldown2" value="voldown2">
+                                            <label for="amp-voldown2" id="lbl-amp-voldown2">-&nbsp;-</label>
+                                        </fieldset>
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="radio" name="amp" id="amp-kodi" value="kodi">
                                             <label for="amp-kodi" id="lbl-amp-kodi">KODI</label>
@@ -139,14 +132,6 @@
                                             <label for="amp-mpd" id="lbl-amp-mpd">MPD</label>
                                             <input type="radio" name="amp" id="amp-aux" value="aux">
                                             <label for="amp-aux" id="lbl-amp-aux">AUX</label>
-                                        </fieldset>
-                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="amp" id="amp-volup" value="volup">
-                                            <label for="amp-volup" id="lbl-amp-volup">+</label>
-                                            <input type="radio" name="amp" id="amp-mute" value="mute">
-                                            <label for="amp-mute" id="lbl-amp-mute">mute</label>
-                                            <input type="radio" name="amp" id="amp-voldown" value="voldown">
-                                            <label for="amp-voldown" id="lbl-amp-voldown">-</label>
                                         </fieldset>
                                     </td>
                                 </tr>
@@ -174,7 +159,7 @@
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="radio" name="hsrv" id="hsrv-on" value="on">
-                                            <label for="hsrv-on">upali</label>
+                                            <label for="hsrv-on">wake</label>
                                             <input type="radio" name="hsrv" id="hsrv-reboot" value="reboot">
                                             <label for="hsrv-reboot">reboot</label>
                                             <input type="radio" name="hsrv" id="hsrv-auto" value="auto">
@@ -183,7 +168,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" id="hsrv-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #e9e9e9; padding: .3em;">...</td>
+                                    <td colspan="3" id="hsrv-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">...</td>
                                 </tr>
                             </table>
                         </li>
@@ -203,7 +188,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" id="hbr-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #e9e9e9; padding: .3em;">...</td>
+                                    <td colspan="3" id="hbr-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">...</td>
                                 </tr>
                             </table>
                         </li>
@@ -226,7 +211,7 @@
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
-                                    <td colspan="3"><h4>Travnjak</h4></td>
+                                    <td colspan="3"><h4>Lawn</h4></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" style="text-align: left;">
@@ -245,13 +230,13 @@
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                                 <input type="checkbox" name="lawnOn" id="lawnOn-0" value="off">
-                                                <label for="lawnOn-0">uključi</label>
+                                                <label for="lawnOn-0">on</label>
                                             </fieldset>
                                         </form>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="ui-corner-all" style="text-align: left; font-size: .8em; background-color: #e9e9e9; padding: .3em;">
+                                    <td colspan="3" class="ui-corner-all" style="text-align: left; font-size: .8em; background-color: #f0f0f0; padding: .3em;">
                                         &nbsp;Zalijevanje isključeno.
                                     </td>
                                 </tr>
@@ -289,7 +274,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" class="ui-corner-all" style="text-align: left; font-size: .8em; background-color: #e9e9e9; padding: .3em;">
+                                    <td colspan="3" class="ui-corner-all" style="text-align: left; font-size: .8em; background-color: #f0f0f0; padding: .3em;">
                                         &nbsp;Zalijevanje isključeno.
                                     </td>
                                 </tr>
@@ -310,12 +295,10 @@
             <div data-role="content">
 
                 <div class="ui-body ui-body-a ui-corner-all">
+                    <h4>&nbsp;Termostat</h4><hr>
                     <ul data-role="listview" data-inset="false">
                         <li>
-                            <table style="width: 100%; margin-bottom: .7em;">
-                                <tr>
-                                    <td colspan="3"><h4>Termostat</h4></td>
-                                </tr>
+                            <table style="width: 100%; padding: .5em; margin: .7em 0 .7em; background-color: #ffffff;" class="ui-corner-all">
                                 <tr>
                                     <td colspan="3" style="text-align: center;">
                                         <form>
@@ -335,7 +318,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <table class="ui-corner-all" style="width: 100%; background-color: #e9e9e9;">
+                                        <table class="ui-corner-all" style="width: 100%; background-color: #f0f0f0;">
                                             <tr>
                                                 <td style="text-align: left; font-size: .8em;">&nbsp;Podešena temperatura:</td>
                                                 <td colspan="2" id="temp-set" style="text-align: right; font-size: .8em; white-space: normal;">..&nbsp;</td>
@@ -357,7 +340,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <table class="ui-corner-all" style="width: 100%; background-color: #e9e9e9;">
+                                        <table class="ui-corner-all" style="width: 100%; background-color: #f0f0f0;">
                                             <tr>
                                                 <td style="text-align: left; font-size: .8em;">&nbsp;Vanjska temperatura:</td>
                                                 <td colspan="2" id="temp-out" style="text-align: right; font-size: .8em; white-space: normal;">..&nbsp;</td>

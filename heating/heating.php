@@ -60,7 +60,7 @@ switch (TRUE) {
         exec($path."/heating/setHeating.sh on &");
 
         $msg = $subjectTPL .": ".$tempSet."°C/".$tempIn."°C/".$tempOut."°C..";
-        include $path .'/notify/kodi.php';
+        //include $path .'/notify/kodi.php';
       break;
     }
   break;
@@ -77,7 +77,7 @@ switch (TRUE) {
         exec($path."/heating/setHeating.sh off &");
 
         $msg = $subjectTPL .": ".$tempSet."°C/".$tempIn."°C/".$tempOut."°C..";
-        include $path .'/notify/kodi.php';
+        //include $path .'/notify/kodi.php';
       break;    
     }
   break;

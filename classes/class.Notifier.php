@@ -9,7 +9,9 @@ class Notifier {
         if ( !Auth::allowedIP() ) return false;
         self::kodi();
         $data = self::getPostData();
-        if ( self::fcmBcast($data["title"], $data["msg"]) ) return "Notify sent..";
+        
+        if ( self::fcmBcast($data["title"], $data["msg"]) ) return null;
+        return false;
     }
 
     public static function kodi() {
@@ -23,21 +25,41 @@ class Notifier {
     public static function fcmBcast($title, $msg, $data = null) {
         if ( !Auth::allowedIP() ) return false;
         if ( $title === null ) $title = "HomeBrain";
+        
         $tokens = SQLITE::fetch("fcm", ["token"], 1);
-        foreach ( $tokens as $tok ) self::sendFcm($title, $msg, $data, $tok[0]);
+        foreach ( $tokens as $tok ) self::sendFcm($title, $msg, $data, $tok['token']);
         return true;
+    }
+
+    public static function dbUpdate($row) {
+        switch (true) {
+            case (bool)strpos($row["state"], "user"):
+            $msg = ["user is logged off..", "user is logged on!"];
+            break;
+            
+            case (bool)strpos($row["state"], "busy"):
+            $msg = ["is not busy..", "is busy!"];
+            break;
+
+            default:
+            $msg = ["is off..", "is on!"];
+        }
+        //debug_log($row["state"] .", ". $msg[$row["changedto"]] .", ". '{"table":"changelog","values":'.json_encode($row).'}');
+        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("data" => '{"table":"changelog","values":'.(json_encode($row)).'}'));
+    }
+
+    public static function appUpdate() {
+        self::fcmBcast("HomeBrain", "application update..", array("configs" => $_POST["param1"]));
     }
 
     //* private methods - helpers *////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
     private static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
+
         if ( $ttl === null ) $ttl = 300;
         if ( $title === null ) $title = "HomeBrain";
         else $title = explode(" ", $title)[0];
-
-        $fields["to"]               = $token;
-        $fields["time_to_live"]     = $ttl;
 
         // NOTIFICATION only message
         if ( $data === null ) {
@@ -49,10 +71,16 @@ class Notifier {
         
         // DATA message
         else {
+            if ( $data !== null ) { 
+                $fields['data'] = $data;
+            }
+            
             $fields['data']['title']    = $title;
             $fields['data']['msg'] 	    = $msg;
-            if ( $data !== null ) $fields['data']['data'] = $data;
         }
+
+        $fields["to"]               = $token;
+        $fields["time_to_live"]     = $ttl;
 
         debug_log($fields);
 

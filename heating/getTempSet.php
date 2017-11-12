@@ -45,7 +45,7 @@ while ($row = $result->fetchArray(SQLITE3_ASSOC))
 $db->query("UPDATE tempConf SET temp=". $configs['TEMPSET_NIGHT'] ." WHERE hour<6;");
 
 $mysqlSQL .= "UPDATE tempConf SET temp=". $configs['TEMPSET_NIGHT'] ." WHERE hour<6;";
-$mysqli = new mysqli("bubulescu.org", "bubul_mn", "5tNjxtteikhqVito6Yv5", "bubul_housebrain");
+$mysqli = new mysqli("bubulescu.org", "bubul_mn", "WNl)rf&6.UhB", "bubul_homebrain");
 $mysqli->multi_query($mysqlSQL);
 $mysqli->close();
 

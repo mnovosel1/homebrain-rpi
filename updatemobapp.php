@@ -4,6 +4,15 @@
 define('DIR', str_replace('/www/app', '', dirname(__FILE__)));
 define('FILES_DAT', 'files.dat');
 
+require_once(DIR . "/classes/class.Configs.php");
+function debug_log($what) {
+	ob_start();
+	var_dump($what);
+	$out = ob_get_clean();
+	file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), $out.PHP_EOL, FILE_APPEND);
+}
+
+
 global $file_info; // All the file paths will be pushed here
 $file_info = array();
 
@@ -35,29 +44,28 @@ $newContent = "";
 $thisFile = "";
 $filesOldState = file_get_contents(DIR . "/www/app/" . FILES_DAT);
 $filesNewState = "";
-$filesUpdated = false;
+$filesUpdated = null;
 
+$i = 0;
 foreach ($file_info as $file) {
-
-    $thisFile = $file . " " . filemtime (DIR . "/www/app/" . $file) . PHP_EOL;    
-    if ( strpos($filesOldState, $thisFile) === false ) $filesUpdated[] = trim($file);
+    $thisFile = $file . " " . filemtime (DIR . "/www/app/" . $file) . PHP_EOL;
+    $i++;  
+    if ( strpos($filesOldState, $thisFile) === false ) { 
+        $filesUpdated[] = trim($file);
+        echo $file . PHP_EOL;
+    }
+    if ( $filesUpdated !== null && $i%10 == 0 ) {
+        $command = DIR . "/homebrain notifier appupdate '{\"updates\":".json_encode($filesUpdated, JSON_UNESCAPED_SLASHES)."}'";
+        exec($command);
+        $filesUpdated = null;
+        sleep(2);
+    }
     $filesNewState .= $thisFile;
 }
-
-if ( !$filesUpdated )
-    echo "No updates.." . PHP_EOL;
-else {
-
-    echo "Updating:" . PHP_EOL;
-    foreach ($filesUpdated as $fileU) {
-        echo "   " . $fileU . " ";
-    }
-    echo PHP_EOL . PHP_EOL;
-
-    $command = DIR . "/notify/fcmupdateapp.php " . '\'{"updates":' . json_encode($filesUpdated) . "}'";
+if ( $filesUpdated !== null ) {
+    $command = DIR . "/homebrain notifier appupdate '{\"updates\":'".json_encode($filesUpdated, JSON_UNESCAPED_SLASHES)."'}'";
     exec($command);
-
-    //var_dump(exec($command));
+    $filesUpdated = null;
 }
 
 file_put_contents(DIR . "/www/app/" . FILES_DAT, $filesNewState);

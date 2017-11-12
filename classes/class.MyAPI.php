@@ -11,6 +11,7 @@ class MyAPI extends API {
         "HomeServer::shut",
         "HomeServer::reboot",
         "Notifier::notify",
+        "Notifier::appupdate",
         "MPD::play"
     );
 

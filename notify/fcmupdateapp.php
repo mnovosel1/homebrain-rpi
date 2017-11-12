@@ -8,9 +8,8 @@ $sqliteres = $sqlite->query("SELECT token FROM fcm WHERE approved = 'false'");
 
 while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {
     
-    $command = DIR . "/notify/fcm.php '" . $argv[1] . "' '" . $entry["token"] . "'";
-    exec($command);
-
+    $command = DIR . "/homebrain notifier update '" . $argv[1] . "'";
+    exec(DIR . "/homebrain notifier update '" . $argv[1] . "'");
     //echo $command . PHP_EOL;
 }
 

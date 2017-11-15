@@ -17,7 +17,7 @@ class Reg {
     }
 
     public static function verify() {
-        $tokens = SQLITE::fetch("fcm", ["token"], "email = '".$_POST["email"]."'");
+        $tokens = SQLITE::fetch("fcm", ["token"], "approved = 'false' AND email = '".$_POST["email"]."'");
         $verified = false;
 
         foreach ( $tokens as $token ) {
@@ -26,6 +26,7 @@ class Reg {
 
         if ( $verified !== false ) {
             HomeBrain::mobAppConfig($verified);
+            SQLITE::approve($verified);
             return true;
         }
         

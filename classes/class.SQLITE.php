@@ -62,6 +62,10 @@ class SQLITE {
         return null;
     }
 
+    public static function approve($token) {
+        self::query("UPDATE fcm SET approved = 'true' WHERE token = '".$token."'");
+    }
+
     protected static function query($sql, $insert = false) {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
 

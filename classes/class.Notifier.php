@@ -1,7 +1,7 @@
 <?php
 
 /* FCM: TimeToLive */
-define('TTL', 300);
+define('TTL', 86400);
 
 class Notifier {
 
@@ -26,7 +26,7 @@ class Notifier {
         if ( !Auth::allowedIP() ) return false;
         if ( $title === null ) $title = "HomeBrain";
         
-        $tokens = SQLITE::fetch("fcm", ["token"], 1);
+        $tokens = SQLITE::fetch("fcm", ["token"], "approved='true'");
         foreach ( $tokens as $tok ) self::sendFcm($title, $msg, $data, $tok['token']);
         return true;
     }
@@ -36,7 +36,7 @@ class Notifier {
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
 
-        if ( $ttl === null ) $ttl = 300;
+        if ( $ttl === null ) $ttl = TTL;
         if ( $title === null ) $title = "HomeBrain";
         else $title = explode(" ", $title)[0];
 
@@ -55,7 +55,7 @@ class Notifier {
             }
             
             $fields['data']['title']    = $title;
-            $fields['data']['msg'] 	    = $msg;
+            $fields['data']['body'] 	    = $msg;
         }
 
         $fields["to"]               = $token;

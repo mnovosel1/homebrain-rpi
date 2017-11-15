@@ -14,6 +14,7 @@ class MyAPI extends API {
         "HomeServer::shut",
         "HomeServer::reboot",
         "Notifier::notify",
+        "HomeBrain::mobappconfig",
         "MPD::play"
     );
 
@@ -53,7 +54,12 @@ class MyAPI extends API {
             
             if ( DEBUG ) return $ret;
             else return null;
-        } else if ( DEBUG ) debug_log("AUTH not OK.");
+        }
+        
+        else {            
+            if ( DEBUG ) debug_log("AUTH not OK.");
+            header('HTTP/1.0 403 Forbidden');
+        }
     }
 }
 

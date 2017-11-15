@@ -41,14 +41,17 @@ class HomeBrain {
         if ( !(bool)$newStates["HomeServer"]["active"] ) {
 
             // wake HomeServer if:
+            $reason = "";
             switch (true) {
                 case ((bool)$newStates["KODI"]["active"]):
-                case ((HomeServer::getWakeTime()-time()) < 1800):
-                    HomeServer::wake();
+                    $reason .= "KODI ";
                 break;
 
-                default: break;
+                case ((HomeServer::getWakeTime()-time()) < 1800):
+                    $reason .= "WakeTime ";
+                break;
             }
+            if ( $reason != "" ) HomeServer::wake($reason);
         }
 
         // HomeServer is on
@@ -62,8 +65,7 @@ class HomeBrain {
                 case ((bool)$newStates["HomeBrain user"]["active"]):
                 break;
                 
-                default: HomeServer::shut();
-                
+                default: HomeServer::shut();                
             }
         }
         
@@ -82,8 +84,8 @@ class HomeBrain {
         }
     }
     
-    public static function mobAppConfig($token) {
-        
+    public static function mobAppConfig($token = null) {
+        if ( $token === null ) $token = $_POST["param1"];
         $cfgMessage["pages"]    = ["home", "multimedia", "grijanje", "lan", "vrt"];
         $cfgMessage["homeUrl"]  = "10.10.10.10";
 
@@ -104,11 +106,13 @@ class HomeBrain {
             $msg = ["is off..", "is on!"];
         }
         //debug_log($row["state"] .", ". $msg[$row["changedto"]] .", ". '{"table":"changelog","values":'.json_encode($row).'}');
-        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("data" => '{"table":"changelog","values":'.(json_encode($row)).'}'));
+        $dbUpdates["table"] = "changelog";
+        $dbUpdates["values"] = $row;
+        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("dbupdates" => json_encode($dbUpdates)));
     }
 
     public static function mobAppUpdate() {
-        Notifier::fcmBcast("HomeBrain", "application update..", array("configs" => $_POST["param1"]));
+        Notifier::fcmBcast("HomeBrain", "application update..", array("updates" => $_POST["param1"]));
     }
 }
 

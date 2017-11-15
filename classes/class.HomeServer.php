@@ -37,28 +37,36 @@ class HomeServer {
 		}
 	}
 
-	public static function wake() {
+	public static function wake($reason = "") {
 		if ( !Auth::allowedIP() ) return false;
 		if ( !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
-			Notifier::fcmBcast("HomeBrain", "waking HomeServer...");
+			if ( $reason == "" ) $reason = "!";
+			else $reason = ": ".$reason;
+			Notifier::fcmBcast("HomeBrain", "waking HomeServer".$reason);
 			return null;
 		}
 		return false;
 	}
 	
-	public static function shut() {
+	public static function shut($reason = "") {
 		if ( !Auth::allowedIP() ) return false;
-		if ( self::isOn() && (bool)LAN::SSH("HomeServer", "shutdown") ) {
-			Notifier::fcmBcast("HomeBrain", "shutting down HomeServer...");
+		if ( self::isOn() ) {
+			LAN::SSH("HomeServer", "shutdown");
+			if ( $reason == "" ) $reason = "..";
+			else $reason = ": ".$reason;
+			Notifier::fcmBcast("HomeBrain", "shutting down HomeServer".$reason);
 			return null;
 		}
 		return false;
 	}
 	
-	public static function reboot() {
+	public static function reboot($reason = "") {
 		if ( !Auth::allowedIP() ) return false;
-		if ( self::isOn() && (bool)LAN::SSH("HomeServer", "reboot") ) {
-			Notifier::fcmBcast("HomeBrain", "Rebooting HomeServer...");
+		if ( self::isOn() ) {
+			LAN::SSH("HomeServer", "reboot");
+			if ( $reason == "" ) $reason = "..";
+			else $reason = ": ".$reason;
+			Notifier::fcmBcast("HomeBrain", "Rebooting HomeServer".$reason);
 		}
 		return false;
 	}

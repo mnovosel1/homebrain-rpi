@@ -18,8 +18,57 @@ var page = {
 	}
 }
 
+function homebrain(name, verb, params) {
+	
+	if ( typeof Android !== 'undefined' ) {
+		if ( typeof params === 'undefined' ) params = null;
 
-function toast(msg) {	
+		requesting();
+
+		Android.homebrain(name, verb, "{\"param1\":" + params + "}");
+	}
+	console.log("homebrain "+name+" "+verb+" "+params);
+}
+
+function initListeners() {
+
+	$('input:radio').change(function(e) {
+
+		switch (this.name) {
+
+			case "amp":
+				homebrain(this.name, this.value);
+			break;
+
+			case "heat":
+				homebrain(this.name, this.value, $('#term-slider').val());
+			break;
+			
+			case "lawn":
+			case "garden":
+			break;
+
+			default: homebrain(this.name, this.value);
+		}
+	});
+
+	$('input:checkbox').change(function(e) {
+
+		switch (this.name) {
+			case "lawn":
+			case "garden":				
+				if ( typeof this.checked !== 'undefined' )
+					homebrain(this.name, this.checked ? "on" : "off", $('input[name='+this.name+']:checked').val());
+			break;
+
+			default: homebrain(this.name, this.checked ? "on" : "off");
+		}
+	});
+
+}
+
+
+function toast(msg) {
 	
 	if ( typeof Android !== 'undefined' ) {
 		Android.toast(msg);
@@ -37,11 +86,20 @@ function speak(msg) {
 	}
 }
 
+function requesting() {
+	loading(1);
+}
+
+function requestingDone() {	
+	setTimeout( function() { loading(false); }, 128);
+	setTimeout( function() { $('input:checked[name="amp"]').prop('checked', false).checkboxradio( 'refresh' ); }, 256);
+}
+
 function loading(msg) {
 
 	if ( typeof msg !== 'undefined' && msg !== false ) {
 		$("#overlay").fadeIn(96);
-	} else  {
+	} else {
 		$("#overlay").delay(128).fadeOut(128);
 	}
 	
@@ -101,7 +159,8 @@ function go(toPage, allowedPages) {
 
 		$.each(page.list, function() {
 			prependHeader($("#" + this));
-		});
+		});		
+		initListeners();
 
 		$( document ).on( "swiperight", ".ui-page", function( event ) {
 			slideRight();
@@ -154,7 +213,7 @@ function getOrdinal(n) {
     return n;     
 }
 
-function updateOne(values, refresh) {
+function updateLogRow(values, refresh) {
 	if ( typeof refresh == 'undefined' ) refresh = false;
 	if ( typeof values !== 'object' ) values = JSON.parse(values);
 
@@ -192,17 +251,15 @@ function updateOne(values, refresh) {
 	$('<li style="padding: 0 10px;">' + title + subtitle + text + timestamp +'</li>').prependTo('#log');
 	$('<li data-role="list-divider">'+logLastDate+'<span class="ui-li-count">'+logCounter+'</span></li>').prependTo('#log');
 	if ( refresh ) $('#log').listview('refresh');
-
-	console.log('<li>' + title + subtitle + timestamp +'</li>');
 }
 
-function updateAll(refresh) {
+function updateLog(refresh) {
 	if ( typeof refresh == 'undefined' ) refresh = false;
 	if ( typeof Android !== undefined ) {
 		list = JSON.parse(Android.get());
 		if ( refresh ) $('#log').listview('refresh');
 		for (var key in list) {
-			updateOne(list[key], refresh);
+			updateLogRow(list[key], refresh);
 		}
 	}
 }
@@ -221,5 +278,5 @@ $(document).ready(function(){
 		tapToggle: false
 	});
 
-	updateAll(false);
+	updateLog(false);
 });

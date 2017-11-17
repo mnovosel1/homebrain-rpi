@@ -61,7 +61,7 @@ class Notifier {
         $fields["to"]               = $token;
         $fields["time_to_live"]     = $ttl;
 
-        debug_log($fields);
+        //debug_log($fields);
 
         $headers[] = 'Authorization: key='.Configs::getFCM("API_KEY");
         $headers[] = 'Content-Type: application/json';

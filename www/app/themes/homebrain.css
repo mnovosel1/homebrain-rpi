@@ -74,8 +74,8 @@ div.ui-controlgroup-label {
 	float: left;
 	text-align: center;
 	padding-top: 45%;
-    opacity: 0.95;
-    filter: alpha(opacity=95);
+    opacity: 0.60;
+    filter: alpha(opacity=60);
 }
 /* Separators
 -----------------------------------------------------------------------------------------------------------*/

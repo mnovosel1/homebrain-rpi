@@ -15,14 +15,15 @@ class MyAPI extends API {
         "HomeServer::reboot",
         "Notifier::notify",
         "HomeBrain::mobappconfig",
-        "MPD::play"
+        "MPD::play",
+        "MPD::stop"
     );
 
     public function __construct($request, $origin) {
         parent::__construct($request);
     }
     
-    public function __call($name, $args) {        
+    public function __call($name, $args) {
         switch (strtolower($name)) {
             case "hsrv":
             case "hserv":
@@ -43,7 +44,9 @@ class MyAPI extends API {
                 $name = ucfirst(strtolower($name));
         }
 
-        $verb = strtolower($this->verb);
+        $verb = strtolower((string)$this->verb);
+
+        if ( DEBUG ) debug_log("MyAPI: ".$name." ".$this->verb." ".$_POST["param1"]);
 
         if ( Auth::OK() ) {            
             $ret = "";
@@ -52,12 +55,12 @@ class MyAPI extends API {
             if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
             if ( $ret == "" ) return $name::$verb();
             
-            if ( DEBUG ) return $ret;
-            else return null;
+            if ( DEBUG ) debug_log("MyAPI: ".$ret);
+            return null;
         }
         
         else {            
-            if ( DEBUG ) debug_log("AUTH not OK.");
+            if ( DEBUG ) debug_log("MyAPI: "."AUTH not OK.");
             header('HTTP/1.0 403 Forbidden');
         }
     }

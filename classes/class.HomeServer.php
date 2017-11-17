@@ -38,8 +38,7 @@ class HomeServer {
 	}
 
 	public static function wake($reason = "") {
-		if ( !Auth::allowedIP() ) return false;
-		if ( !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
+		if ( Auth::allowedIP() && !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) $reason = "!";
 			else $reason = ": ".$reason;
 			Notifier::fcmBcast("HomeBrain", "waking HomeServer".$reason);
@@ -49,8 +48,7 @@ class HomeServer {
 	}
 	
 	public static function shut($reason = "") {
-		if ( !Auth::allowedIP() ) return false;
-		if ( self::isOn() ) {
+		if ( Auth::allowedIP() && self::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
 			if ( $reason == "" ) $reason = "..";
 			else $reason = ": ".$reason;
@@ -61,8 +59,7 @@ class HomeServer {
 	}
 	
 	public static function reboot($reason = "") {
-		if ( !Auth::allowedIP() ) return false;
-		if ( self::isOn() ) {
+		if ( Auth::allowedIP() && self::isOn() ) {
 			LAN::SSH("HomeServer", "reboot");
 			if ( $reason == "" ) $reason = "..";
 			else $reason = ": ".$reason;

@@ -69,7 +69,7 @@ class SQLITE {
     protected static function query($sql, $insert = false) {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
 
-        debug_log($sql);
+        debug_log("SQLITE: ".$sql);
 
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();

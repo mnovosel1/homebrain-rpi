@@ -24,11 +24,12 @@
             <div data-role="content">
                 <!-- header -->
                 <div data-role="header" data-position="fixed" data-tap-toggle="false">
-                    <h5>HomeBrain</h5>
+                    <h1>HomeBrain</h1>
                 </div><!-- /header -->
+                <div class="center-div">
+                    <br><img src="loading.gif" width="200px" style="margin-top: 35%;">
+                </div>
             </div>
-            <br><br><br><br><br><br>
-            <img src="homebrain.png" style="width: 170px;">
         </div>
         <!--        /SSPPLLAASSHH         -->
 
@@ -61,8 +62,10 @@
                                     <td><h3>KODI</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="checkbox" name="kodi" id="kodi-onoff" value="on">
-                                            <label for="kodi-onoff" id="lbl-kodi-onoff">...</label>
+                                            <input type="radio" name="kodi" id="kodi-on" value="on">
+                                            <label for="kodi-on">on</label>
+                                            <input type="radio" name="kodi" id="kodi-off" value="off">
+                                            <label for="kodi-off">off</label>
                                         </fieldset>
                                         </form>
                                     </td>
@@ -81,11 +84,11 @@
                                 <tr>
                                     <td><h3>MPD</h3></td>
                                     <td colspan="2" style="text-align: right;">
-                                        <fieldset data-role="controlgroup" data-type="horizontal">
-                                            <select id="mpd-onoff" data-role="flipswitch" data-mini="true">
-                                              <option value="on">on</option>
-                                              <option value="off">off</option>
-                                            </select>
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="mpd" id="mpd-on" value="on">
+                                            <label for="mpd-on">on</label>
+                                            <input type="radio" name="mpd" id="mpd-off" value="off">
+                                            <label for="mpd-off">off</label>
                                         </fieldset>
                                     </td>
                                 </tr>
@@ -158,12 +161,12 @@
                                     <td><h4>HomeServer</h4></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="hsrv" id="hsrv-on" value="on">
+                                            <input type="radio" name="hsrv" id="hsrv-on" value="wake">
                                             <label for="hsrv-on">wake</label>
                                             <input type="radio" name="hsrv" id="hsrv-reboot" value="reboot">
                                             <label for="hsrv-reboot">reboot</label>
-                                            <input type="radio" name="hsrv" id="hsrv-auto" value="auto">
-                                            <label for="hsrv-auto">auto</label>
+                                            <input type="radio" name="hsrv" id="hsrv-auto" value="shut">
+                                            <label for="hsrv-auto">shut</label>
                                         </fieldset>
                                     </td>
                                 </tr>
@@ -217,11 +220,11 @@
                                     <td colspan="2" style="text-align: left;">
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                <input type="radio" name="lawn" id="lawn-0" value="off">
+                                                <input type="radio" name="lawn" id="lawn-0" value="5" checked>
                                                 <label for="lawn-0">5</label>
-                                                <input type="radio" name="lawn" id="lawn-1" value="on">
+                                                <input type="radio" name="lawn" id="lawn-1" value="10">
                                                 <label for="lawn-1">10</label>
-                                                <input type="radio" name="lawn" id="lawn-2" value="on">
+                                                <input type="radio" name="lawn" id="lawn-2" value="15">
                                                 <label for="lawn-2">15</label>
                                             </fieldset>
                                         </form>
@@ -229,8 +232,8 @@
                                     <td style="text-align: right">
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                <input type="checkbox" name="lawnOn" id="lawnOn-0" value="off">
-                                                <label for="lawnOn-0">on</label>
+                                                <input type="checkbox" name="lawn" id="lawnOn-0" value="off">
+                                                <label for="lawnOn-0">irrigate</label>
                                             </fieldset>
                                         </form>
                                     </td>
@@ -249,17 +252,17 @@
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
-                                    <td colspan="3"><h4>Vrt</h4></td>
+                                    <td colspan="3"><h4>Garden</h4></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2" style="text-align: left;">
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                <input type="radio" name="garden" id="garden-0" value="off">
+                                                <input type="radio" name="garden" id="garden-0" value="5" checked>
                                                 <label for="garden-0">5</label>
-                                                <input type="radio" name="garden" id="garden-1" value="on">
+                                                <input type="radio" name="garden" id="garden-1" value="10">
                                                 <label for="garden-1">10</label>
-                                                <input type="radio" name="garden" id="garden-2" value="on">
+                                                <input type="radio" name="garden" id="garden-2" value="15">
                                                 <label for="garden-2">15</label>
                                             </fieldset>
                                         </form>
@@ -267,8 +270,8 @@
                                     <td style="text-align: right;">
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                <input type="checkbox" name="gardenOn" id="gardenOn-0" value="off">
-                                                <label for="gardenOn-0">uključi</label>
+                                                <input type="checkbox" name="garden" id="gardenOn-0" value="">
+                                                <label for="gardenOn-0">irrigate</label>
                                             </fieldset>
                                         </form>
                                     </td>
@@ -302,16 +305,16 @@
                                 <tr>
                                     <td colspan="3" style="text-align: center;">
                                         <form>
-                                            <input type="range" name="term-slider" id="term-slider" min="10" max="30" step=".5" value="20"><br>
+                                            <input type="range" name="term-slider" id="term-slider" min="6" max="22" step=".5" value="20"><br>
                                         </form>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="heat" id="heat-set" value="on">
+                                            <input type="radio" name="heat" id="heat-set" value="set">
                                             <label for="heat-set">podesi</label>
-                                            <input type="radio" name="heat" id="heat-auto" value="on">
+                                            <input type="radio" name="heat" id="heat-auto" value="auto">
                                             <label for="heat-auto">auto</label>
                                         </fieldset>
                                     </td>

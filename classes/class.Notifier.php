@@ -4,21 +4,21 @@
 define('TTL', 86400);
 
 class Notifier {
+    public static $debug = true;
 
-    public static function notify() {
+    public static function notify($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
         self::kodi();
-        $data = self::getPostData();
         
-        if ( self::fcmBcast($data["title"], $data["msg"]) ) return null;
+        if ( self::fcmBcast($title, $msg) ) return null;
         return false;
     }
 
-    public static function kodi() {
+    public static function kodi($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
         $data = self::getPostData();
 
-        exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$data["title"].'","message":"'.$data["msg"].'"},"id":1}\' http://10.10.10.20:80/jsonrpc 2>/dev/null');
+        exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.20:80/jsonrpc 2>/dev/null');
         return true;
     }
 
@@ -55,7 +55,7 @@ class Notifier {
             }
             
             $fields['data']['title']    = $title;
-            $fields['data']['body'] 	    = $msg;
+            $fields['data']['body'] 	= $msg;
         }
 
         $fields["to"]               = $token;
@@ -76,9 +76,15 @@ class Notifier {
         $result = json_decode(curl_exec($ch));
         curl_close( $ch );
 
-        if ( $result->failure > 0 ) return false;
-        else return true;
+        if ( $result->failure > 0 ) $success = false;
+        else $success = true;
 
+        $fields["success"] = $success;        
+        debug_log(__FILE__, json_encode( $fields ));
+
+        if (!$success) SQLITE::query("DELETE FROM fcm WHERE token = '".$token."'");
+
+        return $success;
     }
 
     private static function getPostData() {

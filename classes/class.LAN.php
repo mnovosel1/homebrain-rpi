@@ -1,10 +1,15 @@
 <?php
 
 class LAN {
+    public static $debug = false;
 
     public static function ping($host) {
         $live = exec("ping -c1 ".Configs::getIP($host)." | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
-		if ($live > 0) return true;		
+		if ($live > 0) { 
+            debug_log(__FILE__, $host . " is live!");
+            return true;
+        }
+        debug_log(__FILE__, $host . " is not live.");
 		return false;
     }
 

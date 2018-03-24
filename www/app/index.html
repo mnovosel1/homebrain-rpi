@@ -57,15 +57,30 @@
                 <div class="ui-body ui-body-a ui-corner-all">
                     <ul data-role="listview" data-inset="false">
                         <li>
-                            <table style="width: 100%; margin-bottom: .7em;">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td><h3>TV</h3></td>
+                                    <td colspan="2" style="text-align: right;">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="tv" id="tv-input" value="input">
+                                            <label for="tv-input">input</label>
+                                            <input type="radio" name="tv" id="tv-power" value="power">
+                                            <label for="tv-power">POWER</label>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                            </table>                            
+                        </li>
+                        <li>
+                            <table style="width: 100%;">
                                 <tr>
                                     <td><h3>KODI</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="kodi" id="kodi-on" value="on">
-                                            <label for="kodi-on">on</label>
-                                            <input type="radio" name="kodi" id="kodi-off" value="off">
-                                            <label for="kodi-off">off</label>
+                                            <input type="checkbox" name="kodi-on" id="kodi-on" value="on">
+                                            <label for="kodi-on">ON&nbsp;</label>
+                                            <input type="checkbox" name="kodi-off" id="kodi-off" value="off">
+                                            <label for="kodi-off">OFF</label>
                                         </fieldset>
                                         </form>
                                     </td>
@@ -75,47 +90,29 @@
                                 </tr>
                             </table>
                         </li>
-                    </ul>
-                </div>
-                <div class="ui-body ui-body-a ui-corner-all">
-                    <ul data-role="listview" data-inset="false">
                         <li>
-                            <table style="width: 100%; margin-bottom: .7em;">
-                                <tr>
-                                    <td><h3>MPD</h3></td>
-                                    <td colspan="2" style="text-align: right;">
-                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="mpd" id="mpd-on" value="on">
-                                            <label for="mpd-on">on</label>
-                                            <input type="radio" name="mpd" id="mpd-off" value="off">
-                                            <label for="mpd-off">off</label>
-                                        </fieldset>
-                                    </td>
-                                </tr>
-                                <tr id="mpd-info-tr">
-                                    <td colspan="3" id="mpd-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
-                                </tr>
-                            </table>
-                        </li>
-                    </ul>
-                </div>
-                <div class="ui-body ui-body-a ui-corner-all">
-                    <ul data-role="listview" data-inset="false">
-                        <li>
-                            <table style="width: 100%; margin-bottom: .7em;">
+                            <table style="width: 100%;">
                                 <tr>
                                     <td><h3>AMP</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="radio" name="amp" id="amp-on" value="on">
-                                            <label for="amp-on" id="lbl-amp-on">on</label>
+                                            <label for="amp-on" id="lbl-amp-on">ON&nbsp;</label>
                                             <input type="radio" name="amp" id="amp-off" value="off">
-                                            <label for="amp-off" id="lbl-amp-off">off</label>
+                                            <label for="amp-off" id="lbl-amp-off">OFF</label>
                                         </fieldset>                                        
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: center; background-color: #f0f0f0;"  class="ui-corner-all">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="amp" id="amp-movie" value="movie">
+                                            <label for="amp-movie" id="lbl-amp-movie">Movie</label>
+                                            <input type="radio" name="amp" id="amp-dolby" value="dolby">
+                                            <label for="amp-dolby" id="lbl-amp-dolby">Dolby Digital</label>
+                                            <input type="radio" name="amp" id="amp-music" value="music">
+                                            <label for="amp-music" id="lbl-amp-music">Music</label>
+                                        </fieldset>
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="radio" name="amp" id="amp-volup2" value="volup2">
                                             <label for="amp-volup2" id="lbl-amp-volup2">+&nbsp;+</label>
@@ -137,6 +134,24 @@
                                             <label for="amp-aux" id="lbl-amp-aux">AUX</label>
                                         </fieldset>
                                     </td>
+                                </tr>
+                            </table>
+                        </li>
+                        <li>
+                            <table style="width: 100%; margin-bottom: .7em;">
+                                <tr>
+                                    <td><h3>MPD</h3></td>
+                                    <td colspan="2" style="text-align: right;">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="checkbox" name="mpd-on" id="mpd-on" value="on">
+                                            <label for="mpd-on">ON&nbsp;</label>
+                                            <input type="checkbox" name="mpd-off" id="mpd-off" value="off">
+                                            <label for="mpd-off">OFF</label>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr id="mpd-info-tr">
+                                    <td colspan="3" id="mpd-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
                                 </tr>
                             </table>
                         </li>
@@ -171,14 +186,10 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" id="hsrv-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">...</td>
+                                    <td colspan="3" id="hsrv-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
                                 </tr>
                             </table>
                         </li>
-                    </ul>
-                </div>
-                <div class="ui-body ui-body-a ui-corner-all">
-                    <ul data-role="listview" data-inset="false">
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
@@ -191,7 +202,7 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="3" id="hbr-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">...</td>
+                                    <td colspan="3" id="hbr-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
                                 </tr>
                             </table>
                         </li>
@@ -220,11 +231,11 @@
                                     <td colspan="2" style="text-align: left;">
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                <input type="radio" name="lawn" id="lawn-0" value="5" checked>
+                                                <input type="radio" name="lawn-time" id="lawn-0" value="5" checked>
                                                 <label for="lawn-0">5</label>
-                                                <input type="radio" name="lawn" id="lawn-1" value="10">
+                                                <input type="radio" name="lawn-time" id="lawn-1" value="10">
                                                 <label for="lawn-1">10</label>
-                                                <input type="radio" name="lawn" id="lawn-2" value="15">
+                                                <input type="radio" name="lawn-time" id="lawn-2" value="15">
                                                 <label for="lawn-2">15</label>
                                             </fieldset>
                                         </form>
@@ -245,10 +256,6 @@
                                 </tr>
                             </table>
                         </li>
-                    </ul>
-                </div>
-                <div class="ui-body ui-body-a ui-corner-all">
-                    <ul data-role="listview" data-inset="false">
                         <li>
                             <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
@@ -258,11 +265,11 @@
                                     <td colspan="2" style="text-align: left;">
                                         <form>
                                             <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                                <input type="radio" name="garden" id="garden-0" value="5" checked>
+                                                <input type="radio" name="garden-time" id="garden-0" value="5" checked>
                                                 <label for="garden-0">5</label>
-                                                <input type="radio" name="garden" id="garden-1" value="10">
+                                                <input type="radio" name="garden-time" id="garden-1" value="10">
                                                 <label for="garden-1">10</label>
-                                                <input type="radio" name="garden" id="garden-2" value="15">
+                                                <input type="radio" name="garden-time" id="garden-2" value="15">
                                                 <label for="garden-2">15</label>
                                             </fieldset>
                                         </form>
@@ -298,33 +305,37 @@
             <div data-role="content">
 
                 <div class="ui-body ui-body-a ui-corner-all">
-                    <h4>&nbsp;Termostat</h4><hr>
+                    <h4>Thermostat</h4><hr>
                     <ul data-role="listview" data-inset="false">
                         <li>
-                            <table style="width: 100%; padding: .5em; margin: .7em 0 .7em; background-color: #ffffff;" class="ui-corner-all">
+                            <table style="width: 100%;" class="ui-corner-all">
                                 <tr>
-                                    <td colspan="3" style="text-align: center;">
-                                        <form>
-                                            <input type="range" name="term-slider" id="term-slider" min="6" max="22" step=".5" value="20"><br>
-                                        </form>
+                                    <td colspan="3" style="text-align: right;">
+                                        &nbsp;&nbsp;<input type="range" name="term-slider" id="term-slider" min="16" max="22" step=".5" value="20">
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="heat" id="heat-set" value="set">
-                                            <label for="heat-set">podesi</label>
-                                            <input type="radio" name="heat" id="heat-auto" value="auto">
+                                            <input type="radio" name="heat-set" id="heat-set" value="set">
+                                            <label for="heat-set">&nbsp;set&nbsp;</label>
+                                            <input type="checkbox" name="heat-afreeze" id="heat-afreeze" value="afreeze">
+                                            <label for="heat-afreeze">antifreeze</label>
+                                            <input type="checkbox" name="heat-auto" id="heat-auto" value="auto">
                                             <label for="heat-auto">auto</label>
                                         </fieldset>
                                     </td>
                                 </tr>
+                            </table>
+                        </li>
+                        <li>
+                            <table style="width: 100%; margin-bottom: .7em;">
                                 <tr>
                                     <td>
                                         <table class="ui-corner-all" style="width: 100%; background-color: #f0f0f0;">
                                             <tr>
-                                                <td style="text-align: left; font-size: .8em;">&nbsp;Podešena temperatura:</td>
-                                                <td colspan="2" id="temp-set" style="text-align: right; font-size: .8em; white-space: normal;">..&nbsp;</td>
+                                                <td style="text-align: left; font-size: .8em; font-weight: bold;">&nbsp;Temperature set:</td>
+                                                <td colspan="2" id="temp-set" style="text-align: right; font-size: .8em; font-weight: bold; white-space: normal;">..&nbsp;</td>
                                             </tr>
                                         </table>
                                     </td>
@@ -333,9 +344,12 @@
                                     <td>
                                         <table class="ui-corner-all" style="width: 100%;">
                                             <tr>
-                                                <td style="text-align: left; font-size: .8em;">&nbsp;Unutarnja vlaga&nbsp;/&nbsp;temperatura:</td>
-                                                <td colspan="2" style="text-align: right; font-size: .8em; white-space: normal;">
-                                                    <span id="humid-in">..</span>&nbsp;/&nbsp;<span id="temp-in">..</span>
+                                                <td style="text-align: left; font-size: .8em;">&nbsp;Indoor:</td>
+                                                <td style="text-align: right; font-size: .8em; white-space: normal;">
+                                                    <span id="humid-in">..</span>
+                                                </td>
+                                                <td style="text-align: right; font-size: .8em; white-space: normal; width: 60px;">
+                                                    <span id="temp-in">..&nbsp;</span>
                                                 </td>
                                             </tr>
                                         </table>
@@ -345,8 +359,13 @@
                                     <td>
                                         <table class="ui-corner-all" style="width: 100%; background-color: #f0f0f0;">
                                             <tr>
-                                                <td style="text-align: left; font-size: .8em;">&nbsp;Vanjska temperatura:</td>
-                                                <td colspan="2" id="temp-out" style="text-align: right; font-size: .8em; white-space: normal;">..&nbsp;</td>
+                                                <td style="text-align: left; font-size: .8em;">&nbsp;Outdoor:</td>
+                                                <td style="text-align: right; font-size: .8em; white-space: normal;">
+                                                    <span id="humid-out">..</span>
+                                                </td>
+                                                <td style="text-align: right; font-size: .8em; white-space: normal; width: 60px;">
+                                                    <span id="temp-out">..&nbsp;</span>
+                                                </td>
                                             </tr>
                                         </table>
                                     </td>

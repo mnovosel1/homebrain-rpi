@@ -1,4 +1,5 @@
 var updates;
+var request = false;
 var loaded = false;
 var logLastDate = "";
 var logCounter = 0;
@@ -18,16 +19,17 @@ var page = {
 	}
 }
 
-function homebrain(name, verb, params) {
-	
-	if ( typeof Android !== 'undefined' ) {
-		if ( typeof params === 'undefined' ) params = null;
+function homebrain(name, verb, params) {	
 
+	console.log(request);
+	if ( !request ) {
 		requesting();
-
-		Android.homebrain(name, verb, "{\"param1\":" + params + "}");
+		if ( typeof Android !== 'undefined' ) {
+			if ( typeof params === 'undefined' ) params = null;
+			Android.homebrain(name, verb, "{\"param1\":" + params + "}");
+		}
+		console.log("homebrain "+name+" "+verb+" "+params);
 	}
-	console.log("homebrain "+name+" "+verb+" "+params);
 }
 
 function initListeners() {
@@ -39,13 +41,12 @@ function initListeners() {
 			case "amp":
 				homebrain(this.name, this.value);
 			break;
-
-			case "heat":
-				homebrain(this.name, this.value, $('#term-slider').val());
-			break;
+						
+			case "heat-set":
+				homebrain('heat', 'set', $('#term-slider').val());
 			
-			case "lawn":
-			case "garden":
+			case "lawn-time":
+			case "garden-time":
 			break;
 
 			default: homebrain(this.name, this.value);
@@ -55,14 +56,46 @@ function initListeners() {
 	$('input:checkbox').change(function(e) {
 
 		switch (this.name) {
-			case "lawn":
-			case "garden":				
-				if ( typeof this.checked !== 'undefined' )
-					homebrain(this.name, this.checked ? "on" : "off", $('input[name='+this.name+']:checked').val());
+			
+			case "mpd-on":
+				homebrain('mpd', 'on');
 			break;
 
-			default: homebrain(this.name, this.checked ? "on" : "off");
+			case "mpd-off":
+				homebrain('mpd', 'off');
+			break;
+			
+			case "kodi-on":
+				homebrain('kodi', 'on');
+			break;
+			
+			case "kodi-off":
+				homebrain('kodi', 'off');
+			break;
+
+			case "heat-auto":
+				homebrain('heat', 'auto');
+			break;
+
+			case "heat-afreeze":
+				homebrain('heat', 'antifreeze');
+			break;
+
+			case "lawn":
+			case "garden":				
+				if ( typeof this.checked !== 'undefined' ) {
+					if ( this.checked )
+						homebrain(this.name, "on", $('input:checked[name='+this.name+'-time]').val());
+					else
+						homebrain(this.name, "off");
+				}
+			break;
+
+			default:				
+				homebrain(this.name, this.checked ? "on" : "off");
 		}
+
+		$('input[name="'+this.name+'"]').prop('checked', !this.checked).checkboxradio( 'refresh' );
 	});
 
 }
@@ -72,37 +105,46 @@ function toast(msg) {
 	
 	if ( typeof Android !== 'undefined' ) {
 		Android.toast(msg);
-	} else {
-		console.log("Toasting: " + msg);
 	}
+	
+	console.log("Toasting: " + msg);
 }
 
 function speak(msg) {
 
 	if ( typeof Android !== 'undefined' ) {
-		Android.speak(tekst);
-	} else {
-		console.log("Speaking: " + msg);
+		Android.speak(msg);
 	}
+	
+	console.log("Speaking: " + msg);	
 }
 
 function requesting() {
+	request=true;
 	loading(1);
+	setTimeout(requestingDone, 3072);
 }
 
 function requestingDone() {	
-	setTimeout( function() { loading(false); }, 128);
-	setTimeout( function() { $('input:checked[name="amp"]').prop('checked', false).checkboxradio( 'refresh' ); }, 256);
+	setTimeout( function() { 
+		loading(false);
+		request= false;
+	}, 128);
+	setTimeout( function() {
+		$('input:checked[name="hbr"]').prop('checked', false).checkboxradio( 'refresh' );
+		$('input:checked[name="hsrv"]').prop('checked', false).checkboxradio( 'refresh' );
+		$('input:checked[name="amp"]').prop('checked', false).checkboxradio( 'refresh' );
+		$('input:checked[name="tv"]').prop('checked', false).checkboxradio( 'refresh' );
+		$('input[name="heat-set"]').prop('checked', false).checkboxradio( 'refresh' );
+	 }, 256);
 }
 
 function loading(msg) {
-
 	if ( typeof msg !== 'undefined' && msg !== false ) {
 		$("#overlay").fadeIn(96);
 	} else {
 		$("#overlay").delay(128).fadeOut(128);
-	}
-	
+	}	
 }
 
 function notice(connType) {
@@ -110,7 +152,6 @@ function notice(connType) {
 }
 
 function changePage(page, reverse) {
-
 	$(":mobile-pagecontainer").pagecontainer("change", "#" + page, {
 		transition: "slide",
 		reverse: reverse,
@@ -226,19 +267,19 @@ function updateLogRow(values, refresh) {
 
 	switch (true) {
 		case values.state.indexOf("user") > -1:
-		msg = ["user is logged off..", "user is logged on!"];
+			msg = ["user is logged off..", "user is logged on!"];
 		break;
 		
 		case values.state.indexOf("busy") > -1:
-		msg = ["is not busy..", "is busy!"];
+			msg = ["is not busy..", "is busy!"];
 		break;
 		
 		case values.state.indexOf("MPD") > -1:
-		msg = ["stopped playing..", "is playing!"];
+			msg = ["stopped playing..", "is playing!"];
 		break;
 
 		default:
-		msg = ["is off..", "is on!"];
+			msg = ["is off..", "is on!"];
 	}
 
 	logLastDate	= formatDate(new Date(values.timestamp));
@@ -261,6 +302,26 @@ function updateLog(refresh) {
 		for (var key in list) {
 			updateLogRow(list[key], refresh);
 		}
+	}
+}
+
+function updateHeatData(data) {
+	data = JSON.parse(data);
+	if ( typeof data.tempSet != 'undefined' ) {
+		$('#temp-set').html(data.tempSet+'&deg;C&nbsp;');
+		$('#term-slider').val(data.tempSet).slider('refresh');;
+	}
+	if ( typeof data.humidIn != 'undefined' ) {
+		$('#humid-in').html(data.humidIn+'&nbsp;%&nbsp;');
+	}
+	if ( typeof data.tempIn != 'undefined' ) {
+		$('#temp-in').html(data.tempIn+'&deg;C&nbsp;');
+	}
+	if ( typeof data.humidOut != 'undefined' ) {
+		$('#humid-out').html(data.humidOut+'&nbsp;%&nbsp;');
+	}
+	if ( typeof data.tempOut != 'undefined' ) {
+		$('#temp-out').html(data.tempOut+'&deg;C&nbsp;');
 	}
 }
 

@@ -120,5 +120,6 @@ file_put_contents(DIR .'/hbrain.sql', $sql);
 /////////////////////////////////////////////////////////////////////////////////////////////
 
 exec ("cp ". DIR ."/var/hbrain.db ". DIR ."/saved_var/hbrain.db");
+exec ("cp ". DIR ."/var/debug.log ". DIR ."/saved_var/debug.log");
 
 ?>

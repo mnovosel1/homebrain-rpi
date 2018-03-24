@@ -1,13 +1,10 @@
 <?php
 
 class MPD {
+    public static $debug = true;
 
     public static function play() {
-		if ( $_POST["param1"] == "" ) {
-            return self::playing();
-        }
-        
-        else {
+		if ( $_POST["param1"] != "" ) {
             self::stop();
             exec("/usr/bin/mpc repeat on");
             exec("/usr/bin/mpc random off");
@@ -18,19 +15,26 @@ class MPD {
 
             exec("/usr/bin/irsend SEND_ONCE Yamaha SYSTEM_POWER");
             exec("/bin/sleep 1;");
-            exec("/usr/bin/irsend SEND_ONCE Yamaha D-TV_CBL_INPUT");
+            exec("/usr/bin/irsend SEND_ONCE Yamaha D-TV_CBL_INPUT");            
         }
-        return null;
+        return self::playing();
     }
 
     public static function stop() {        
             exec("/usr/bin/mpc clear");
-            return null;
+            return self::playing();
     }
 
     public static function playing() {
         $mpdplay = exec("/usr/bin/mpc current");
-        return ($mpdplay == "") ? false : $mpdplay;
+        
+        if ($mpdplay == "") {
+            SQLITE::update("states", "active", 0, "`name`='MPD playing'");
+            return null;
+        } else {
+            SQLITE::update("states", "active", 1, "`name`='MPD playing'");
+            return $mpdplay;
+        }
     }
 }
 

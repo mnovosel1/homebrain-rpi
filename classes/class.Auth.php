@@ -9,16 +9,16 @@ class Auth {
             $reqtime = floor($_SERVER["REQUEST_TIME"]/20);
 
             /*
-            debug_log("Auth: "."token rcvd: ".$_POST['secToken']);
-            debug_log("Auth: ".md5('H' . $reqtime));
-            debug_log("Auth: ".md5('o' . $reqtime));
-            debug_log("Auth: ".md5('m' . $reqtime));
-            debug_log("Auth: ".md5('e' . $reqtime));
-            debug_log("Auth: ".md5('B' . $reqtime));
-            debug_log("Auth: ".md5('r' . $reqtime));
-            debug_log("Auth: ".md5('a' . $reqtime));
-            debug_log("Auth: ".md5('i' . $reqtime));
-            debug_log("Auth: ".md5('n' . $reqtime));
+            debug_log(__FILE__, "token rcvd: ".$_POST['secToken']);
+            debug_log(__FILE__, md5('H' . $reqtime));
+            debug_log(__FILE__, md5('o' . $reqtime));
+            debug_log(__FILE__, md5('m' . $reqtime));
+            debug_log(__FILE__, md5('e' . $reqtime));
+            debug_log(__FILE__, md5('B' . $reqtime));
+            debug_log(__FILE__, md5('r' . $reqtime));
+            debug_log(__FILE__, md5('a' . $reqtime));
+            debug_log(__FILE__, md5('i' . $reqtime));
+            debug_log(__FILE__, md5('n' . $reqtime));
             */
 
             switch (true) 
@@ -49,7 +49,7 @@ class Auth {
         foreach ( $arrayIPs as $ip ) $allowedIPs[] = $ip;
 
         if ( array_search($_SERVER["REMOTE_ADDR"], $allowedIPs) === false ) {
-            if ( DEBUG ) debug_log("Auth: "."IP not allowed");
+            if ( DEBUG ) debug_log(__FILE__, "IP not allowed");
             return false;
         }
 

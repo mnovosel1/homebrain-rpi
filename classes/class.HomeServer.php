@@ -1,6 +1,7 @@
 <?php
 
 class HomeServer {
+    public static $debug = true;
 	
 	public static function power() {
 		if ( $_POST["param1"] == "" ) {
@@ -21,27 +22,37 @@ class HomeServer {
 			return self::setbusy($_POST["param1"]);
 		}
 
-		else if ( self::isOn() ) {
+		else if ( self::isOn() ) {			
 			$state = false;
 			$waketime = self::getWakeTime();
 
-			if (
-				self::dailyCronActive() ||
-				self::usersActive() ||
-				self::torrentActive() ||
-				($waketime - time()) < 1800
-			)
-			$state = true;
+			switch (true) {
+				case self::dailyCronActive():
+					hbrain_log(__FILE__, "HomeServer: DailyCron");
+				case self::usersActive():
+					hbrain_log(__FILE__, "HomeServer: User logged on");
+				case self::torrentActive():
+					hbrain_log(__FILE__, "HomeServer: Torrenting");
+				case ($waketime - time()) < 1800:
+					hbrain_log(__FILE__, "HomeServer: WakeTime");
+					
+					$state = true;
+				break;
+			}
 
+			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
 			return $state;
 		}
 	}
 
-	public static function wake($reason = "") {
+	public static function wake($reason = "") {		
 		if ( Auth::allowedIP() && !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
-			if ( $reason == "" ) $reason = "!";
-			else $reason = ": ".$reason;
-			Notifier::fcmBcast("HomeBrain", "waking HomeServer".$reason);
+			if ( $reason == "" ) {
+				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
+				else $reason = "!";
+			} else $reason = ": ".$reason;
+			Notifier::fcmBcast("HomeBrain", "is waking HomeServer".$reason);
+			hbrain_log(__FILE__, "HomeBrain is waking HomeServer".$reason);
 			return null;
 		}
 		return false;
@@ -50,9 +61,12 @@ class HomeServer {
 	public static function shut($reason = "") {
 		if ( Auth::allowedIP() && self::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
-			if ( $reason == "" ) $reason = "..";
-			else $reason = ": ".$reason;
-			Notifier::fcmBcast("HomeBrain", "shutting down HomeServer".$reason);
+			if ( $reason == "" ) {
+				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
+				else $reason = "..";
+			} else $reason = ": ".$reason;
+			Notifier::fcmBcast("HomeBrain", "is shutting down HomeServer".$reason);
+			hbrain_log(__FILE__, "HomeBrain is shutting down HomeServer".$reason);
 			return null;
 		}
 		return false;
@@ -61,15 +75,26 @@ class HomeServer {
 	public static function reboot($reason = "") {
 		if ( Auth::allowedIP() && self::isOn() ) {
 			LAN::SSH("HomeServer", "reboot");
-			if ( $reason == "" ) $reason = "..";
-			else $reason = ": ".$reason;
-			Notifier::fcmBcast("HomeBrain", "Rebooting HomeServer".$reason);
+			if ( $reason == "" ) {
+				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
+				else $reason = "..";
+			} else $reason = ": ".$reason;
+			Notifier::fcmBcast("HomeBrain", "is rebooting HomeServer".$reason);
+			hbrain_log(__FILE__, "HomeBrain is rebooting HomeServer".$reason);
 		}
 		return false;
 	}
 
 	public static function isOn() {
-		return LAN::ping("HomeServer");
+		if ( LAN::ping("HomeServer") ) {
+			SQLITE::update("states", "active", 1, "`name`='HomeServer'");
+			return true;
+		}
+
+		else {
+			SQLITE::update("states", "active", 0, "`name`='HomeServer'");
+			return false;
+		}
 	}
 
 	public static function setbusy($busy) {
@@ -108,6 +133,28 @@ class HomeServer {
 		else $waketime = exec('cat '.DIR.'/var/srvWakeTime.log');
 		
 		return $waketime;
+	}
+
+	public static function timeToWake() {
+		
+		$waketime = self::getWakeTime();
+
+		$howlong = '';
+		$seconds = $waketime - time(); 
+		$minutes = (int)($seconds / 60);
+		$hours = (int)($minutes / 60);
+		$days = (int)($hours / 24);
+		if (abs($days) >= 1) {
+		  $howlong = $days . ' day' . ($days != 1 ? 's' : '');
+		} else if (abs($hours) >= 1) {
+		  $howlong = $hours . ' hour' . ($hours != 1 ? 's' : '');
+		} else if (abs($minutes) >= 1) {
+		  $howlong = $minutes . ' min' . ($minutes != 1 ? 's' : '');
+		} else {
+		  $howlong = $seconds . ' sec' . ($seconds != 1 ? 's' : '');
+		}
+
+		return "Waking HomeServer at ".date("H:i d.m.y.", $waketime)." - ".$howlong." left.";
 	}
 }
 

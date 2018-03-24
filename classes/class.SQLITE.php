@@ -2,6 +2,7 @@
 
 class SQLITE {
 
+    public static $debug = false;
     private static $result;
 
     public static function insert($table, $attributes, $values, $insertOrReplace = false) {
@@ -66,10 +67,10 @@ class SQLITE {
         self::query("UPDATE fcm SET approved = 'true' WHERE token = '".$token."'");
     }
 
-    protected static function query($sql, $insert = false) {
+    public static function query($sql, $insert = false) {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
 
-        debug_log("SQLITE: ".$sql);
+        debug_log(__FILE__, $sql);
 
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();

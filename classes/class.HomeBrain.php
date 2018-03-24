@@ -1,6 +1,7 @@
 <?php
 
 class HomeBrain {
+    public static $debug = true;
     
     public static function wakecheck() {
         // get old states from db
@@ -30,11 +31,13 @@ class HomeBrain {
             }
 
             $newStates[$hostName]["active"] = $newState;
-
+            /*
             if ( $oldState != $newState ) {
                 $msg = $class." is".(((bool)$newState) ? " " : " not ").$method.".";
-                SQLITE::update("states", "active", $newState, "`name`='".$condition."'");
+                debug_log(__FILE__, $hostName . ": " . $newState . " `name`='".$condition."'");
+                //SQLITE::update("states", "active", $newState, "`name`='".$condition."'");
             }
+            */
         }
 
         // HomeServer is off
@@ -44,11 +47,13 @@ class HomeBrain {
             $reason = "";
             switch (true) {
                 case ((bool)$newStates["KODI"]["active"]):
+                    debug_log(__FILE__, "Waking HomeServer, KODI is on.");
                     $reason .= "KODI ";
                 break;
 
                 case ((HomeServer::getWakeTime()-time()) < 1800):
-                    $reason .= "WakeTime ";
+                    debug_log(__FILE__, "Waking HomeServer, it's WakeTime.");
+                    $reason .= "WakeTime ".date("H:i d.m.", HomeServer::getWakeTime())." ";
                 break;
             }
             if ( $reason != "" ) HomeServer::wake($reason);
@@ -61,8 +66,14 @@ class HomeBrain {
             switch (true)
             {
                 case ((bool)$newStates["KODI"]["active"]):
+                    hbrain_log(__FILE__, "KODI active, , HomeServer stays on.");
+
                 case ((bool)$newStates["HomeServer busy"]["active"]):
+                    hbrain_log(__FILE__, "HomeServer busy, HomeServer stays on.");
+               
                 case ((bool)$newStates["HomeBrain user"]["active"]):
+                    hbrain_log(__FILE__, "HomeBrain user logged in, HomeServer stays on.");
+                
                 break;
                 
                 default: HomeServer::shut();                
@@ -89,7 +100,12 @@ class HomeBrain {
         $cfgMessage["pages"]    = ["home", "multimedia", "grijanje", "lan", "vrt"];
         $cfgMessage["homeUrl"]  = "10.10.10.10";
 
-        Notifier::sendFcm ("HomeBrain", "configuring mobile app..", ["configs" => json_encode($cfgMessage)], $token);
+        Notifier::sendFcm ("HomeBrain", "APP config..", ["configs" => json_encode($cfgMessage)], $token);
+    }
+
+    public static function mobHeatUpdate($data = null) {
+        if ( $data == null ) $data = $_POST["param1"];
+        Notifier::fcmBcast("Heating", "update", array("heating" => $data));
     }
 
     public static function mobDbUpdate($row) {
@@ -108,11 +124,25 @@ class HomeBrain {
         //debug_log($row["state"] .", ". $msg[$row["changedto"]] .", ". '{"table":"changelog","values":'.json_encode($row).'}');
         $dbUpdates["table"] = "changelog";
         $dbUpdates["values"] = $row;
-        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("dbupdates" => json_encode($dbUpdates)));
+        Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("dbupdates" => $dbUpdates));
     }
 
     public static function mobAppUpdate() {
-        Notifier::fcmBcast("HomeBrain", "application update..", array("updates" => $_POST["param1"]));
+        Notifier::fcmBcast("HomeBrain", "APP update..", array("appupdates" => $_POST["param1"]));
+    }
+
+    public static function reboot() {
+        if ( Auth::allowedIP() ) return true;
+        else return false;
+    }
+
+    public static function notify($msg) {
+
+        $msg = str_replace("_", " ", $msg);
+        $logMsg = "Not sent!";
+        if (Notifier::fcmBcast("HomeBrain", $msg)) $logMsg = "FCM sent OK!";
+
+        debug_log(__FILE__, 'Notifier::fcmBcast("HomeBrain", "'.$msg.'"); '.$logMsg);
     }
 }
 

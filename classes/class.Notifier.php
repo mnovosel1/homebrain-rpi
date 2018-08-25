@@ -4,7 +4,7 @@
 define('TTL', 86400);
 
 class Notifier {
-    public static $debug = true;
+    public static $debug = false;
 
     public static function notify($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
@@ -57,6 +57,8 @@ class Notifier {
             $fields['data']['title']    = $title;
             $fields['data']['body'] 	= $msg;
         }
+
+        hbrain_log(__FILE__, $title ." - ". $msg);
 
         $fields["to"]               = $token;
         $fields["time_to_live"]     = $ttl;

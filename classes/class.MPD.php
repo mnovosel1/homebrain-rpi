@@ -21,12 +21,12 @@ class MPD {
     }
 
     public static function stop() {        
-            exec("/usr/bin/mpc clear");
-            return self::playing();
+        LAN::SSH("KODI", "hbmpd stop");
     }
 
     public static function playing() {
-        $mpdplay = exec("/usr/bin/mpc current");
+
+        $mpdplay = LAN::SSH("KODI", "hbmpd current");
         
         if ($mpdplay == "") {
             SQLITE::update("states", "active", 0, "`name`='MPD playing'");

@@ -42,11 +42,11 @@ class LAN {
             break;
             
             case "getWaketime":
-            $cmd = "/home/server/getWaketime";
+            $cmd = "/home/hbrain/getWakeTime";
             break;
                         
             case "chkserver":
-            $cmd = "/home/server/chkServer";
+            $cmd = "/home/hbrain/chkServer";
             break;
 
             default:

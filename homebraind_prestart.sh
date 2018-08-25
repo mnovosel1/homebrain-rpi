@@ -7,7 +7,10 @@ if [ ! -f $DIR/var/hbrain.db ]; then
   if [ -f $DIR/saved_var/hbrain.db ]; then
     cp $DIR/saved_var/hbrain.db $DIR/var/hbrain.db
   else
-    sqlite3 $DIR/var/hbrain.db -init $DIR/hbrain.sql &
+    if [ ! -f $DIR/var/hbrain.sql ]; then
+      cp $DIR/saved_var/hbrain.sql $DIR/var/hbrain.sql
+    fi
+    hbrain dbrestore true
   fi
 fi
 
@@ -23,5 +26,5 @@ if [ ! -f $DIR/var/medvedi.log ]; then
   cp $DIR/saved_var/medvedi.log $DIR/var/medvedi.log
 fi
 
-/bin/chown -R hbrain:www-data $DIR/var/*
-/bin/chmod -R 774 $DIR/var/*
+/bin/chown -R hbrain:hbrain $DIR/var/*
+/bin/chmod -R 0770 $DIR/var/*

@@ -3,6 +3,24 @@
 class HomeBrain {
     public static $debug = true;
     
+    public static function dbbackup() {
+        SQLITE::dbdump();
+        exec("chmod -R 0770 ". DIR ."/var");
+        exec("cp -a ". DIR ."/var/* ". DIR ."/saved_var");
+    }
+    
+    public static function dbrestore($fromDump = "false") {
+        
+        if ($fromDump == "true") {
+            exec("rm ". DIR ."/var/hbrain.db");
+            exec("sqlite3 ". DIR ."/var/hbrain.db < ". DIR ."/var/hbrain.sql");
+        }
+
+        else {
+            exec("cp -f ". DIR ."/saved_var/* ". DIR ."/var");
+        }
+    }
+
     public static function wakecheck() {
         // get old states from db
         $rows = SQLITE::fetch("states", ["name", "auto", "active"], 1);
@@ -47,12 +65,12 @@ class HomeBrain {
             $reason = "";
             switch (true) {
                 case ((bool)$newStates["KODI"]["active"]):
-                    debug_log(__FILE__, "Waking HomeServer, KODI is on.");
+                    hbrain_log(__FILE__, "Waking HomeServer, KODI is on.");
                     $reason .= "KODI ";
                 break;
 
                 case ((HomeServer::getWakeTime()-time()) < 1800):
-                    debug_log(__FILE__, "Waking HomeServer, it's WakeTime.");
+                    hbrain_log(__FILE__, "Waking HomeServer, it's WakeTime.");
                     $reason .= "WakeTime ".date("H:i d.m.", HomeServer::getWakeTime())." ";
                 break;
             }
@@ -61,23 +79,25 @@ class HomeBrain {
 
         // HomeServer is on
         else {
-
+            $shutDownHomeServer = true;
+            
             // do NOT shutdown HomeServer if:
-            switch (true)
-            {
-                case ((bool)$newStates["KODI"]["active"]):
-                    hbrain_log(__FILE__, "KODI active, , HomeServer stays on.");
-
-                case ((bool)$newStates["HomeServer busy"]["active"]):
-                    hbrain_log(__FILE__, "HomeServer busy, HomeServer stays on.");
-               
-                case ((bool)$newStates["HomeBrain user"]["active"]):
-                    hbrain_log(__FILE__, "HomeBrain user logged in, HomeServer stays on.");
-                
-                break;
-                
-                default: HomeServer::shut();                
+            if ((bool)$newStates["KODI"]["active"]) {
+                $shutDownHomeServer = false;
+                hbrain_log(__FILE__, "KODI is active, HomeServer stays on."); 
             }
+
+            if ((bool)$newStates["HomeServer busy"]["active"]) {
+                $shutDownHomeServer = false;
+                hbrain_log(__FILE__, "HomeServer is busy, HomeServer stays on.");
+            }
+
+            if ((bool)$newStates["HomeBrain user"]["active"]) {
+                $shutDownHomeServer = false;
+                hbrain_log(__FILE__, "HomeBrain user is logged on, HomeServer stays on.");
+            }
+
+            if ($shutDownHomeServer) HomeServer::shut();
         }
         
         return null;
@@ -116,12 +136,16 @@ class HomeBrain {
             
             case (bool)strpos($row["state"], "busy"):
             $msg = ["is not busy..", "is busy!"];
+            // if ($row["changedto"] == 1) exec("/usr/bin/hbalert 3 &"); // alert if server is busy!
             break;
 
             default:
+            if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec("/usr/bin/hbalert 3 &"); // alert if server is on
             $msg = ["is off..", "is on!"];
         }
-        //debug_log($row["state"] .", ". $msg[$row["changedto"]] .", ". '{"table":"changelog","values":'.json_encode($row).'}');
+        hbrain_log(__FILE__, $row["state"] ." ". $msg[$row["changedto"]]);
+        debug_log(__FILE__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
+
         $dbUpdates["table"] = "changelog";
         $dbUpdates["values"] = $row;
         Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("dbupdates" => $dbUpdates));

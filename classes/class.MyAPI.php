@@ -7,6 +7,8 @@ class MyAPI extends API {
     private static $callable = array (
         "Reg::register",
         "Reg::verify",
+        "HomeBrain::dbbackup",
+        "HomeBrain::dbrestore",
         "HomeBrain::notify",
         "HomeBrain::wakecheck",
         "HomeBrain::mobappupdate",
@@ -17,15 +19,18 @@ class MyAPI extends API {
         "HomeServer::shut",
         "HomeServer::reboot",
         "HomeServer::busy",
+        "HomeServer::ison",
         "HomeServer::timetowake",
         "MPD::play",
         "MPD::playing",
         "MPD::stop",
         "Amp::on",
         "Amp::off",
+        "Amp::volup",
         "Amp::volup2",
         "Amp::volup1",
         "Amp::mute",
+        "Amp::voldown",
         "Amp::voldown1",
         "Amp::voldown2",
         "Amp::kodi",
@@ -34,8 +39,15 @@ class MyAPI extends API {
         "Amp::movie",
         "Amp::dolby",
         "Amp::music",
-        "Tv::power",
-        "Tv::input",
+        "TV::on",
+        "TV::off",
+        "TV::power",
+        "TV::input",
+        "TV::ison",
+        "TV::status",
+        "KODI::ison",
+        "KODI::on",
+        "KODI::off",
         "Heating::gettemps",
         "Heating::getintemp",
         "Heating::getinhumid",
@@ -44,7 +56,8 @@ class MyAPI extends API {
         "Heating::updatemob",
         "Medvedi::check",
         "Medvedi::show",
-        "Medvedi::notify"
+        "Medvedi::notify",
+        "Weather::get"
     );
 
     public function __construct($request, $origin) {
@@ -77,6 +90,12 @@ class MyAPI extends API {
                 $name = "MPD";
             break;
 
+            case "Tv":
+            case "tV":
+            case "tv":
+                $name = "TV";
+            break;
+
             default:
                 $name = ucfirst(strtolower($name));
         }
@@ -92,7 +111,7 @@ class MyAPI extends API {
             if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
 
             if ( $ret == "" ) {
-                if (trim($_POST["param1"]) != "") {
+                if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
                     hbrain_log(__FILE__, $name."::".$this->verb."('".$_POST["param1"]."');");
                     return $name::$verb(trim($_POST["param1"]));
                 } else {
@@ -100,7 +119,7 @@ class MyAPI extends API {
                     return $name::$verb();
                 }
             }
-            else debug_log(__FILE__, $ret);
+            else hbrain_log(__FILE__, $ret);
         }
         
         else hbrain_log(__FILE__, "AUTH not OK.");

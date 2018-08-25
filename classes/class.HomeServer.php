@@ -1,7 +1,7 @@
 <?php
 
 class HomeServer {
-    public static $debug = true;
+    public static $debug = false;
 	
 	public static function power() {
 		if ( $_POST["param1"] == "" ) {
@@ -28,14 +28,27 @@ class HomeServer {
 
 			switch (true) {
 				case self::dailyCronActive():
-					hbrain_log(__FILE__, "HomeServer: DailyCron");
+					hbrain_log(__FILE__, "HomeServer: DailyCron working..");
+					$state = true;
+				break;
+
+				case self::gDriveSyncActive():
+					hbrain_log(__FILE__, "HomeServer: gDriveSync in progress..");
+					$state = true;
+				break;
+
 				case self::usersActive():
-					hbrain_log(__FILE__, "HomeServer: User logged on");
+					hbrain_log(__FILE__, "HomeServer: User is logged on..");
+					$state = true;
+				break;
+
 				case self::torrentActive():
-					hbrain_log(__FILE__, "HomeServer: Torrenting");
+					hbrain_log(__FILE__, "HomeServer: Torrenting to do..");
+					$state = true;
+				break;
+
 				case ($waketime - time()) < 1800:
-					hbrain_log(__FILE__, "HomeServer: WakeTime");
-					
+					hbrain_log(__FILE__, "HomeServer: It's WakeTime!");
 					$state = true;
 				break;
 			}
@@ -46,7 +59,7 @@ class HomeServer {
 	}
 
 	public static function wake($reason = "") {		
-		if ( Auth::allowedIP() && !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
+		if ( !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
 				else $reason = "!";
@@ -59,7 +72,7 @@ class HomeServer {
 	}
 	
 	public static function shut($reason = "") {
-		if ( Auth::allowedIP() && self::isOn() ) {
+		if ( self::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
@@ -113,6 +126,11 @@ class HomeServer {
 		$dailyCron 			= (int)LAN::SSH("HomeServer", "pgrep -x 'dailyCron'");
 		$dailyCronWorker 	= (int)LAN::SSH("HomeServer", "pgrep -x 'dailyCronWorker'");
 		return ($dailyCron > 0 || $dailyCronWorker > 0) ? true : false;
+	}
+
+	public static function gDriveSyncActive() {
+		$gDriveSync 		= (int)LAN::SSH("HomeServer", "pgrep -x 'gDriveSync.sh'");
+		return ($gDriveSync > 0) ? true : false;
 	}
 	
 	public static function usersActive() {

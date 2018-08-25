@@ -3,8 +3,10 @@ dbg.log.txt
 hbrain.sql
 
 dbg.*
+www/git/config.ini
 
 var/
 saved_var/
+www/git/cache/
 
 www/app/files.dat

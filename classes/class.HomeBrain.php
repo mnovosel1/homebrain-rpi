@@ -21,6 +21,11 @@ class HomeBrain {
         }
     }
 
+    public static function speedtest() {
+        $result = exec("speedtest-cli --simple");
+        debug_log(__FILE__, $result);
+    }
+
     public static function wakecheck() {
         // get old states from db
         $rows = SQLITE::fetch("states", ["name", "auto", "active"], 1);

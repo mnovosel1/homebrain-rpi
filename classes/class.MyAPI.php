@@ -7,6 +7,7 @@ class MyAPI extends API {
     private static $callable = array (
         "Reg::register",
         "Reg::verify",
+        "HomeBrain::speedtest",
         "HomeBrain::dbbackup",
         "HomeBrain::dbrestore",
         "HomeBrain::notify",

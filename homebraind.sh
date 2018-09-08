@@ -23,6 +23,11 @@ while true ; do
 			# /usr/bin/php $DIR/lan/lan.php
 			/usr/bin/hbrain wakecheck
 		fi
+
+		# svakih 30 minuta
+		if [ $(( minute%30 )) -eq 0 ]; then
+			/usr/bin/hbrain todo
+		fi
 		
 		# svaki sat
 		#if [ $((minute)) -eq 0 ]; then

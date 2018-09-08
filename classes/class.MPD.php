@@ -3,24 +3,31 @@
 class MPD {
     public static $debug = true;
 
+    public static function on() {
+        LAN::SSH("KODI", "hbmpd on");
+    }
+    
+    public static function off() {
+        LAN::SSH("KODI", "hbmpd off");
+    }
+
     public static function play() {
 		if ( $_POST["param1"] != "" ) {
             self::stop();
-            exec("/usr/bin/mpc repeat on");
-            exec("/usr/bin/mpc random off");
-            exec("/usr/bin/mpc single off");
-            exec("/usr/bin/mpc consume off");
-            exec("/usr/bin/mpc load ".$_POST["param1"]);
-            exec("/usr/bin/mpc play 1");
-
-            exec("/usr/bin/irsend SEND_ONCE Yamaha SYSTEM_POWER");
-            exec("/bin/sleep 1;");
-            exec("/usr/bin/irsend SEND_ONCE Yamaha D-TV_CBL_INPUT");            
+            LAN::SSH("KODI", "hbmpd play " + $_POST["param1"]);
         }
         return self::playing();
     }
 
-    public static function stop() {        
+    public static function next() {
+        LAN::SSH("KODI", "hbmpd next");
+    }
+
+    public static function prev() {
+        LAN::SSH("KODI", "hbmpd prev");
+    }
+
+    public static function stop() {
         LAN::SSH("KODI", "hbmpd stop");
     }
 

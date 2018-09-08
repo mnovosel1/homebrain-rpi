@@ -210,8 +210,8 @@ class SQLITE {
             heatingon int(11) DEFAULT NULL,
             humidin double DEFAULT NULL,
             humidout double DEFAULT NULL,
-            light double NOT NULL,
-            sound double NOT NULL,
+            light double DEFAULT NULL,
+            sound double DEFAULT NULL,
             PRIMARY KEY (timestamp)
         );
         ";

@@ -2,6 +2,20 @@
 
 class HomeBrain {
     public static $debug = true;
+
+    public static function toDo() {
+        $rows = SQLITE::fetch("todo", ["weight", "name", "changedto"], 1);
+
+        $todoNotify = "";
+        $todoRet = "";
+        foreach ($rows as $row) {
+            $todoNotify .= "[". $row["weight"] ."] ". $row["name"] ." to ".$row["changedto"] . PHP_EOL;
+            $todoRet .= $row["name"] .":". $row["changedto"] .":". $row["weight"] ."|";
+        }
+
+        self::notify($todoNotify);
+        return substr($todoRet, 0, strlen($todoRet)-1);
+    }
     
     public static function dbbackup() {
         SQLITE::dbdump();
@@ -104,7 +118,7 @@ class HomeBrain {
 
             if ($shutDownHomeServer) HomeServer::shut();
         }
-        
+
         return null;
     }
 

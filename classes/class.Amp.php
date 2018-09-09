@@ -21,17 +21,17 @@ class Amp {
         exec("sudo /usr/bin/nrf 1 irnec:5EA17887 &");
     }
 
-    public static function volup($count = 1) {
+    public static function volUp($count = 1) {
         // VOLUME_UP
         for ($i = 0; $i < $count; $i++)
             exec("sudo /usr/bin/nrf 1 irnec:5EA158A7 &");
     }
 
-    public static function volup1() {
+    public static function volUp1() {
         self::volup(1);
     }
 
-    public static function volup2() {
+    public static function volUp2() {
         self::volup(2);
     }
 
@@ -40,17 +40,17 @@ class Amp {
         exec("sudo /usr/bin/nrf 1 irnec:5EA138C7 &");
     }
 
-    public static function voldown($count = 1) {
+    public static function volDown($count = 1) {
         // VOLUME_DOWN
         for ($i = 0; $i < $count; $i++)
             exec("sudo /usr/bin/nrf 1 irnec:5EA1D827 &");
     }
 
-    public static function voldown1() {
+    public static function volDown1() {
         self::voldown(1);
     }
 
-    public static function voldown2() {
+    public static function volDown2() {
         self::voldown(2);
     }
 

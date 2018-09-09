@@ -147,7 +147,7 @@ class MyAPI extends API {
         
         $methods = get_class_methods($class);
 
-        $ret = 'Avaliable commands: ';
+        $ret = $class .': ';
         foreach ($methods as $method) {
             if (MyApi::isCallable($class, strtolower($method)))
                 $ret .= $method .", ";

@@ -8,6 +8,8 @@ class MyAPI extends API {
         "Reg::register",
         "Reg::verify",
         "HomeBrain::todo",
+        "HomeBrain::getinfo",
+        "HomeBrain::isonline",
         "HomeBrain::speedtest",
         "HomeBrain::dbbackup",
         "HomeBrain::dbrestore",
@@ -112,7 +114,11 @@ class MyAPI extends API {
 
         if ( Auth::OK() ) {            
             $ret = "";
-            if ( array_search($name.'::'.$verb, self::$callable) === false ) $ret .= $name.'::'.$verb." not callable ";
+            if ( ($verb != 'h' && $verb != 'help') && !self::isCallable($name, $verb) ) {
+                $ret .= $name.'::'.$verb." not callable ";
+                hbrain_log(_FILE_, $verb .' is not callable.');
+            } else hbrain_log(_FILE_, $verb .' is callable.');
+
             if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
             if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
 
@@ -131,6 +137,23 @@ class MyAPI extends API {
         else hbrain_log(__FILE__, "AUTH not OK.");
 
         return false;
+    }
+
+    public static function isCallable($class, $method) {
+        return array_search($class.'::'.$method, self::$callable);
+    }
+
+    public static function help($class) {
+        
+        $methods = get_class_methods($class);
+
+        $ret = 'Avaliable commands: ';
+        foreach ($methods as $method) {
+            if (MyApi::isCallable($class, strtolower($method)))
+                $ret .= $method .", ";
+        }
+        
+        return substr($ret, 0, strlen($ret)-2);
     }
 }
 

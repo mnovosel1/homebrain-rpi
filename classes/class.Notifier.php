@@ -6,6 +6,14 @@ define('TTL', 86400);
 class Notifier {
     public static $debug = false;
 
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
+
     public static function notify($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
         self::kodi();

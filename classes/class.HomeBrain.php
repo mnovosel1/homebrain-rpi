@@ -3,6 +3,14 @@
 class HomeBrain {
     public static $debug = true;
 
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
+
     public static function toDo() {
         $rows = SQLITE::fetch("todo", ["weight", "name", "changedto"], 1);
 
@@ -13,17 +21,20 @@ class HomeBrain {
             $todoRet .= $row["name"] .":". $row["changedto"] .":". $row["weight"] ."|";
         }
 
-        self::notify($todoNotify);
+        if ($todoNotify != "") {
+            self::notify($todoNotify);            
+        } else $todoRet = "Dunno.. ";
+
         return substr($todoRet, 0, strlen($todoRet)-1);
     }
     
-    public static function dbbackup() {
+    public static function dbBackup() {
         SQLITE::dbdump();
         exec("chmod -R 0770 ". DIR ."/var");
         exec("cp -a ". DIR ."/var/* ". DIR ."/saved_var");
     }
     
-    public static function dbrestore($fromDump = "false") {
+    public static function dbRestore($fromDump = "false") {
         
         if ($fromDump == "true") {
             exec("rm ". DIR ."/var/hbrain.db");
@@ -35,12 +46,27 @@ class HomeBrain {
         }
     }
 
-    public static function speedtest() {
-        $result = exec("speedtest-cli --simple");
-        debug_log(__FILE__, $result);
+    public static function speedTest() {
+        if (self::isOnline() === true) {
+            exec("speedtest-cli --simple", $result);
+            return $result;
+        }
+        return "Offline!";
     }
 
-    public static function wakecheck() {
+    public static function isOnline() {
+        $online = exec("ping -c1 google.com | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
+        if ($online == 1 ) return true;
+        exec("/usr/bin/hbalert 15");
+        return false;
+    }
+
+    public static function getInfo() {
+        exec("/usr/bin/php ". DIR ."/classes/helpers/getfindata.php", $findata);
+        return $findata;
+    }
+
+    public static function wakeCheck() {
         // get old states from db
         $rows = SQLITE::fetch("states", ["name", "auto", "active"], 1);
 

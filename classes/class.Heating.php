@@ -1,6 +1,15 @@
 <?php
 
 class Heating {
+    public static $debug = false;
+
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
 
     public static function getTemps() {
         return explode("|", file_get_contents(DIR ."/var/lastTemp.dat"));

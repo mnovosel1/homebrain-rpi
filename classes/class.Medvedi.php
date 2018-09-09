@@ -1,7 +1,15 @@
 <?php
 
 class Medvedi {
-    public static $debug = true;
+    public static $debug = false;
+
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
 
     private static $tickerUrl = "http://liveticker.krone.at/eishockey/ebel/xml/laola1_eishockey_ebel.json";
     private static $logData = null, $newData = null, $gameDay, $gameLive;

@@ -1,7 +1,15 @@
 <?php
 
 class MPD {
-    public static $debug = true;
+    public static $debug = false;
+
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
 
     public static function on() {
         LAN::SSH("KODI", "hbmpd on");

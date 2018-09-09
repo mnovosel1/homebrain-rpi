@@ -193,7 +193,7 @@ class SQLITE {
 
         CREATE VIEW todo AS
             SELECT * FROM logic 
-                WHERE auto = 1
+                WHERE hour = strftime('%H', 'now', 'localtime')
                 AND statebefore = (SELECT group_concat(active, '') FROM states)
                 ORDER BY weight DESC;
         ";

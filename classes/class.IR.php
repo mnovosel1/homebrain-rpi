@@ -3,6 +3,14 @@
 class IR {
     public static $debug = false;
 
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
+
     public static function amp($command, $count = 1) {        
         self::irsend("irnec", $command, $count);
     }

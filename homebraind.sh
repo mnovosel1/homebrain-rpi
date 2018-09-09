@@ -15,7 +15,7 @@ while true ; do
 
 		# svakih 2 minute
 		# if [ $(( minute%2 )) -eq 0 ]; then
-			# $DIR/homebrain medvedi check
+			$DIR/homebrain medvedi check
 		# fi
 
 		# svakih 5 minuta

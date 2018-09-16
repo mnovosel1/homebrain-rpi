@@ -189,13 +189,6 @@ class SQLITE {
                 FROM changelog c join states s ON c.state=s.name
                 GROUP BY c.statebefore, c.state, c.changedto
                 ORDER BY wday, hour ASC;
-
-
-        CREATE VIEW todo AS
-            SELECT * FROM logic 
-                WHERE hour = strftime('%H', 'now', 'localtime')
-                AND statebefore = (SELECT group_concat(active, '') FROM states)
-                ORDER BY weight DESC;
         ";
 
         // TABLE datalog

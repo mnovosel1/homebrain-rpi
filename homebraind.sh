@@ -21,12 +21,12 @@ while true ; do
 		# svakih 5 minuta
 		if [ $(( minute%5 )) -eq 0 ]; then
 			# /usr/bin/php $DIR/lan/lan.php
-			/usr/bin/hbrain wakecheck
+			$DIR/homebrain hbrain wakecheck
 		fi
 
 		# svakih 30 minuta
 		if [ $(( minute%30 )) -eq 0 ]; then
-			/usr/bin/hbrain todo
+			$DIR/homebrain hbrain todo
 		fi
 		
 		# svaki sat
@@ -36,13 +36,13 @@ while true ; do
 		# svako jutro u 4:44
 		if [ $((hour)) -eq 4 -a $((minute)) -eq 44 ]; then
 		
-			/usr/bin/hbrain dbbackup
+			$DIR/homebrain hbrain dbbackup
 			# $DIR/lan/dbbackup.php
 			# $DIR/heating/getTempSet.php
 			# $DIR/heating/dbbackup.php
-			/usr/bin/hbamp off
+			$DIR/homebrain amp off
 
-			/usr/bin/hbserv wake DailyWake
+			$DIR/homebrain hserv wake DailyWake
 			echo "" > $DIR/var/hbrain.log
 			sudo /sbin/shutdown -F -r now
 		fi

@@ -40,10 +40,10 @@ class Notifier {
     }
 
     public static function alert($secs) {
-        //if ( HomeBrain::isSilentTime() ) return;
+        if ( HomeBrain::isSilentTime() ) return;
 
-        hbrain_log(_FILE_, "Alertam");
-        exec('/usr/bin/hbnrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && /usr/bin/hbnrf 0 off >/dev/null 2>&1 &');
+        hbrain_log(__FILE__, "Alert ". $secs ." secs.");
+        exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
     }
 
     //* private helper methods *///////////////////////////////////////////////////////////////////

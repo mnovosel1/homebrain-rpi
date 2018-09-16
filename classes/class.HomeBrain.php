@@ -15,7 +15,7 @@ class HomeBrain {
 
         for ($i = 0; $i <= 12; $i++) {
             $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"], 
-                                    "hour BETWEEN ". date("H", strtotime("-".$i." hour")) ." 
+                                    "auto = 1 AND hour BETWEEN ". date("H", strtotime("-".$i." hour")) ."
                                             AND ". date("H", strtotime("+".$i." hour")) ."
                                     AND statebefore = (SELECT group_concat(active, '') FROM states)");
 
@@ -64,7 +64,7 @@ class HomeBrain {
     public static function isOnline() {
         $online = exec("ping -c1 google.com | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
         if ($online == 1 ) return true;
-        exec("/usr/bin/hbalert 15");
+        exec(DIR ."/homebrain hbrain alert 15");
         return false;
     }
 
@@ -196,11 +196,11 @@ class HomeBrain {
             
             case (bool)strpos($row["state"], "busy"):
             $msg = ["is not busy..", "is busy!"];
-            // if ($row["changedto"] == 1) exec("/usr/bin/hbalert 3 &"); // alert if server is busy!
+            // if ($row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is busy!
             break;
 
             default:
-            if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec("/usr/bin/hbalert 3 &"); // alert if server is on
+            if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
             $msg = ["is off..", "is on!"];
         }
         hbrain_log(__FILE__, $row["state"] ." ". $msg[$row["changedto"]]);
@@ -222,6 +222,7 @@ class HomeBrain {
 
     public static function isSilentTime() {
         if (date("H") > Configs::get("SILENT_TIME_START") && date("H") < Configs::get("SILENT_TIME_END")) {
+            hbrain_log(__FILE__, "It's SilentTime!");
             return true;
         }
         return false;
@@ -237,8 +238,6 @@ class HomeBrain {
     }
 
     public static function alert($secs) {
-
-        hbrain_log(_FILE_, "Alertam");
         Notifier::alert($secs);
     }
 }

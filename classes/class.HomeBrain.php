@@ -12,17 +12,24 @@ class HomeBrain {
     }
 
     public static function toDo() {
-        $rows = SQLITE::fetch("todo", ["weight", "name", "changedto"], 1);
 
-        $todoNotify = "";
-        $todoRet = "";
-        foreach ($rows as $row) {
-            $todoNotify .= "[". $row["weight"] ."] ". $row["name"] ." to ".$row["changedto"] . PHP_EOL;
-            $todoRet .= $row["name"] .":". $row["changedto"] .":". $row["weight"] ."|";
+        for ($i = 0; $i <= 12; $i++) {
+            $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"], 
+                                    "hour BETWEEN ". date("H", strtotime("-".$i." hour")) ." 
+                                            AND ". date("H", strtotime("+".$i." hour")) ."
+                                    AND statebefore = (SELECT group_concat(active, '') FROM states)");
+
+            $todoNotify = "";
+            $todoRet = "";
+            foreach ($rows as $row) {
+                $todoNotify .= "[". $row["weight"] ."] ". $row["name"] ." to ".$row["changedto"] . PHP_EOL;
+                $todoRet .= $row["name"] .":". $row["changedto"] .":". $row["weight"] ."|";
+            }
+            if ($todoNotify != "") break;
         }
 
         if ($todoNotify != "") {
-            self::notify($todoNotify);            
+            self::notify($todoNotify);
         } else $todoRet = "Dunno.. ";
 
         return substr($todoRet, 0, strlen($todoRet)-1);

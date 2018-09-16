@@ -241,12 +241,11 @@ class HomeBrain {
         Notifier::alert($secs);
     }
 
-    public static function tempIn() {
-        return Weather::tempIn();
-    }
+    public static function getTemps() {
+        $in = Weather::tempIn();
+        $out = Weather::tempOut();
 
-    public static function tempOut() {
-        return Weather::tempOut();
+        return $in .":". $out;
     }
 }
 

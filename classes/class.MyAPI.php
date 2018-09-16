@@ -15,8 +15,7 @@ class MyAPI extends API {
         "HomeBrain::dbrestore",
         "HomeBrain::notify",
         "HomeBrain::alert",
-        "HomeBrain::tempin",
-        "HomeBrain::tempout",
+        "HomeBrain::gettemps",
         "HomeBrain::wakecheck",
         "HomeBrain::mobappupdate",
         "HomeBrain::user",
@@ -67,8 +66,7 @@ class MyAPI extends API {
         "Heating::updatemob",
         "Medvedi::check",
         "Medvedi::show",
-        "Medvedi::notify",
-        "Weather::get"
+        "Medvedi::notify"
     );
 
     public function __construct($request, $origin) {

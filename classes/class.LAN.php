@@ -36,9 +36,18 @@ class LAN {
     }
 
     public static function SSH($host, $command) {
-        $connection = ssh2_connect(Configs::getIP($host), 22);
-        if ( $connection === false ) return false;
-        ssh2_auth_password($connection, Configs::get($host, "user"), Configs::get($host, "pass"));
+        $connection = ssh2_connect(Configs::getIP($host), 22, array('hostkey'=>'ssh-rsa'));
+        if ( $connection === false ) {
+            hbrain_log(_FILE_, "SSH connection failed on ". $host);
+            return false;
+        }
+        if (!ssh2_auth_pubkey_file($connection,
+                                    Configs::get($host, "user"),
+                                    Configs::get("pubkeyfile"),
+                                    Configs::get("privkeyfile"))) {
+            hbrain_log(_FILE_, "SSH login failed on ". $host);
+            return false;
+        }
                 
         switch ($command) {
             case "shutdown":

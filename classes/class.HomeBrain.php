@@ -240,6 +240,14 @@ class HomeBrain {
     public static function alert($secs) {
         Notifier::alert($secs);
     }
+
+    public static function tempIn() {
+        return Weather::tempIn();
+    }
+
+    public static function tempOut() {
+        return Weather::tempOut();
+    }
 }
 
 ?>

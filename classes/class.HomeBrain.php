@@ -145,6 +145,14 @@ class HomeBrain {
             if ($shutDownHomeServer) HomeServer::shut();
         }
 
+        // TV is off, KODI is on and it's late
+        if ( !(bool)$newStates["TV"]["active"] && (bool)$newStates["KODI"]["active"] ) {
+            KODI::off();
+            if (date('H') < 6) {
+                MPD::off();
+                Amp::off();
+            }
+        }
         return null;
     }
 

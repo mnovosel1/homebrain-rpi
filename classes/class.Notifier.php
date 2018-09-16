@@ -39,10 +39,18 @@ class Notifier {
         return true;
     }
 
+    public static function alert($secs) {
+        //if ( HomeBrain::isSilentTime() ) return;
+
+        hbrain_log(_FILE_, "Alertam");
+        exec('/usr/bin/hbnrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && /usr/bin/hbnrf 0 off >/dev/null 2>&1 &');
+    }
+
     //* private helper methods *///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
+        if ( HomeBrain::isSilentTime() ) return;
 
         if ( $ttl === null ) $ttl = TTL;
         if ( $title === null ) $title = "HomeBrain";

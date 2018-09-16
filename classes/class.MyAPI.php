@@ -14,6 +14,7 @@ class MyAPI extends API {
         "HomeBrain::dbbackup",
         "HomeBrain::dbrestore",
         "HomeBrain::notify",
+        "HomeBrain::alert",
         "HomeBrain::wakecheck",
         "HomeBrain::mobappupdate",
         "HomeBrain::user",
@@ -116,8 +117,8 @@ class MyAPI extends API {
             $ret = "";
             if ( ($verb != 'h' && $verb != 'help') && !self::isCallable($name, $verb) ) {
                 $ret .= $name.'::'.$verb." not callable ";
-                hbrain_log(_FILE_, $verb .' is not callable.');
-            } else hbrain_log(_FILE_, $verb .' is callable.');
+                hbrain_log(_FILE_, $name.'::'.$verb .' is not callable.');
+            }
 
             if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
             if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";

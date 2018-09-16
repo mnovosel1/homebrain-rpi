@@ -213,6 +213,13 @@ class HomeBrain {
         else return false;
     }
 
+    public static function isSilentTime() {
+        if (date("H") > Configs::get("SILENT_TIME_START") && date("H") < Configs::get("SILENT_TIME_END")) {
+            return true;
+        }
+        return false;
+    }
+
     public static function notify($msg) {
 
         $msg = str_replace("_", " ", $msg);
@@ -220,6 +227,12 @@ class HomeBrain {
         if (Notifier::fcmBcast("HomeBrain", $msg)) $logMsg = "FCM sent OK!";
 
         debug_log(__FILE__, 'Notifier::fcmBcast("HomeBrain", "'.$msg.'"); '.$logMsg);
+    }
+
+    public static function alert($secs) {
+
+        hbrain_log(_FILE_, "Alertam");
+        Notifier::alert($secs);
     }
 }
 

@@ -26,7 +26,7 @@ class Notifier {
         if ( !Auth::allowedIP() ) return false;
         $data = self::getPostData();
 
-        exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.20:80/jsonrpc 2>/dev/null');
+        exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.25:80/jsonrpc 2>/dev/null');
         return true;
     }
 

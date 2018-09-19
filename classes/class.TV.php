@@ -18,11 +18,11 @@ class TV {
     public static function isOn() {        
         if ( LAN::SSH("KODI", "hbtv status") == "on" ) {
             SQLITE::update("states", "active", 1, "`name`='TV'");
-            return true;
+            return "true";
         }
 
         SQLITE::update("states", "active", 0, "`name`='TV'");
-        return false;
+        return "false";
     }
 
     public static function on() {

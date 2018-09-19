@@ -153,6 +153,7 @@ class HomeBrain {
         }
 
         // TV is off, KODI is on and it's late
+        /*
         if ( !(bool)$newStates["TV"]["active"] && (bool)$newStates["KODI"]["active"] ) {
             KODI::off();
             if (date('H') < 6) {
@@ -160,6 +161,7 @@ class HomeBrain {
                 Amp::off();
             }
         }
+        */
         return null;
     }
 

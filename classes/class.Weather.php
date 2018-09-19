@@ -47,7 +47,7 @@ class Weather {
                         $sound],
                         true);
 
-        if ($sound > -10) HomeBrain::notify("Buka !!");
+        if ($sound > -20) HomeBrain::notify("Buka !!");
 
         return $tempIn .":". $humidIn .":". $light .":". $sound;
     }

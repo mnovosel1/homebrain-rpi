@@ -13,9 +13,9 @@ class HomeBrain {
 
     public static function toDo() {
 
-        for ($i = 0; $i <= 12; $i++) {
+        for ($i = 0; $i <= 3; $i++) {
             $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"], 
-                                    "auto = 1 AND hour BETWEEN ". date("H", strtotime("-".$i." hour")) ."
+                                    "auto = 1 AND hour BETWEEN ". date("H") ."
                                             AND ". date("H", strtotime("+".$i." hour")) ."
                                     AND statebefore = (SELECT group_concat(active, '') FROM states)");
 
@@ -244,8 +244,36 @@ class HomeBrain {
     }
 
     public static function getTemps() {
-        $in = Weather::tempIn();
-        $out = Weather::tempOut();
+        $timestamp = date("Y-m-d H:i:00");
+
+        $in = Weather::tempIn($timestamp);
+        $inArr = explode(":", $in);
+
+        $out = Weather::tempOut($timestamp);
+        $outArr = explode(":", $out);
+
+        SQLITE::insert("datalog",
+                        ["timestamp",
+                        "tempset",
+                        "tempin",
+                        "tempout",
+                        "heatingon",
+                        "humidin",
+                        "humidout",
+                        "light",
+                        "sound"],
+                        ["'". $timestamp ."'",
+                        "(SELECT tempinavg FROM tempconf
+                                    WHERE hour = STRFTIME('%H', DATETIME('now', 'localtime')) * 1
+                                        AND wday = STRFTIME('%w', DATETIME('now', 'localtime')) * 1)",
+                        $inArr[0],
+                        $outArr[0],
+                        "(SELECT active FROM states WHERE name = 'Heating')",
+                        $inArr[1],
+                        $outArr[1],
+                        $inArr[2],
+                        $inArr[3]],
+                        true);
 
         return $in .":". $out;
     }

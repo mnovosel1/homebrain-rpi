@@ -62,7 +62,7 @@ class HomeServer {
 			}
 
 			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
-			return $state;
+			return $state ? "true" : "false";
 		}
 	}
 
@@ -76,7 +76,7 @@ class HomeServer {
 			hbrain_log(__FILE__, "HomeBrain is waking HomeServer".$reason);
 			return null;
 		}
-		return false;
+		return "false";
 	}
 	
 	public static function shut($reason = "") {
@@ -90,7 +90,7 @@ class HomeServer {
 			hbrain_log(__FILE__, "HomeBrain is shutting down HomeServer".$reason);
 			return null;
 		}
-		return false;
+		return "false";
 	}
 	
 	public static function reboot($reason = "") {
@@ -103,18 +103,18 @@ class HomeServer {
 			Notifier::fcmBcast("HomeBrain", "is rebooting HomeServer".$reason);
 			hbrain_log(__FILE__, "HomeBrain is rebooting HomeServer".$reason);
 		}
-		return false;
+		return "false";
 	}
 
 	public static function isOn() {
 		if ( LAN::ping("HomeServer") ) {
 			SQLITE::update("states", "active", 1, "`name`='HomeServer'");
-			return true;
+			return "true";
 		}
 
 		else {
 			SQLITE::update("states", "active", 0, "`name`='HomeServer'");
-			return false;
+			return "false";
 		}
 	}
 
@@ -133,22 +133,22 @@ class HomeServer {
 	public static function dailyCronActive() {
 		$dailyCron 			= (int)LAN::SSH("HomeServer", "pgrep -x 'dailyCron'");
 		$dailyCronWorker 	= (int)LAN::SSH("HomeServer", "pgrep -x 'dailyCronWorker'");
-		return ($dailyCron > 0 || $dailyCronWorker > 0) ? true : false;
+		return ($dailyCron > 0 || $dailyCronWorker > 0) ? "true" : "false";
 	}
 
 	public static function gDriveSyncActive() {
 		$gDriveSync 		= (int)LAN::SSH("HomeServer", "pgrep -x 'gDriveSync.sh'");
-		return ($gDriveSync > 0) ? true : false;
+		return ($gDriveSync > 0) ? "true" : "false";
 	}
 	
 	public static function usersActive() {
 		$users = (int)LAN::SSH("HomeServer", "who | wc -l");
-		return ($users > 0) ? true : false;
+		return ($users > 0) ? "true" : "false";
 	}
 	
 	public static function torrentActive() {
 		$torrenting = (int)LAN::SSH("HomeServer", "transmission-remote --list | sed '1d;\$d' | grep -v Done | wc -l");
-		return ($torrenting > 0) ? true : false;
+		return ($torrenting > 0) ? "true" : "false";
 	}
 
 	public static function getWakeTime() {

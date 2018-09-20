@@ -45,7 +45,7 @@ class MPD {
         
         if ($mpdplay == "") {
             SQLITE::update("states", "active", 0, "`name`='MPD playing'");
-            return null;
+            return "false";
         } else {
             SQLITE::update("states", "active", 1, "`name`='MPD playing'");
             return $mpdplay;

@@ -58,14 +58,14 @@ class HomeBrain {
             exec("speedtest-cli --simple", $result);
             return $result;
         }
-        return "Offline!";
+        return "false";
     }
 
     public static function isOnline() {
         $online = exec("ping -c1 google.com | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
         if ($online == 1 ) return true;
         exec(DIR ."/homebrain hbrain alert 15");
-        return false;
+        return "false";
     }
 
     public static function getInfo() {
@@ -87,9 +87,8 @@ class HomeBrain {
 
             if ( strpos($hostName, " ") === false ) {
                 $class = $hostName;
-                $method = "on";
                 $condition = $class;
-                $newState = (int)$hostName::isOn();
+                $newState = ($hostName::isOn() == "false") ? 0 : 1;
             }
 
             else {
@@ -97,7 +96,7 @@ class HomeBrain {
                 $class = trim($object[0]);
                 $method = trim($object[1]);
                 $condition = $class." ".$method;
-                $newState = (int)$class::$method();
+                $newState = ($class::$method() == "false") ? 0 : 1;
             }
 
             $newStates[$hostName]["active"] = $newState;
@@ -152,29 +151,30 @@ class HomeBrain {
             if ($shutDownHomeServer) HomeServer::shut();
         }
 
-        // TV is off, KODI is on and it's late
-        /*
+        // TV is off, KODI is on and it's silentTime
         if ( !(bool)$newStates["TV"]["active"] && (bool)$newStates["KODI"]["active"] ) {
             KODI::off();
-            if (date('H') < 6) {
+            if (self::isSilentTime()) {
                 MPD::off();
                 Amp::off();
             }
         }
-        */
+        
         return null;
     }
 
     public static function user() {
 		if ( $_POST["param1"] == "1" || $_POST["param1"] == "0" ) {
-            SQLITE::update("states", "active", $_POST["param1"], "`name`='HomeBrain user'");
-            return null;
+            $active = (int)$_POST["param1"];
         }
         
         else {
             $hbrainuser = exec("who | wc -l");
-            return ($hbrainuser > 0) ? true : false;
+            $active = ($hbrainuser > 0) ? 1 : 0;
         }
+        
+        SQLITE::update("states", "active", $active, "`name`='HomeBrain user'");
+        return ($active > 0) ? "true" : "false";
     }
     
     public static function mobAppConfig($token = null) {
@@ -218,8 +218,8 @@ class HomeBrain {
     }
 
     public static function reboot() {
-        if ( Auth::allowedIP() ) return true;
-        else return false;
+        if ( Auth::allowedIP() ) return "true";
+        else return "false";
     }
 
     public static function isSilentTime() {

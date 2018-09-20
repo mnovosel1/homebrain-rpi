@@ -73,6 +73,20 @@ class LAN {
         stream_set_blocking($stream, true);
 		return trim(stream_get_contents($stream));
     }
+
+    public static function checkNetwork($host, $command) {
+        exec("sudo nmap 10.10.10.0/24 -sP | grep 'MAC' | cut -c14-99", $out);
+        hbrain_log(__FILE__, $out);
+
+        $ret = "";
+        foreach ($out as $macName) {
+            $macName = explode(" ", $macName, 2);
+            $macName[1] = str_replace(")", "", str_replace("(", "", $macName[1]));
+            SQLITE::insert("lan", ["mac", "name"], ["'". $macName[0] ."'", "'". $macName[1] ."'"]);
+            $ret .= $macName[0] ." ". $macName[1] .PHP_EOL;
+        }
+        return $ret;
+    }
 }
 
 ?>

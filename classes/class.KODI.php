@@ -19,12 +19,12 @@ class KODI {
 
 			if ( LAN::SSH("KODI", "hbkodi status") == "on" ) {
 				SQLITE::update("states", "active", 1, "`name`='KODI'");
-				return true;
+				return "true";
 			}
 	
 			else {
 				SQLITE::update("states", "active", 0, "`name`='KODI'");
-				return false;
+				return "false";
 			}
 
 		/*

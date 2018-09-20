@@ -66,7 +66,8 @@ class MyAPI extends API {
         "Heating::updatemob",
         "Medvedi::check",
         "Medvedi::show",
-        "Medvedi::notify"
+        "Medvedi::notify",
+        "LAN::checknetwork"
     );
 
     public function __construct($request, $origin) {
@@ -99,10 +100,12 @@ class MyAPI extends API {
                 $name = "MPD";
             break;
 
-            case "Tv":
-            case "tV":
             case "tv":
                 $name = "TV";
+            break;
+
+            case "lan":
+               $name = "LAN";
             break;
 
             default:

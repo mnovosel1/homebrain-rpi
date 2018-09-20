@@ -27,6 +27,7 @@ while true ; do
 		# svakih 30 minuta
 		if [ $(( minute%30 )) -eq 0 ]; then
 			$DIR/homebrain hbrain todo
+			$DIR/homebrain lan checknetwork
 		fi
 		
 		# svaki sat

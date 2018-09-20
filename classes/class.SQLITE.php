@@ -138,6 +138,23 @@ class SQLITE {
 
         // TABLE changelog
         $sql .= "
+
+    /***********************************************************************************/
+
+        CREATE TABLE lan (
+            mac varchar(20) PRIMARY KEY,
+            name varchar(99) DEFAULT NULL,
+            known int(1) NOT NULL DEFAULT 0
+        );
+        ";
+
+        $output = "";
+        exec('sqlite3 '. DIR .'/var/hbrain.db \'.dump "lan"\' | grep \'^INSERT\'', $output);
+        foreach ( $output as $line )
+            $sql .= "\n        ".trim($line);
+
+        // TABLE changelog
+        $sql .= "
         
     /***********************************************************************************/
 
@@ -243,7 +260,8 @@ class SQLITE {
             jpy_p double DEFAULT NULL,
             sek_k double DEFAULT NULL,
             sek_s double DEFAULT NULL,
-            sek_p double DEFAULT NULL
+            sek_p double DEFAULT NULL,
+            PRIMARY KEY (timestamp)
         );
         ";
 

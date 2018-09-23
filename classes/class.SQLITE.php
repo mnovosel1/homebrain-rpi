@@ -1,7 +1,7 @@
 <?php
 
 class SQLITE {
-    public static $debug = false;
+    public static $debug = true;
 
     private static $result;
 
@@ -161,6 +161,10 @@ class SQLITE {
         CREATE TABLE changelog (
             timestamp DATETIME,
             statebefore varchar(30) NOT NULL,
+            light double DEFAULT NULL,
+            tempin double DEFAULT NULL,
+            tempout double DEFAULT NULL,
+            sound double DEFAULT NULL,
             state varchar(50) NOT NULL,
             changedto int(1) NOT NULL,
             FOREIGN KEY (state) REFERENCES states(name)
@@ -173,14 +177,22 @@ class SQLITE {
             FOR EACH ROW
             WHEN OLD.active <> NEW.active
             BEGIN
-                INSERT INTO changelog (timestamp, statebefore, state, changedto)
+
+                INSERT INTO changelog (timestamp, statebefore, tempin, tempout, light, sound, state, changedto)
                 VALUES (
-                            datetime('now','localtime'), 
-                            (SELECT group_concat(active, '') FROM states), 
+                            (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))), 
+                            (SELECT group_concat(active, '') FROM states),
+                            (SELECT tempin FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
+                            (SELECT tempout FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
+                            (SELECT light FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
+                            (SELECT sound FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
                             NEW.name, 
                             NEW.active
                         );
-                DELETE FROM changelog WHERE timestamp <= date('now', '-90 day');
+                        
+                DELETE FROM datalog WHERE timestamp <= DATE('now', '-90 day');
+                DELETE FROM changelog WHERE timestamp <= DATE('now', '-90 day');
+
             END;
         ";
 
@@ -196,16 +208,16 @@ class SQLITE {
 
         CREATE VIEW logic AS 
             SELECT 
-                    COUNT(*) AS weight, 
-                    STRFTIME('%H', timestamp)*1 AS hour,
-                    STRFTIME('%w', timestamp)*1 AS wday,
-                    c.statebefore, 
-                    c.changedto, 
-                    s.name, 
-                    s.auto
-                FROM changelog c join states s ON c.state=s.name
-                GROUP BY c.statebefore, c.state, c.changedto
-                ORDER BY wday, hour ASC;
+                COUNT(*) AS weight, 
+                STRFTIME('%w', timestamp)*1 AS wday,
+                STRFTIME('%H', timestamp)*1 AS hour,
+                c.statebefore, 
+                s.name, 
+                c.changedto
+            FROM changelog c join states s ON c.state=s.name
+            WHERE s.auto=1
+            GROUP BY c.statebefore, hour, wday, s.name, c.changedto
+            ORDER BY weight DESC;
         ";
 
         // TABLE datalog

@@ -25,9 +25,9 @@ class Weather {
         $sound = abs($oldData[0]["sound"] - $newData[3]) > 40 ? $oldData[0]["sound"] : $newData[3];
 
         if (!HomeBrain::isSilentTime() && $sound > Configs::get("MAX_LOUDNESS")) {
-            HomeBrain::notify("Buka !!");
+            HomeBrain::notify("Noisy !!");
             Notifier::alert(5);
-        } else if ($sound > Configs::get("SILENT_TIME_MAX_LOUDNESS")) {
+        } else if (HomeBrain::isSilentTime() && $sound > Configs::get("SILENT_TIME_MAX_LOUDNESS")) {
             HomeBrain::notify("Silent time too noisy !!");
         }
 

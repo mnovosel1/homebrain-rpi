@@ -15,7 +15,7 @@ class HomeBrain {
 
         for ($i = 0; $i <= 3; $i++) {
             $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"], 
-                                    "auto = 1 AND hour BETWEEN ". date("H") ."
+                                    "hour BETWEEN ". date("H") ."
                                             AND ". date("H", strtotime("+".$i." hour")) ."
                                     AND statebefore = (SELECT group_concat(active, '') FROM states)");
 

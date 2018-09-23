@@ -74,6 +74,7 @@ class HomeBrain {
     }
 
     public static function wakeCheck() {
+
         // get old states from db
         $rows = SQLITE::fetch("states", ["name", "auto", "active"], 1);
 
@@ -174,6 +175,7 @@ class HomeBrain {
         }
         
         SQLITE::update("states", "active", $active, "`name`='HomeBrain user'");
+
         return ($active > 0) ? "true" : "false";
     }
     

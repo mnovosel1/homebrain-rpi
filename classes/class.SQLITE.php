@@ -182,10 +182,10 @@ class SQLITE {
                 VALUES (
                             (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))), 
                             (SELECT group_concat(active, '') FROM states),
-                            (SELECT tempin FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
-                            (SELECT tempout FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
-                            (SELECT light FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
-                            (SELECT sound FROM datalog WHERE timestamp = (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime')))),
+                            (SELECT tempin FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
+                            (SELECT tempout FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
+                            (SELECT light FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
+                            (SELECT sound FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
                             NEW.name, 
                             NEW.active
                         );

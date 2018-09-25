@@ -1,3 +1,5 @@
+Options -Indexes
+
 <Files ".ht*">
 	Require all denied
 </Files>

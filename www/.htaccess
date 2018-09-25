@@ -1,3 +1,9 @@
-order allow,deny
-allow from 10.10.10.0/24
-allow from  179.61.232.251
+<Files ".ht*">
+	Require all denied
+</Files>
+
+<Limit GET POST>
+	Require all denied
+	Require ip 10.10.10
+	Require ip 179.61.232.251
+</Limit>

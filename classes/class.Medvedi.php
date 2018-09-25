@@ -1,7 +1,7 @@
 <?php
 
 class Medvedi {
-    public static $debug = false;
+    public static $debug = true;
 
     public static function h() {
         return MyAPI::help(self::class);

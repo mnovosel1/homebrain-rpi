@@ -1,0 +1,4 @@
+order allow,deny
+allow from 127.0.0.*
+allow from 10.10.10.*
+allow from  179.61.232.251

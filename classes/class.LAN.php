@@ -74,7 +74,7 @@ class LAN {
 		return trim(stream_get_contents($stream));
     }
 
-    public static function checkNetwork($host, $command) {
+    public static function checkNetwork() {
         exec("sudo nmap 10.10.10.0/24 -sP | grep 'MAC' | cut -c14-99", $out);
         hbrain_log(__FILE__, $out);
 

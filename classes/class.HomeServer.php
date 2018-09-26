@@ -58,7 +58,7 @@ class HomeServer {
 					hbrain_log(__FILE__, "HomeServer: It's WakeTime!");
 					$state = true;
 			}
-		}
+			
 			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
 			return $state ? "true" : "false";
 		}

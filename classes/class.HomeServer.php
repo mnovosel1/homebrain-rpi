@@ -27,40 +27,38 @@ class HomeServer {
 
 	public static function busy() {
 		if ( $_POST["param1"] == "1" || $_POST["param1"] == "0" ) {
-			return self::setbusy($_POST["param1"]);
+			return HomeServer::setbusy($_POST["param1"]);
 		}
 
-		else if ( self::isOn() ) {			
+		if ( HomeServer::isOn() ) {			
 			$state = false;
 			$waketime = self::getWakeTime();
 
-			switch (true) {
-				case self::dailyCronActive():
-					hbrain_log(__FILE__, "HomeServer: DailyCron working..");
-					$state = true;
-				break;
-
-				case self::gDriveSyncActive():
-					hbrain_log(__FILE__, "HomeServer: gDriveSync in progress..");
-					$state = true;
-				break;
-
-				case self::usersActive():
-					hbrain_log(__FILE__, "HomeServer: User is logged on..");
-					$state = true;
-				break;
-
-				case self::torrentActive():
-					hbrain_log(__FILE__, "HomeServer: Torrenting to do..");
-					$state = true;
-				break;
-
-				case ($waketime - time()) < 1800:
-					hbrain_log(__FILE__, "HomeServer: It's WakeTime!");
-					$state = true;
-				break;
+			if (HomeServer::dailyCronActive()) {
+				hbrain_log(__FILE__, "HomeServer: DailyCron working..");
+				$state = true;
 			}
 
+			if (HomeServer::gDriveSyncActive()) {
+				hbrain_log(__FILE__, "HomeServer: gDriveSync in progress..");
+				$state = true;
+			}
+
+			if (HomeServer::usersActive()) {
+				hbrain_log(__FILE__, "HomeServer: User is logged on..");
+				$state = true;
+			}
+
+			if (HomeServer::torrentActive()) {
+				hbrain_log(__FILE__, "HomeServer: Torrenting to do..");
+				$state = true;
+			}
+
+			if (($waketime - time()) < 1800 ) {
+					hbrain_log(__FILE__, "HomeServer: It's WakeTime!");
+					$state = true;
+			}
+		}
 			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
 			return $state ? "true" : "false";
 		}

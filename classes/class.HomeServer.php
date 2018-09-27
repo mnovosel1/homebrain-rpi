@@ -129,9 +129,9 @@ class HomeServer {
 	}
 
 	public static function dailyCronActive() {
-		$dailyCron 			= (int)LAN::SSH("HomeServer", "pgrep -x 'dailyCron'");
-		$dailyCronWorker 	= (int)LAN::SSH("HomeServer", "pgrep -x 'dailyCronWorker'");
-		return ($dailyCron > 0 || $dailyCronWorker > 0) ? "true" : "false";
+		$dailyCron = (int)LAN::SSH("HomeServer", 
+									"if [ -d /tmp/dailyCron.lock ]; then echo 1; else echo 0; fi");
+		return ($dailyCron > 0) ? "true" : "false";
 	}
 
 	public static function gDriveSyncActive() {

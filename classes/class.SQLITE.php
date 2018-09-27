@@ -11,7 +11,7 @@ class SQLITE {
 
         $attributes = implode(", ", $attributes);
         $values     = implode(", ", $values);
-        
+
         $sql = "INSERT";
         if ( $insertOrReplace ) $sql .= " OR REPLACE";
         $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";

@@ -76,12 +76,11 @@ class LAN {
 
     public static function checkNetwork() {
         exec("sudo nmap 10.10.10.0/24 -sP | grep 'MAC' | cut -c14-99", $out);
-        $out = explode(" ", $out, 2);
-        hbrain_log(__FILE__, $out);
 
         $ret = "";
         foreach ($out as $macName) {
             $macName = explode(" ", $macName, 2);
+            hbrain_log(__FILE__, $macName);
             $macName[1] = str_replace(")", "", str_replace("(", "", $macName[1]));
             SQLITE::insert("lan", ["mac", "name"], ["'". $macName[0] ."'", "'". $macName[1] ."'"]);
             $ret .= $macName[0] ." ". $macName[1] .PHP_EOL;

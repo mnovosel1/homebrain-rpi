@@ -16,7 +16,7 @@ class SQLITE {
         if ( $insertOrReplace ) $sql .= " OR REPLACE";
         $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";
 
-        return self::query($sql);
+        return SQLITE::query($sql, true);
     }
 
     public static function fetch() {
@@ -37,8 +37,8 @@ class SQLITE {
             $sql = "SELECT ".substr($attributes, 0, strlen($attributes)-2)." FROM ".func_get_arg(0)." WHERE ".func_get_arg(2);
         }
 
-        if ( self::query($sql) != null ) return false;
-        return self::$result;
+        if ( SQLITE::query($sql) != null ) return false;
+        return SQLITE::$result;
     }
 
     public static function update($table, $attribute, $value, $condition = null) {
@@ -47,16 +47,16 @@ class SQLITE {
         $update = true;
 
         if ( $table == "states" ) {
-            self::query("SELECT `".$attribute."` FROM `states` WHERE ".$condition);
-            if ( $value == self::$result[0][$attribute] ) {
+            SQLITE::query("SELECT `".$attribute."` FROM `states` WHERE ".$condition);
+            if ( $value == SQLITE::$result[0][$attribute] ) {
                 $update = false;
             }
         }
 
         if ( $update ) { 
-            $ret = self::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
-            self::query("SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 1");
-            HomeBrain::mobDbUpdate(self::$result[0]);
+            $ret = SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
+            SQLITE::query("SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 1");
+            HomeBrain::mobDbUpdate(SQLITE::$result[0]);
             return $ret;
         }
         
@@ -64,7 +64,7 @@ class SQLITE {
     }
 
     public static function approve($token) {
-        self::query("UPDATE fcm SET approved = 'true' WHERE token = '".$token."'");
+        SQLITE::query("UPDATE fcm SET approved = 'true' WHERE token = '".$token."'");
     }
 
     public static function query($sql, $insert = false) {
@@ -84,7 +84,7 @@ class SQLITE {
         }
 
         $sqlite->close();
-        self::$result = $tmp;
+        SQLITE::$result = $tmp;
 
         if ( $ret == "not an error" ) $ret = null;
 

@@ -17,7 +17,8 @@ class KODI {
 
 	public static function isOn() {
 
-			if ( LAN::SSH("KODI", "if pgrep -x 'kodi' >/dev/null; then echo 'on'; else echo 'off'; fi") == "on" ) {
+			if ( LAN::SSH("KODI", 
+					"if pgrep -x 'kodi' >/dev/null; then echo 'on'; else echo 'off'; fi") == "on" ) {
 				SQLITE::update("states", "active", 1, "`name`='KODI'");
 				return "true";
 			}

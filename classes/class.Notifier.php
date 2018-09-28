@@ -46,6 +46,10 @@ class Notifier {
         exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
     }
 
+    public static function speak($text) {
+        LAN::SSH("KODI", "/usr/bin/flite -voice slt -t '". $text ."' &");
+    }
+
     //* private helper methods *///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {

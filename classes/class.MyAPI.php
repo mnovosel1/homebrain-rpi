@@ -15,6 +15,7 @@ class MyAPI extends API {
         "HomeBrain::dbrestore",
         "HomeBrain::notify",
         "HomeBrain::alert",
+        "HomeBrain::speak",
         "HomeBrain::gettemps",
         "HomeBrain::wakecheck",
         "HomeBrain::mobappupdate",

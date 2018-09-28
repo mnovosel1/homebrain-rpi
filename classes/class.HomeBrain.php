@@ -245,6 +245,10 @@ class HomeBrain {
         Notifier::alert($secs);
     }
 
+    public static function speak($text) {
+        Notifier::speak($text);
+    }
+
     public static function getTemps() {
         $timestamp = date("Y-m-d H:i:00");
 

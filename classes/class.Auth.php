@@ -4,6 +4,8 @@ class Auth {
 
     public static function OK() {
 
+        public static $debug = false;
+
         if ( isset($_POST["secToken"]) ) {
 
             $reqtime = floor($_SERVER["REQUEST_TIME"]/20);

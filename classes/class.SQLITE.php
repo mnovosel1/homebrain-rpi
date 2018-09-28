@@ -87,7 +87,10 @@ class SQLITE {
         $sqlite->close();
         SQLITE::$result = $tmp;
 
-        if ( $ret == "not an error" ) $ret = null;
+        if ( $ret == "not an error" ) {
+            $ret = null;
+        }        
+        else hbrain_log(__FILE__, $ret);
 
         return $ret;
     }

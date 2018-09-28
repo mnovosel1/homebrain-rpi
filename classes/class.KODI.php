@@ -38,15 +38,14 @@ class KODI {
 	}
 	
 	public static function on() {
-		LAN::SSH("KODI", "hbkodi on");
+		LAN::SSH("KODI", "kodi > /dev/null &");
 		SQLITE::update("states", "active", 1, "`name`='KODI'");
 		HomeBrain::wakecheck();
     }
 	
 	public static function off() {
-		LAN::SSH("KODI", "hbkodi off");
+		LAN::SSH("KODI", "kodi-send --action='Quit' > /dev/null &");
 		SQLITE::update("states", "active", 0, "`name`='KODI'");
-		HomeBrain::wakecheck();
     }
     
 }

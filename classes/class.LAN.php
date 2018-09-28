@@ -38,7 +38,7 @@ class LAN {
     public static function SSH($host, $command) {
         $connection = ssh2_connect(Configs::getIP($host), 22, array('hostkey'=>'ssh-rsa'));
         if ( $connection === false ) {
-            hbrain_log(_FILE_, "SSH connection failed on ". $host);
+            hbrain_log(__FILE__, "SSH connection failed on ". $host);
             return false;
         }
         if (!ssh2_auth_pubkey_file($connection,

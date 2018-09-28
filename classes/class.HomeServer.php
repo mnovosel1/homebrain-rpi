@@ -34,22 +34,22 @@ class HomeServer {
 			$state = false;
 			$waketime = self::getWakeTime();
 
-			if (HomeServer::dailyCronActive()) {
+			if (HomeServer::dailyCronActive() == "true") {
 				hbrain_log(__FILE__, "HomeServer: DailyCron working..");
 				$state = true;
 			}
 
-			if (HomeServer::gDriveSyncActive()) {
+			if (HomeServer::gDriveSyncActive() == "true") {
 				hbrain_log(__FILE__, "HomeServer: gDriveSync in progress..");
 				$state = true;
 			}
 
-			if (HomeServer::usersActive()) {
+			if (HomeServer::usersActive() == "true") {
 				hbrain_log(__FILE__, "HomeServer: User is logged on..");
 				$state = true;
 			}
 
-			if (HomeServer::torrentActive()) {
+			if (HomeServer::torrentActive() == "true") {
 				hbrain_log(__FILE__, "HomeServer: Torrenting to do..");
 				$state = true;
 			}

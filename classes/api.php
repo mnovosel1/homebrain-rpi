@@ -44,9 +44,9 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 //* RUN *//////////////////////////////////////////////////////////////////////////////////////////
 try {
 	$API = new MyAPI($_REQUEST['request'], $_SERVER['HTTP_ORIGIN']);
-	$ret = $API->processAPI();
+	$ret = trim($API->processAPI());
 	
-	if ( !$ret ) header('HTTP/1.0 403 Forbidden');
+	// if ( !$ret ) header('HTTP/1.0 403 Forbidden');
 	if ( $ret != "null") echo $ret . PHP_EOL;
 }
 

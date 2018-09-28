@@ -2,9 +2,9 @@
 
 class Auth {
 
-    public static function OK() {
+    public static $debug = false;
 
-        public static $debug = false;
+    public static function OK() {
 
         if ( isset($_POST["secToken"]) ) {
 

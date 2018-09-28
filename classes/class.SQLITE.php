@@ -69,6 +69,7 @@ class SQLITE {
 
     public static function query($sql, $insert = false) {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
+        $tmp = "";
 
         debug_log(__FILE__, $sqlite->lastErrorMsg ());
         debug_log(__FILE__, $sql);

@@ -34,6 +34,13 @@ class HomeBrain {
 
         return substr($todoRet, 0, strlen($todoRet)-1);
     }
+
+    public static function allOff() {
+        TV::off();
+        KODI::off();
+        MPD::off();
+        Amp::off();
+    }
     
     public static function dbBackup() {
         SQLITE::dbdump();

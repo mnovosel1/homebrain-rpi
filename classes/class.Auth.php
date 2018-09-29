@@ -51,7 +51,7 @@ class Auth {
         foreach ( $arrayIPs as $ip ) $allowedIPs[] = $ip;
 
         if ( array_search($_SERVER["REMOTE_ADDR"], $allowedIPs) === false ) {
-            if ( DEBUG ) debug_log(__FILE__, "IP not allowed");
+            debug_log(__FILE__, "IP not allowed");
             return false;
         }
 

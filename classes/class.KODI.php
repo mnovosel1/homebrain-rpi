@@ -15,6 +15,13 @@ class KODI {
 		return isOn();
 	}
 
+	public static function watch() {
+		Amp::on();
+		KODI::on();
+		TV::on();
+		Amp::kodi();
+	}
+
 	public static function isOn() {
 
 			if ( LAN::SSH("KODI", 

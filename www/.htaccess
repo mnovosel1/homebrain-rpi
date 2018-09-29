@@ -5,7 +5,7 @@ Options -Indexes
 </Files>
 
 <Limit GET POST>
-	Require all denied
-	Require ip 10.10.10
-	Require ip 179.61.232.251
+        Require all denied
+        Require ip 10.10.10
+        Require ip 179.61.232.251
 </Limit>

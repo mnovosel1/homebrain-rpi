@@ -1,7 +1,7 @@
 <?php
 
 class SQLITE {
-    public static $debug = false;
+    public static $debug = true;
 
     private static $result;
 
@@ -146,7 +146,9 @@ class SQLITE {
     /***********************************************************************************/
 
         CREATE TABLE lan (
+            timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
             mac varchar(20) PRIMARY KEY,
+            ip varchar(20) DEFAULT NULL,
             name varchar(99) DEFAULT NULL,
             known int(1) NOT NULL DEFAULT 0
         );

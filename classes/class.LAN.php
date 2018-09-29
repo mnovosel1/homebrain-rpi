@@ -75,15 +75,23 @@ class LAN {
     }
 
     public static function checkNetwork() {
-        exec("sudo nmap 10.10.10.0/24 -sP | grep 'MAC' | cut -c14-99", $out);
+
+        exec("sudo nmap 10.10.10.0/24 -sP", $out);
+
+        foreach ($out as $host) {
+            if ( strpos($host, "scan report for") !== false ) 
+                $IPs[] = explode(" ", $host)[4];
+
+            if ( strpos($host, "MAC Address:") !== false ) 
+            $MACs[] = explode(" ", $host)[2]; 
+            $names[] = str_replace(")", "", str_replace("(", "", explode(" ", $host)[3]));
+        }
 
         $ret = "";
-        foreach ($out as $macName) {
-            $macName = explode(" ", $macName, 2);
-            hbrain_log(__FILE__, $macName);
-            $macName[1] = str_replace(")", "", str_replace("(", "", $macName[1]));
-            SQLITE::insert("lan", ["mac", "name"], ["'". $macName[0] ."'", "'". $macName[1] ."'"]);
-            $ret .= $macName[0] ." ". $macName[1] .PHP_EOL;
+        for ($i = 0; $i < count($MACs); $i++) {
+            hbrain_log(__FILE__, $MACs[$i] ." - ". $IPs[$i]);
+            SQLITE::insert("lan", ["mac", "ip", "name"], ["'". $MACs[$i] ."'", "'". $IPs[$i] ."', ". $names[$i]], true);
+            $ret .= $MACs[$i] ." ". $IPs[$i] ." ". $names[$i] .PHP_EOL;
         }
         return $ret;
     }

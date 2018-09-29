@@ -82,7 +82,7 @@ class LAN {
             if ( strpos($host, "scan report for") !== false ) 
                 $IPs[] = explode(" ", $host)[4];
 
-            if ( strpos($host, "MAC Address:") !== false ) {
+            else if ( strpos($host, "MAC Address:") !== false ) {
                 $MACs[] = explode(" ", $host)[2]; 
                 $names[] = str_replace(")", "", str_replace("(", "", explode(" ", $host, 4)[3]));
             }

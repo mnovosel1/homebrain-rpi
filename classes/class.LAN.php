@@ -82,15 +82,16 @@ class LAN {
             if ( strpos($host, "scan report for") !== false ) 
                 $IPs[] = explode(" ", $host)[4];
 
-            if ( strpos($host, "MAC Address:") !== false ) 
-            $MACs[] = explode(" ", $host)[2]; 
-            $names[] = str_replace(")", "", str_replace("(", "", explode(" ", $host)[3]));
+            if ( strpos($host, "MAC Address:") !== false ) {
+                $MACs[] = explode(" ", $host)[2]; 
+                $names[] = str_replace(")", "", str_replace("(", "", explode(" ", $host, 4)[3]));
+            }
         }
 
         $ret = "";
         for ($i = 0; $i < count($MACs); $i++) {
-            hbrain_log(__FILE__, $MACs[$i] ." - ". $IPs[$i]);
-            SQLITE::insert("lan", ["mac", "ip", "name"], ["'". $MACs[$i] ."'", "'". $IPs[$i] ."', ". $names[$i]], true);
+            SQLITE::query("INSERT OR IGNORE INTO lan (mac, name) VALUES ('". $MACs[$i] ."', '". $names[$i] ."')");
+            SQLITE::query("UPDATE lan SET timestamp = datetime(CURRENT_TIMESTAMP, 'localtime'), ip = '". $IPs[$i] ."' WHERE mac = '". $MACs[$i] ."'");
             $ret .= $MACs[$i] ." ". $IPs[$i] ." ". $names[$i] .PHP_EOL;
         }
         return $ret;

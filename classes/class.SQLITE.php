@@ -1,13 +1,15 @@
 <?php
 
 class SQLITE {
-    public static $debug = true;
+    public static $debug = false;
 
     private static $result;
 
     public static function insert($table, $attributes, $values, $insertOrReplace = false) {
-        // TODO
-        if ( count($attributes) != count($values) ) return false;
+        if ( count($attributes) != count($values) ) {
+            hbrain_log(__FILE__, "Not enough SQL attribute - values!");
+            return false;
+        }
 
         $attributes = implode(", ", $attributes);
         $values     = implode(", ", $values);
@@ -15,6 +17,8 @@ class SQLITE {
         $sql = "INSERT";
         if ( $insertOrReplace ) $sql .= " OR REPLACE";
         $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";
+
+        debug_log(__FILE__, $sql);
 
         return SQLITE::query($sql, true);
     }
@@ -68,6 +72,7 @@ class SQLITE {
     }
 
     public static function query($sql, $insert = false) {
+
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
         $tmp = "";
 
@@ -146,7 +151,7 @@ class SQLITE {
     /***********************************************************************************/
 
         CREATE TABLE lan (
-            timestamp  DATETIME DEFAULT CURRENT_TIMESTAMP,
+            timestamp  DATETIME DEFAULT datetime(CURRENT_TIMESTAMP, 'localtime'),
             mac varchar(20) PRIMARY KEY,
             ip varchar(20) DEFAULT NULL,
             name varchar(99) DEFAULT NULL,

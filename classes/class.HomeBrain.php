@@ -4,11 +4,11 @@ class HomeBrain {
     public static $debug = true;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(HomeBrain::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(HomeBrain::class);
     }
 
     public static function toDo() {
@@ -29,7 +29,7 @@ class HomeBrain {
         }
 
         if ($todoNotify != "") {
-            self::notify($todoNotify);
+            HomeBrain::notify($todoNotify);
         } else $todoRet = "Dunno.. ";
 
         return substr($todoRet, 0, strlen($todoRet)-1);
@@ -61,7 +61,7 @@ class HomeBrain {
     }
 
     public static function speedTest() {
-        if (self::isOnline() === true) {
+        if (HomeBrain::isOnline() === true) {
             exec("speedtest-cli --simple", $result);
             return $result;
         }
@@ -159,10 +159,12 @@ class HomeBrain {
             if ($shutDownHomeServer) HomeServer::shut();
         }
 
-        // TV is off, KODI is on and it's silentTime
+        // TV is off, KODI is on
         if ( !(bool)$newStates["TV"]["active"] && (bool)$newStates["KODI"]["active"] ) {
             KODI::off();
-            if (self::isSilentTime()) {
+            
+            // ..and it's silentTime
+            if (HomeBrain::isSilentTime()) {
                 MPD::off();
                 Amp::off();
             }

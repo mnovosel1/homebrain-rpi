@@ -4,7 +4,7 @@ define('INI_FILE', ".configs");
 class Configs {
 
     public static function get($cfg1, $cfg2 = null) {
-        $configs = self::getAll();
+        $configs = Configs::getAll();
         if ( $cfg2 === null )
             return $configs[strtoupper($cfg1)];
         else
@@ -13,15 +13,15 @@ class Configs {
     }
     
     public static function getMAC($host) {
-        return self::get($host, "MAC");
+        return Configs::get($host, "MAC");
     }
     
     public static function getIP($host) {
-        return self::get($host, "IP");
+        return Configs::get($host, "IP");
     }
         
     public static function getFCM($config) {
-        return self::get("FCM", $config);
+        return Configs::get("FCM", $config);
     }
 
     private static function getAll() {

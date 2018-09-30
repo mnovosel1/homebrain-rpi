@@ -7,24 +7,24 @@ class Notifier {
     public static $debug = false;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(Notifier::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(Notifier::class);
     }
 
     public static function notify($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
-        self::kodi();
+        Notifier::kodi();
         
-        if ( self::fcmBcast($title, $msg) ) return null;
+        if ( Notifier::fcmBcast($title, $msg) ) return null;
         return false;
     }
 
     public static function kodi($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
-        $data = self::getPostData();
+        $data = Notifier::getPostData();
 
         exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.25:80/jsonrpc 2>/dev/null');
         return true;
@@ -35,18 +35,17 @@ class Notifier {
         if ( $title === null ) $title = "HomeBrain";
         
         $tokens = SQLITE::fetch("fcm", ["token"], "approved='true'");
-        foreach ( $tokens as $tok ) self::sendFcm($title, $msg, $data, $tok['token']);
+        foreach ( $tokens as $tok ) Notifier::sendFcm($title, $msg, $data, $tok['token']);
         return true;
     }
 
     public static function alert($secs) {
         if ( HomeBrain::isSilentTime() ) return;
-
-        hbrain_log(__FILE__, "Alert ". $secs ." secs.");
         exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
     }
 
     public static function speak($text) {
+        if ( HomeBrain::isSilentTime() ) return;
         LAN::SSH("KODI", "/usr/bin/flite -voice slt -t '". $text ."' &");
     }
 

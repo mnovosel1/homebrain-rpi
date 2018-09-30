@@ -1,27 +1,27 @@
 <?php
 
 class HomeServer {
-    public static $debug = false;
+    public static $debug = true;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(HomeServer::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(HomeServer::class);
     }
 	
 	public static function power() {
 		if ( $_POST["param1"] == "" ) {
-			return self::isOn();
+			return HomeServer::isOn();
 		}
 
 		else if ( $_POST["param1"] == "1" ) {
-			return self::wake();
+			return HomeServer::wake();
 		}
 
 		else if ( $_POST["param1"] == "0" ) {
-			return self::shut();
+			return HomeServer::shut();
 		}
 	}
 
@@ -32,7 +32,7 @@ class HomeServer {
 
 		if ( HomeServer::isOn() ) {			
 			$state = false;
-			$waketime = self::getWakeTime();
+			$waketime = HomeServer::getWakeTime();
 
 			if (HomeServer::dailyCronActive() == "true") {
 				hbrain_log(__FILE__, "HomeServer: DailyCron working..");
@@ -64,8 +64,8 @@ class HomeServer {
 		}
 	}
 
-	public static function wake($reason = "") {		
-		if ( !self::isOn() && LAN::WOL(Configs::getMAC("HomeServer")) ) {
+	public static function wake($reason = "") {
+		if ( HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
 				else $reason = "!";
@@ -78,7 +78,7 @@ class HomeServer {
 	}
 	
 	public static function shut($reason = "") {
-		if ( self::isOn() ) {
+		if ( HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
@@ -92,7 +92,7 @@ class HomeServer {
 	}
 	
 	public static function reboot($reason = "") {
-		if ( Auth::allowedIP() && self::isOn() ) {
+		if ( Auth::allowedIP() && HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "reboot");
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
@@ -105,12 +105,14 @@ class HomeServer {
 	}
 
 	public static function isOn() {
-		if ( LAN::ping("HomeServer") ) {
+		if ( (bool)LAN::ping("HomeServer") ) {
+			debug_log(__FILE__, "HomeServer is live..");
 			SQLITE::update("states", "active", 1, "`name`='HomeServer'");
 			return "true";
 		}
 
 		else {
+			debug_log(__FILE__, "HomeServer is not live..");
 			SQLITE::update("states", "active", 0, "`name`='HomeServer'");
 			return "false";
 		}
@@ -119,7 +121,7 @@ class HomeServer {
 	public static function setbusy($busy) {
 		if ( !Auth::allowedIP([Configs::getIP("HomeServer")]) ) return false;
 
-		if ( self::isOn() ) {
+		if ( HomeServer::isOn() ) {
 			return SQLITE::update("states", "active", $busy, "`name`='HomeServer busy'");
 		}
 		else
@@ -150,18 +152,29 @@ class HomeServer {
 	}
 
 	public static function getWakeTime() {
-		if ( self::isOn() ) {
-			$waketime = (int)LAN::SSH("HomeServer", "getWaketime");
+		if ( HomeServer::isOn() == "true" ) {
+			hbrain_log(__FILE__, "Requesting waketime from HomeServer..");
+			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
+			if ($waketime <= 0) {
+				if ( date('H') <  date("G", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
+					$waketime = strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"));
+				}
+				else {
+					$waketime = strtotime("tomorrow ". Configs::get("HomeServer", "DAILY_WAKE"));
+				}
+			}
+			
 			exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
 		}
 		else $waketime = exec('cat '.DIR.'/var/srvWakeTime.log');
 		
+		hbrain_log(__FILE__, "Waketime: ". $waketime);
 		return $waketime;
 	}
 
 	public static function timeToWake() {
 		
-		$waketime = self::getWakeTime();
+		$waketime = HomeServer::getWakeTime();
 
 		$howlong = '';
 		$seconds = $waketime - time(); 

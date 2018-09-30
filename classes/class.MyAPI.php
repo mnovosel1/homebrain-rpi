@@ -70,6 +70,7 @@ class MyAPI extends API {
         "Medvedi::check",
         "Medvedi::show",
         "Medvedi::notify",
+        "Medvedi::timetogame",
         "LAN::checknetwork"
     );
 

@@ -1,7 +1,7 @@
 <?php
 
 class LAN {
-    public static $debug = true;
+    public static $debug = false;
 
     public static function h() {
         return MyAPI::help(self::class);

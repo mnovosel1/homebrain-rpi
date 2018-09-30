@@ -1,7 +1,7 @@
 <?php
 
 class HomeServer {
-    public static $debug = true;
+    public static $debug = false;
 
     public static function h() {
         return MyAPI::help(HomeServer::class);
@@ -153,7 +153,7 @@ class HomeServer {
 
 	public static function getWakeTime() {
 		if ( HomeServer::isOn() == "true" ) {
-			hbrain_log(__FILE__, "Requesting waketime from HomeServer..");
+			debug_log(__FILE__, "Requesting waketime from HomeServer..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
 			if ($waketime <= 0) {
 				if ( date('H') <  date("G", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
@@ -168,7 +168,7 @@ class HomeServer {
 		}
 		else $waketime = exec('cat '.DIR.'/var/srvWakeTime.log');
 		
-		hbrain_log(__FILE__, "Waketime: ". $waketime);
+		debug_log(__FILE__, "Waketime: ". $waketime);
 		return $waketime;
 	}
 

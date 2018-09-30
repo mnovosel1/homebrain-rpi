@@ -29,14 +29,14 @@ while true ; do
 			$DIR/homebrain hbrain todo
 			$DIR/homebrain lan checknetwork
 		fi
-		
+
 		# svaki sat
 		#if [ $((minute)) -eq 0 ]; then
 		#fi
 
 		# svako jutro u 4:44
 		if [ $((hour)) -eq 4 -a $((minute)) -eq 44 ]; then
-		
+
 			$DIR/homebrain hbrain dbbackup
 			# $DIR/lan/dbbackup.php
 			# $DIR/heating/getTempSet.php

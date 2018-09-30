@@ -27,11 +27,11 @@ class HomeBrain {
             }
             if ($todoNotify != "") break;
         }
-
+/*
         if ($todoNotify != "") {
             HomeBrain::notify($todoNotify);
         } else $todoRet = "Dunno.. ";
-
+*/
         return substr($todoRet, 0, strlen($todoRet)-1);
     }
 
@@ -41,15 +41,15 @@ class HomeBrain {
         MPD::off();
         Amp::off();
     }
-    
+
     public static function dbBackup() {
         SQLITE::dbdump();
         exec("chmod -R 0770 ". DIR ."/var");
         exec("cp -a ". DIR ."/var/* ". DIR ."/saved_var");
     }
-    
+
     public static function dbRestore($fromDump = "false") {
-        
+
         if ($fromDump == "true") {
             exec("rm ". DIR ."/var/hbrain.db");
             exec("sqlite3 ". DIR ."/var/hbrain.db < ". DIR ."/var/hbrain.sql");
@@ -139,7 +139,7 @@ class HomeBrain {
         // HomeServer is on
         else {
             $shutDownHomeServer = true;
-            
+
             // do NOT shutdown HomeServer if:
             if ((bool)$newStates["KODI"]["active"]) {
                 $shutDownHomeServer = false;
@@ -162,14 +162,14 @@ class HomeBrain {
         // TV is off, KODI is on
         if ( !(bool)$newStates["TV"]["active"] && (bool)$newStates["KODI"]["active"] ) {
             KODI::off();
-            
+
             // ..and it's silentTime
             if (HomeBrain::isSilentTime()) {
                 MPD::off();
                 Amp::off();
             }
         }
-        
+
         return null;
     }
 

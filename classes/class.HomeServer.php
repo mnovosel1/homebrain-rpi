@@ -166,8 +166,9 @@ class HomeServer {
 					$waketime = strtotime("tomorrow ". Configs::get("HomeServer", "DAILY_WAKE"));
 				}
 			}
-			if ($waketime < $waketimeLog)
+			if ($waketime < $waketimeLog || $waketimeLog == 0) {
 				exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
+			}
 		}
 		else {
 			$waketime = $waketimeLog;

@@ -27,11 +27,11 @@ class HomeBrain {
             }
             if ($todoNotify != "") break;
         }
-/*
+
         if ($todoNotify != "") {
             HomeBrain::notify($todoNotify);
         } else $todoRet = "Dunno.. ";
-*/
+
         return substr($todoRet, 0, strlen($todoRet)-1);
     }
 

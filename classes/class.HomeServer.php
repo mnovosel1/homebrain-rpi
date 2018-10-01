@@ -152,6 +152,9 @@ class HomeServer {
 	}
 
 	public static function getWakeTime() {
+
+		$waketimeLog = exec('cat '.DIR.'/var/srvWakeTime.log');
+
 		if ( HomeServer::isOn() == "true" ) {
 			debug_log(__FILE__, "Requesting waketime from HomeServer..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
@@ -163,10 +166,12 @@ class HomeServer {
 					$waketime = strtotime("tomorrow ". Configs::get("HomeServer", "DAILY_WAKE"));
 				}
 			}
-			
-			exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
+			if ($waketime < $waketimeLog)
+				exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
 		}
-		else $waketime = exec('cat '.DIR.'/var/srvWakeTime.log');
+		else {
+			$waketime = $waketimeLog;
+		}
 		
 		debug_log(__FILE__, "Waketime: ". $waketime);
 		return $waketime;

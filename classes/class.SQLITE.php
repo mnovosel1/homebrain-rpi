@@ -106,6 +106,11 @@ class SQLITE {
         return $ret;
     }
 
+    public static function mySqlQuery($sql) {
+        exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'", $ret);
+        return $ret;
+    }
+
     public static function dbdump() {
 
         // Backup to MySQL /////////////////////////////////////////////////////////////////////////

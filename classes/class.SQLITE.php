@@ -1,7 +1,7 @@
 <?php
 
 class SQLITE {
-    public static $debug = false;
+    public static $debug = true;
 
     private static $result;
 

@@ -1,7 +1,7 @@
 <?php
 
 class SQLITE {
-    public static $debug = false;
+    public static $debug = true;
 
     private static $result;
 
@@ -57,13 +57,13 @@ class SQLITE {
             }
         }
 
-        if ( $update ) { 
+        if ( $update ) {
             $ret = SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
             SQLITE::query("SELECT * FROM changelog ORDER BY timestamp DESC LIMIT 1");
             HomeBrain::mobDbUpdate(SQLITE::$result[0]);
             return $ret;
         }
-        
+
         return null;
     }
 
@@ -82,6 +82,13 @@ class SQLITE {
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
 
+	if (strtoupper(substr($sql, 0 , 6)) == "INSERT"
+             || strtoupper(substr($sql, 0 , 6)) == "UPDATE") {
+		 debug_log(__FILE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
+                 debug_log(__FILE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
+                 // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
+        }
+
         if ( !$insert ) {
             $tmp = array();
             while ( $row = $res->fetchArray(SQLITE3_ASSOC) ) {
@@ -94,7 +101,7 @@ class SQLITE {
 
         if ( $ret == "not an error" ) {
             $ret = null;
-        }        
+        }
         else hbrain_log(__FILE__, $ret);
 
         return $ret;
@@ -107,13 +114,12 @@ class SQLITE {
         $sqlitedb = new SQLite3(DIR .'/var/hbrain.db');
         debug_log(__FILE__, $sqlitedb->lastErrorMsg());
 
-        $mysqlidb = new mysqli(Configs::get("DB_REPLIC_HOST"), Configs::get("DB_REPLIC_USER"), Configs::get("DB_REPLIC_PASS"), Configs::get("DB_REPLIC_DBNAME"));        
+        $mysqlidb = new mysqli(Configs::get("DB_REPLIC_HOST"), Configs::get("DB_REPLIC_USER"), Configs::get("DB_REPLIC_PASS"), Configs::get("DB_REPLIC_DBNAME"));
         debug_log(__FILE__, $mysqlidb->connect_error);
-        
         $sqliteres = $sqlitedb->query('SELECT c.timestamp, c.statebefore, c.changedto, s.name state, s.auto FROM changelog c JOIN states s ON c.state = s.name;');
-        
+
         while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {
-            $mysqlidb->query("REPLACE INTO changeLog (timestamp, statebefore, state, auto, changedto) 
+            $mysqlidb->query("REPLACE INTO changeLog (timestamp, statebefore, state, auto, changedto)
                                 VALUES (
                                         '".$entry['timestamp']."',
                                         '".$entry['statebefore']."',

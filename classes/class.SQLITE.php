@@ -82,10 +82,9 @@ class SQLITE {
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
 
-	if (strtoupper(substr($sql, 0 , 6)) == "INSERT"
-             || strtoupper(substr($sql, 0 , 6)) == "UPDATE") {
+	if (strtoupper(substr($sql, 0 , 6)) == "INSERT") {
 		 debug_log(__FILE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
-                 debug_log(__FILE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
+                 // debug_log(__FILE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
                  // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
         }
 
@@ -128,7 +127,7 @@ class SQLITE {
                                         ".$entry['changedto']."
                                         )");
         }
-        
+
         $sqlitedb->close();
         $mysqlidb->close();
         */
@@ -172,7 +171,7 @@ class SQLITE {
 
         // TABLE changelog
         $sql .= "
-        
+
     /***********************************************************************************/
 
         CREATE TABLE changelog (
@@ -187,7 +186,7 @@ class SQLITE {
             FOREIGN KEY (state) REFERENCES states(name)
         );
         ";
-        
+
         $sql .= "
         CREATE TRIGGER changelog_trigg
             BEFORE UPDATE ON states
@@ -197,16 +196,16 @@ class SQLITE {
 
                 INSERT INTO changelog (timestamp, statebefore, tempin, tempout, light, sound, state, changedto)
                 VALUES (
-                            (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))), 
+                            (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))),
                             (SELECT group_concat(active, '') FROM states),
                             (SELECT tempin FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
                             (SELECT tempout FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
                             (SELECT light FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
                             (SELECT sound FROM datalog WHERE timestamp <= (STRFTIME('%Y-%m-%d %H:%M:00', DATETIME('now', 'localtime'))) ORDER BY timestamp DESC LIMIT 1),
-                            NEW.name, 
+                            NEW.name,
                             NEW.active
                         );
-                        
+
                 DELETE FROM datalog WHERE timestamp <= DATE('now', '-90 day');
                 DELETE FROM changelog WHERE timestamp <= DATE('now', '-90 day');
 
@@ -217,19 +216,19 @@ class SQLITE {
         exec('sqlite3 '. DIR .'/var/hbrain.db \'.dump "changelog"\' | grep \'^INSERT\'', $output);
         foreach ( $output as $line )
             $sql .= "\n        ".trim($line);
-        
+
         // VIEWS logic AND todo
         $sql .= "
-        
+
     /***********************************************************************************/
 
-        CREATE VIEW logic AS 
-            SELECT 
-                COUNT(*) AS weight, 
+        CREATE VIEW logic AS
+            SELECT
+                COUNT(*) AS weight,
                 STRFTIME('%w', timestamp)*1 AS wday,
                 STRFTIME('%H', timestamp)*1 AS hour,
-                c.statebefore, 
-                s.name, 
+                c.statebefore,
+                s.name,
                 c.changedto
             FROM changelog c join states s ON c.state=s.name
             WHERE s.auto=1
@@ -238,7 +237,7 @@ class SQLITE {
         ";
 
         // TABLE datalog
-        $sql .= "        
+        $sql .= "
     /***********************************************************************************/
 
         CREATE TABLE datalog (
@@ -260,10 +259,10 @@ class SQLITE {
         foreach ( $output as $line )
             $sql .= "\n        ".trim($line);
 
-            
+
 
         // TABLE findata
-        $sql .= "        
+        $sql .= "
     /***********************************************************************************/
 
         CREATE TABLE findata (
@@ -302,12 +301,12 @@ class SQLITE {
 
         // TABLE tempConf
         $sql .= "
-        
+
     /***********************************************************************************/
 
         CREATE VIEW tempconf AS
         SELECT
-            COUNT() AS weight, 
+            COUNT() AS weight,
             CAST(AVG(tempin) AS INT) AS tempinavg,
             CAST(AVG(humidin) AS INT) AS humidinavg,
             CAST(AVG(tempout) AS INT) AS tempoutavg,
@@ -337,16 +336,16 @@ class SQLITE {
         exec('sqlite3 '. DIR .'/var/hbrain.db \'.dump "fcm"\' | grep \'^INSERT\'', $output);
         foreach ( $output as $line )
             $sql .= "\n        ".trim($line);
-          
+
         $sql .= "
 
     /***********************************************************************************/
 
     COMMIT;\n";
-        
+
         file_put_contents(DIR .'/var/hbrain.sql', $sql);
     }
-    
+
     public static function dbrepair($dbFile) {
         exec('cat <( sqlite3 "'. $dbFile .'" .dump | grep "^ROLLBACK" -v ) <( echo "COMMIT;" ) | sqlite3 "fix_'. $dbFile .'"');
     }

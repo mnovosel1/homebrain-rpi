@@ -82,6 +82,12 @@ class SQLITE {
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
 
+        if (strtoupper(substr($sql, 0 , 6)) == "INSERT"
+             || strtoupper(substr($sql, 0 , 6)) == "UPDATE") {
+                 debug_log(__FILE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
+                 // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
+        }
+
         if ( !$insert ) {
             $tmp = array();
             while ( $row = $res->fetchArray(SQLITE3_ASSOC) ) {

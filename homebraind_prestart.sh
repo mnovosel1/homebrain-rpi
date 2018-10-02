@@ -2,6 +2,11 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+if [[ ! -L $DIR/www/api/api.php ]]; then
+	rm -rf $DIR/www/api/api.php
+	ln -s $DIR/classes/api.php $DIR/www/api/api.php
+fi
+
 
 if [ ! -f $DIR/var/hbrain.db ]; then
   if [ -f $DIR/saved_var/hbrain.db ]; then

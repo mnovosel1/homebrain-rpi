@@ -126,17 +126,17 @@ class MyAPI extends API {
 
             if ( $ret == "" ) {
                 if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
-                    hbrain_log(__FILE__, $name."::".$this->verb."('".$_POST["param1"]."');");
+                    hbrain_log(__METHOD__, $name."::".$this->verb."('".$_POST["param1"]."');");
                     return $name::$verb(trim($_POST["param1"]));
                 } else {
-                    hbrain_log(__FILE__, $name."::".$this->verb."();");
+                    hbrain_log(__METHOD__, $name."::".$this->verb."();");
                     return $name::$verb();
                 }
             }
-            else hbrain_log(__FILE__, $ret);
+            else hbrain_log(__METHOD__, $ret);
         }
         
-        else hbrain_log(__FILE__, "AUTH not OK.");
+        else hbrain_log(__METHOD__, "AUTH not OK.");
 
         return false;
     }

@@ -18,7 +18,7 @@ class Medvedi {
         if (!Medvedi::getData()) return;
 
         if (Medvedi::$newData["medvedGolova"] > Medvedi::$logData["medvedGolova"]) {
-            hbrain_log(__FILE__, "Medvedi goool!");
+            hbrain_log(__METHOD__, "Medvedi goool!");
             Norifier::alert(5);
             Notifier::fcmBcast("Medvedi", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
         }
@@ -30,7 +30,7 @@ class Medvedi {
                     Medvedi::notify();
                 }
             } else if (strtotime(Medvedi::$logData["time"])-time() > 0) {
-                hbrain_log(__FILE__, Medvedi::timeToGame() . "!");
+                hbrain_log(__METHOD__, Medvedi::timeToGame() . "!");
                 if (time() - filemtime(DIR . "/var/medvedi.log") >= 60*60) 
                     Notifier::fcmBcast("Medvedi", date("H:i")." ".Medvedi::timeToGame());
             }
@@ -137,7 +137,7 @@ class Medvedi {
 
     private static function isGameDay() {
         if (date("d.m.Y.") == Medvedi::$logData["date"]) {
-            hbrain_log(__FILE__, "It's GameDay!!");
+            hbrain_log(__METHOD__, "It's GameDay!!");
             return true;
         }
         return false;
@@ -145,7 +145,7 @@ class Medvedi {
 
     private static function isGameLive() {
         if (Medvedi::$logData["status"] != "post-event" && ceil((strtotime(Medvedi::$logData["time"])-time())/60) < 5) {            
-            hbrain_log(__FILE__, "Game is live!!");
+            hbrain_log(__METHOD__, "Game is live!!");
             return true;
         }
         return false;

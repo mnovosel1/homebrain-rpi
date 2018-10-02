@@ -111,7 +111,7 @@ class HomeBrain {
             /*
             if ( $oldState != $newState ) {
                 $msg = $class." is".(((bool)$newState) ? " " : " not ").$method.".";
-                debug_log(__FILE__, $hostName . ": " . $newState . " `name`='".$condition."'");
+                debug_log(__METHOD__, $hostName . ": " . $newState . " `name`='".$condition."'");
                 //SQLITE::update("states", "active", $newState, "`name`='".$condition."'");
             }
             */
@@ -124,12 +124,12 @@ class HomeBrain {
             $reason = "";
             switch (true) {
                 case ((bool)$newStates["KODI"]["active"]):
-                    hbrain_log(__FILE__, "Waking HomeServer, KODI is on.");
+                    hbrain_log(__METHOD__, "Waking HomeServer, KODI is on.");
                     $reason .= "KODI ";
                 break;
 
                 case ((HomeServer::getWakeTime()-time()) < 1800):
-                    hbrain_log(__FILE__, "Waking HomeServer, it's WakeTime.");
+                    hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime.");
                     $reason .= "WakeTime ".date("H:i d.m.", HomeServer::getWakeTime())." ";
                 break;
             }
@@ -216,8 +216,8 @@ class HomeBrain {
             if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
             $msg = ["is off..", "is on!"];
         }
-        hbrain_log(__FILE__, $row["state"] ." ". $msg[$row["changedto"]]);
-        debug_log(__FILE__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
+        hbrain_log(__METHOD__, $row["state"] ." ". $msg[$row["changedto"]]);
+        debug_log(__METHOD__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
 
         $dbUpdates["table"] = "changelog";
         $dbUpdates["values"] = $row;
@@ -235,7 +235,7 @@ class HomeBrain {
 
     public static function isSilentTime() {
         if (date("H") > Configs::get("SILENT_TIME_START") && date("H") < Configs::get("SILENT_TIME_END")) {
-            hbrain_log(__FILE__, "It's SilentTime!");
+            hbrain_log(__METHOD__, "It's SilentTime!");
             return true;
         }
         return false;
@@ -247,7 +247,7 @@ class HomeBrain {
         $logMsg = "Not sent!";
         if (Notifier::fcmBcast("HomeBrain", $msg)) $logMsg = "FCM sent OK!";
 
-        debug_log(__FILE__, 'Notifier::fcmBcast("HomeBrain", "'.$msg.'"); '.$logMsg);
+        debug_log(__METHOD__, 'Notifier::fcmBcast("HomeBrain", "'.$msg.'"); '.$logMsg);
     }
 
     public static function alert($secs) {

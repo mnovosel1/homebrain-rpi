@@ -35,27 +35,27 @@ class HomeServer {
 			$waketime = HomeServer::getWakeTime();
 
 			if (HomeServer::dailyCronActive() == "true") {
-				hbrain_log(__FILE__, "HomeServer: DailyCron working..");
+				hbrain_log(__METHOD__, "HomeServer: DailyCron working..");
 				$state = true;
 			}
 
 			if (HomeServer::gDriveSyncActive() == "true") {
-				hbrain_log(__FILE__, "HomeServer: gDriveSync in progress..");
+				hbrain_log(__METHOD__, "HomeServer: gDriveSync in progress..");
 				$state = true;
 			}
 
 			if (HomeServer::usersActive() == "true") {
-				hbrain_log(__FILE__, "HomeServer: User is logged on..");
+				hbrain_log(__METHOD__, "HomeServer: User is logged on..");
 				$state = true;
 			}
 
 			if (HomeServer::torrentActive() == "true") {
-				hbrain_log(__FILE__, "HomeServer: Torrenting to do..");
+				hbrain_log(__METHOD__, "HomeServer: Torrenting to do..");
 				$state = true;
 			}
 
 			if (($waketime - time()) < 1800 ) {
-					hbrain_log(__FILE__, "HomeServer: It's WakeTime!");
+					hbrain_log(__METHOD__, "HomeServer: It's WakeTime!");
 					$state = true;
 			}
 			
@@ -71,7 +71,7 @@ class HomeServer {
 				else $reason = "!";
 			} else $reason = ": ".$reason;
 			Notifier::fcmBcast("HomeBrain", "is waking HomeServer".$reason);
-			hbrain_log(__FILE__, "HomeBrain is waking HomeServer".$reason);
+			hbrain_log(__METHOD__, "HomeBrain is waking HomeServer".$reason);
 			return null;
 		}
 		return "false";
@@ -85,7 +85,7 @@ class HomeServer {
 				else $reason = "..";
 			} else $reason = ": ".$reason;
 			Notifier::fcmBcast("HomeBrain", "is shutting down HomeServer".$reason);
-			hbrain_log(__FILE__, "HomeBrain is shutting down HomeServer".$reason);
+			hbrain_log(__METHOD__, "HomeBrain is shutting down HomeServer".$reason);
 			return null;
 		}
 		return "false";
@@ -99,20 +99,20 @@ class HomeServer {
 				else $reason = "..";
 			} else $reason = ": ".$reason;
 			Notifier::fcmBcast("HomeBrain", "is rebooting HomeServer".$reason);
-			hbrain_log(__FILE__, "HomeBrain is rebooting HomeServer".$reason);
+			hbrain_log(__METHOD__, "HomeBrain is rebooting HomeServer".$reason);
 		}
 		return "false";
 	}
 
 	public static function isOn() {
 		if ( (bool)LAN::ping("HomeServer") ) {
-			debug_log(__FILE__, "HomeServer is live..");
+			debug_log(__METHOD__, "HomeServer is live..");
 			SQLITE::update("states", "active", 1, "`name`='HomeServer'");
 			return "true";
 		}
 
 		else {
-			debug_log(__FILE__, "HomeServer is not live..");
+			debug_log(__METHOD__, "HomeServer is not live..");
 			SQLITE::update("states", "active", 0, "`name`='HomeServer'");
 			return "false";
 		}
@@ -156,7 +156,7 @@ class HomeServer {
 		$waketimeLog = exec('cat '.DIR.'/var/srvWakeTime.log');
 
 		if ( HomeServer::isOn() == "true" ) {
-			debug_log(__FILE__, "Requesting waketime from HomeServer..");
+			debug_log(__METHOD__, "Requesting waketime from HomeServer..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
 			if ($waketime <= 0) {
 				if ( date('H') <  date("G", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
@@ -174,7 +174,7 @@ class HomeServer {
 			$waketime = $waketimeLog;
 		}
 		
-		debug_log(__FILE__, "Waketime: ". $waketime);
+		debug_log(__METHOD__, "Waketime: ". $waketime);
 		return $waketime;
 	}
 

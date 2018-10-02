@@ -77,7 +77,7 @@ class Notifier {
             $fields['data']['body'] 	= $msg;
         }
 
-        hbrain_log(__FILE__, $title ." - ". $msg);
+        hbrain_log(__METHOD__, $title ." - ". $msg);
 
         $fields["to"]               = $token;
         $fields["time_to_live"]     = $ttl;
@@ -101,7 +101,7 @@ class Notifier {
         else $success = true;
 
         $fields["success"] = $success;        
-        debug_log(__FILE__, json_encode( $fields ));
+        debug_log(__METHOD__, json_encode( $fields ));
 
         if (!$success) SQLITE::query("DELETE FROM fcm WHERE token = '".$token."'");
 

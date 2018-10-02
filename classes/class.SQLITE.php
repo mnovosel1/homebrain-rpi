@@ -7,7 +7,7 @@ class SQLITE {
 
     public static function insert($table, $attributes, $values, $insertOrReplace = false) {
         if ( count($attributes) != count($values) ) {
-            hbrain_log(__FILE__, "Not enough SQL attribute - values!");
+            hbrain_log(__METHOD__, "Not enough SQL attribute - values!");
             return false;
         }
 
@@ -18,7 +18,7 @@ class SQLITE {
         if ( $insertOrReplace ) $sql .= " OR REPLACE";
         $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";
 
-        debug_log(__FILE__, $sql);
+        debug_log(__METHOD__, $sql);
 
         return SQLITE::query($sql, true);
     }
@@ -76,15 +76,15 @@ class SQLITE {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN_DB"));
         $tmp = "";
 
-        debug_log(__FILE__, $sqlite->lastErrorMsg ());
-        debug_log(__FILE__, $sql);
+        debug_log(__METHOD__, $sqlite->lastErrorMsg ());
+        debug_log(__METHOD__, $sql);
 
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
 
 	if (strtoupper(substr($sql, 0 , 6)) == "INSERT") {
-		 debug_log(__FILE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
-                 // debug_log(__FILE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
+		 debug_log(__METHOD__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
+                 // debug_log(__METHOD__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
                  // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
         }
 
@@ -101,7 +101,7 @@ class SQLITE {
         if ( $ret == "not an error" ) {
             $ret = null;
         }
-        else hbrain_log(__FILE__, $ret);
+        else hbrain_log(__METHOD__, $ret);
 
         return $ret;
     }
@@ -116,10 +116,10 @@ class SQLITE {
         // Backup to MySQL /////////////////////////////////////////////////////////////////////////
         /*
         $sqlitedb = new SQLite3(DIR .'/var/hbrain.db');
-        debug_log(__FILE__, $sqlitedb->lastErrorMsg());
+        debug_log(__METHOD__, $sqlitedb->lastErrorMsg());
 
         $mysqlidb = new mysqli(Configs::get("DB_REPLIC_HOST"), Configs::get("DB_REPLIC_USER"), Configs::get("DB_REPLIC_PASS"), Configs::get("DB_REPLIC_DBNAME"));
-        debug_log(__FILE__, $mysqlidb->connect_error);
+        debug_log(__METHOD__, $mysqlidb->connect_error);
         $sqliteres = $sqlitedb->query('SELECT c.timestamp, c.statebefore, c.changedto, s.name state, s.auto FROM changelog c JOIN states s ON c.state = s.name;');
 
         while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {

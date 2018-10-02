@@ -4,20 +4,20 @@ class LAN {
     public static $debug = false;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(LAN::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(LAN::class);
     }
 
     public static function ping($host) {
         $live = exec("ping -c1 ".Configs::getIP($host)." | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
 		if ($live > 0) { 
-            debug_log(__FILE__, $host . " is live!");
+            debug_log(__METHOD__, $host . " is live!");
             return true;
         }
-        debug_log(__FILE__, $host . " is not live.");
+        debug_log(__METHOD__, $host . " is not live.");
 		return false;
     }
 
@@ -32,11 +32,11 @@ class LAN {
         socket_set_option($s, SOL_SOCKET, SO_BROADCAST, 1);
 
         if ( socket_sendto($s, $msg, strlen($msg), 0, "255.255.255.255", 1223) !== false ) {
-            debug_log(__FILE__, "WOL sent..");
+            debug_log(__METHOD__, "WOL sent..");
             return true;
         }
         else {
-            debug_log(__FILE__, "WOL not sent..");
+            debug_log(__METHOD__, "WOL not sent..");
             return false;
         }
     }
@@ -44,7 +44,7 @@ class LAN {
     public static function SSH($host, $command) {
         $connection = ssh2_connect(Configs::getIP($host), 22, array('hostkey'=>'ssh-rsa'));
         if ( $connection === false ) {
-            hbrain_log(__FILE__, "SSH connection failed on ". $host);
+            hbrain_log(__METHOD__, "SSH connection failed on ". $host);
             return false;
         }
         if (!ssh2_auth_pubkey_file($connection,

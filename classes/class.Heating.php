@@ -4,11 +4,11 @@ class Heating {
     public static $debug = false;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(Heating::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(Heating::class);
     }
 
     public static function getTemps() {
@@ -20,19 +20,19 @@ class Heating {
     }
     
     public static function getInTemp() {
-        return (float) self::getTemps()[1];
+        return (float) Heating::getTemps()[1];
     }
     
     public static function getInHumid() {
-        return (float) self::getTemps()[2];
+        return (float) Heating::getTemps()[2];
     }
 
     public static function getOutTemp() {
-        return (float) self::getTemps()[3];
+        return (float) Heating::getTemps()[3];
     }
 
     public static function getOutHumid() {
-        return (float) self::getTemps()[4];
+        return (float) Heating::getTemps()[4];
     }
 
     public static function set() {
@@ -48,9 +48,9 @@ class Heating {
     }
 
     public static function updateMob() {
-        $tmp = self::getTemps();
+        $tmp = Heating::getTemps();
 
-        $data["tempSet"]    = sprintf("%01.1f", self::getSetTemp());
+        $data["tempSet"]    = sprintf("%01.1f", Heating::getSetTemp());
         $data["tempIn"]     = sprintf("%01.1f", $tmp[1]);
         $data["humidIn"]    = sprintf("%01.1f", $tmp[2]);
         $data["tempOut"]    = sprintf("%01.1f", $tmp[3]);

@@ -23,7 +23,7 @@ class IR {
         for ($i = 0; $i < $count; $i++)
             exec("sudo /usr/bin/nrf 1 ".$command.":".$parameter);
 
-        debug_log(__FILE__, "sudo /usr/bin/nrf 1 ".$command.":".$parameter);
+        debug_log(__METHOD__, "sudo /usr/bin/nrf 1 ".$command.":".$parameter);
     }
 }
 

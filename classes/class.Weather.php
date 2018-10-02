@@ -4,11 +4,11 @@ class Weather {
     public static $debug = true;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(Weather::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return MyAPI::help(Weather::class);
     }
     
     public static function tempIn($timestamp = null) {

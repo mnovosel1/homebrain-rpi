@@ -143,17 +143,20 @@ class HomeBrain {
             // do NOT shutdown HomeServer if:
             if ((bool)$newStates["KODI"]["active"]) {
                 $shutDownHomeServer = false;
-                hbrain_log(__FILE__, "KODI is active, HomeServer stays on."); 
+                hbrain_log(__LINE__.': '.__FILE__.' '.__CLASS__.'::'.__METHOD__, 
+                                            "KODI is active, HomeServer stays on."); 
             }
 
             if ((bool)$newStates["HomeServer busy"]["active"]) {
                 $shutDownHomeServer = false;
-                hbrain_log(__FILE__, "HomeServer is busy, HomeServer stays on.");
+                hbrain_log(__LINE__.': '.__FILE__.' '.__CLASS__.'::'.__METHOD__, 
+                                        "HomeServer is busy, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeBrain user"]["active"]) {
                 $shutDownHomeServer = false;
-                hbrain_log(__FILE__, "HomeBrain user is logged on, HomeServer stays on.");
+                hbrain_log(__LINE__.': '.__FILE__.' '.__CLASS__.'::'.__METHOD__, 
+                                "HomeBrain user is logged on, HomeServer stays on.");
             }
 
             if ($shutDownHomeServer) HomeServer::shut();

@@ -1,9 +1,13 @@
 <?php
 
 class SQLITE {
-    public static $debug = false;
+    public static $debug = true;
 
     private static $result;
+
+    public static function getResult() {
+	return SQLITE::$result;
+    }
 
     public static function insert($table, $attributes, $values, $insertOrReplace = false) {
         if ( count($attributes) != count($values) ) {
@@ -107,7 +111,9 @@ class SQLITE {
     }
 
     public static function mySqlQuery($sql) {
-        exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'", $ret);
+	$sql = preg_replace('# {2,}#', ' ', (str_replace(array("\r\n","\r","\n"),' ',trim($sql))));
+	exec("/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"", $ret);
+	debug_log(__METHOD__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
         return $ret;
     }
 

@@ -14,7 +14,7 @@ class HomeBrain {
     public static function toDo() {
 
         for ($i = 0; $i <= 3; $i++) {
-            $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"], 
+            $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"],
                                     "hour BETWEEN ". date("H") ."
                                             AND ". date("H", strtotime("+".$i." hour")) ."
                                     AND statebefore = (SELECT group_concat(active, '') FROM states)");
@@ -179,17 +179,17 @@ class HomeBrain {
 		if ( $_POST["param1"] == "1" || $_POST["param1"] == "0" ) {
             $active = (int)$_POST["param1"];
         }
-        
+
         else {
             $hbrainuser = exec("who | wc -l");
             $active = ($hbrainuser > 0) ? 1 : 0;
         }
-        
+
         SQLITE::update("states", "active", $active, "`name`='HomeBrain user'");
 
         return ($active > 0) ? "true" : "false";
     }
-    
+
     public static function mobAppConfig($token = null) {
         if ( $token === null ) $token = $_POST["param1"];
         $cfgMessage["pages"]    = ["home", "multimedia", "grijanje", "lan", "vrt"];
@@ -208,7 +208,7 @@ class HomeBrain {
             case (bool)strpos($row["state"], "user"):
             $msg = ["user is logged off..", "user is logged on!"];
             break;
-            
+
             case (bool)strpos($row["state"], "busy"):
             $msg = ["is not busy..", "is busy!"];
             // if ($row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is busy!
@@ -262,10 +262,27 @@ class HomeBrain {
 
     ///// HomeBrain::uploadData() /////////////////////////////////////////////////////////////
     public static function uploadData() {
-        $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS timestamp 
-                                    FROM changelog 
-                                    ORDER BY timestamp DESC LIMIT 1");
-        debug_log(__METHOD__, __LINE__": res=".$res[0][0]);
+
+        $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS timestamp ".
+                                    "FROM changelog ".
+                                    "ORDER BY timestamp DESC LIMIT 1");
+
+	SQLITE::query("SELECT * FROM changelog
+				WHERE STRFTIME('%s', timestamp) >= ".$res[1]);
+	$rows = SQLITE::getResult();
+	foreach ($rows as $row) {
+		$sql = "INSERT INTO changelog ".
+				"VALUES('".$row['timestamp']."', ".
+					"'".$row['statebefore']."', ".
+					$row['light'].", ".
+					$row['tempin'].", ".
+					$row['tempout'].", ".
+					$row['sound'].", ".
+					"'".$row['state']."', ".
+					$row['changedto'].")";
+		SQLITE::mySqlQuery($sql);
+	        //debug_log(__METHOD__, __LINE__.": row = ".var_export($sql, true));
+	}
     }
 
     ///// HomeBrain::getTemps() ///////////////////////////////////////////////////////////////

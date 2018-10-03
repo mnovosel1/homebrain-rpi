@@ -71,7 +71,7 @@ class MyAPI extends API {
     public function __construct($request, $origin) {
         parent::__construct($request);
     }
-    
+
     public function __call($name, $args) {
         switch (strtolower($name)) {
             case "hsrv":
@@ -85,11 +85,11 @@ class MyAPI extends API {
             case "homebrain":
                 $name = "HomeBrain";
             break;
-            
+
             case "heat":
                 $name = "Heating";
             break;
-                    
+
             case "kodi":
                 $name = "KODI";
             break;
@@ -112,13 +112,12 @@ class MyAPI extends API {
 
         $verb = strtolower((string)$this->verb);
 
-        
 
-        if ( Auth::OK() ) {            
+        if ( Auth::OK() ) {
             $ret = "";
             if ( ($verb != 'h' && $verb != 'help') && !self::isCallable($name, $verb) ) {
                 $ret .= $name.'::'.$verb." not callable ";
-                hbrain_log(_FILE_, $name.'::'.$verb .' is not callable.');
+                hbrain_log(__METHOD__, $name.'::'.$verb .' is not callable.');
             }
 
             if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
@@ -127,15 +126,15 @@ class MyAPI extends API {
             if ( $ret == "" ) {
                 if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
                     hbrain_log(__METHOD__, $name."::".$this->verb."('".$_POST["param1"]."');");
-                    return $name::$verb(trim($_POST["param1"]));
+                    return trim($name::$verb(trim($_POST["param1"])));
                 } else {
                     hbrain_log(__METHOD__, $name."::".$this->verb."();");
-                    return $name::$verb();
+                    return trim($name::$verb());
                 }
             }
             else hbrain_log(__METHOD__, $ret);
         }
-        
+
         else hbrain_log(__METHOD__, "AUTH not OK.");
 
         return false;
@@ -146,7 +145,7 @@ class MyAPI extends API {
     }
 
     public static function help($class) {
-        
+
         $methods = get_class_methods($class);
 
         $ret = $class .': ';
@@ -154,7 +153,7 @@ class MyAPI extends API {
             if (MyApi::isCallable($class, strtolower($method)))
                 $ret .= $method .", ";
         }
-        
+
         return substr($ret, 0, strlen($ret)-2);
     }
 }

@@ -19,13 +19,17 @@ function debug_log($where, $what) {
 }
 
 function hbrain_log($where, $what, $logLevel = "LOG") {
-	$class = explode('.', $where)[1];
+
+        if (strpos($where, '::') !== false)
+                $class = explode('::', $where)[0];
+        else
+                $class = explode('.', $where)[1];
 
 	ob_start();
 	echo date("[d.m.y. H:i:s] ");
 	echo $_SERVER['REMOTE_ADDR'];
 	echo " [".$logLevel."] ";
-	echo $class." > ";
+	echo $where." > ";
 	var_dump($what);
 	$out = ob_get_clean();
 

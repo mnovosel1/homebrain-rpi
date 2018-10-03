@@ -268,7 +268,7 @@ class HomeBrain {
                                     "ORDER BY timestamp DESC LIMIT 1");
 
 	SQLITE::query("SELECT * FROM changelog ".
-				"WHERE STRFTIME('%s', timestamp) >= ".$res[1] ." ".
+				"WHERE STRFTIME('%s', timestamp)*1 >= ".$res[1] ." ".
 				"ORDER BY timestamp ASC");
 	$rows = SQLITE::getResult();
 	hbrain_log(__METHOD__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]));

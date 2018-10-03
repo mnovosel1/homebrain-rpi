@@ -1,7 +1,7 @@
 <?php
 
 class HomeBrain {
-    public static $debug = true;
+    public static $debug = false;
 
     public static function h() {
         return MyAPI::help(HomeBrain::class);
@@ -267,10 +267,18 @@ class HomeBrain {
                                     "FROM changelog ".
                                     "ORDER BY timestamp DESC LIMIT 1");
 
-	SQLITE::query("SELECT * FROM changelog
-				WHERE STRFTIME('%s', timestamp) >= ".$res[1]);
+	SQLITE::query("SELECT * FROM changelog ".
+				"WHERE STRFTIME('%s', timestamp) >= ".$res[1] ." ".
+				"ORDER BY timestamp ASC");
 	$rows = SQLITE::getResult();
+	hbrain_log(__METHOD__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]));
 	foreach ($rows as $row) {
+
+		$row['light'] = empty(trim($row['light'])) ? "NULL" : $row['light'];
+		$row['tempin'] = empty(trim($row['tempin'])) ? "NULL" : $row['tempin'];
+		$row['tempout'] = empty(trim($row['tempout'])) ? "NULL" : $row['tempout'];
+		$row['sound'] = empty(trim($row['sound'])) ? "NULL" : $row['sound'];
+
 		$sql = "INSERT INTO changelog ".
 				"VALUES('".$row['timestamp']."', ".
 					"'".$row['statebefore']."', ".

@@ -18,7 +18,7 @@ function debug_log($where, $what) {
 	hbrain_log($where, $what, "DEBUG");
 }
 
-function hbrain_log($where, $what, $logLevel = "LOG") {
+function hbrain_log($where, $what, $logLevel = "INFO") {
 
         if (strpos($where, '::') !== false)
                 $class = explode('::', $where)[0];

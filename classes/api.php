@@ -56,11 +56,11 @@ try {
 	$ret = trim($API->processAPI());
 	
 	// if ( !$ret ) header('HTTP/1.0 403 Forbidden');
-	if ( $ret != "null") echo $ret . PHP_EOL;
+	if ( !empty($ret) ) echo $ret . PHP_EOL;
 }
 
 catch (Exception $e) {
-	echo json_encode(Array('error' => $e->getMessage()));
+	echo var_export($e->getMessage(), true);
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

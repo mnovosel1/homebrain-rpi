@@ -10,7 +10,7 @@ class HomeServer {
     public static function help() {
         return MyAPI::help(HomeServer::class);
     }
-	
+
 	public static function power() {
 		if ( $_POST["param1"] == "" ) {
 			return HomeServer::isOn();
@@ -30,7 +30,7 @@ class HomeServer {
 			return HomeServer::setbusy($_POST["param1"]);
 		}
 
-		if ( HomeServer::isOn() ) {			
+		if ( HomeServer::isOn() ) {
 			$state = false;
 			$waketime = HomeServer::getWakeTime();
 
@@ -58,7 +58,7 @@ class HomeServer {
 					hbrain_log(__FILE__, "HomeServer: It's WakeTime!");
 					$state = true;
 			}
-			
+
 			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
 			return $state ? "true" : "false";
 		}
@@ -76,7 +76,7 @@ class HomeServer {
 		}
 		return "false";
 	}
-	
+
 	public static function shut($reason = "") {
 		if ( HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
@@ -90,7 +90,7 @@ class HomeServer {
 		}
 		return "false";
 	}
-	
+
 	public static function reboot($reason = "") {
 		if ( Auth::allowedIP() && HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "reboot");
@@ -126,7 +126,7 @@ class HomeServer {
 		}
 		else
 			return SQLITE::update("states", "active", 0, "`name`='HomeServer busy'");
-		
+
 		return null;
 	}
 
@@ -140,12 +140,12 @@ class HomeServer {
 		$gDriveSync 		= (int)LAN::SSH("HomeServer", "pgrep -x 'gDriveSync.sh'");
 		return ($gDriveSync > 0) ? "true" : "false";
 	}
-	
+
 	public static function usersActive() {
 		$users = (int)LAN::SSH("HomeServer", "who | wc -l");
 		return ($users > 0) ? "true" : "false";
 	}
-	
+
 	public static function torrentActive() {
 		$torrenting = (int)LAN::SSH("HomeServer", "transmission-remote --list | sed '1d;\$d' | grep -v Done | wc -l");
 		return ($torrenting > 0) ? "true" : "false";
@@ -173,17 +173,17 @@ class HomeServer {
 		else {
 			$waketime = $waketimeLog;
 		}
-		
+
 		debug_log(__FILE__, "Waketime: ". $waketime);
 		return $waketime;
 	}
 
 	public static function timeToWake() {
-		
+
 		$waketime = HomeServer::getWakeTime();
 
 		$howlong = '';
-		$seconds = $waketime - time(); 
+		$seconds = $waketime - time();
 		$minutes = (int)($seconds / 60);
 		$hours = (int)($minutes / 60);
 		$days = (int)($hours / 24);

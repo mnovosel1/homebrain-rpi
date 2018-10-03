@@ -43,7 +43,7 @@ while true ; do
 			# $DIR/heating/dbbackup.php
 			$DIR/homebrain amp off
 
-			$DIR/homebrain hserv wake DailyWake
+			# $DIR/homebrain hserv wake DailyWake
 			echo "" > $DIR/var/hbrain.log
 			sudo /sbin/shutdown -F -r now
 		fi

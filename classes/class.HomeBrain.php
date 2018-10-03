@@ -260,6 +260,15 @@ class HomeBrain {
         Notifier::speak($text);
     }
 
+    ///// HomeBrain::uploadData() /////////////////////////////////////////////////////////////
+    public static function uploadData() {
+        $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS timestamp 
+                                    FROM changelog 
+                                    ORDER BY timestamp DESC LIMIT 1");
+        debug_log(__METHOD__, __LINE__": res=".$res[0][0]);
+    }
+
+    ///// HomeBrain::getTemps() ///////////////////////////////////////////////////////////////
     public static function getTemps() {
         $timestamp = date("Y-m-d H:i:00");
 

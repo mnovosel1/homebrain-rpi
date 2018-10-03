@@ -8,7 +8,12 @@ define('DIR', str_replace('/classes', '', dirname(__FILE__)));
 //* DEBUGGING stuff *//////////////////////////////////////////////////////////////////////////////
 
 function debug_log($where, $what) {
-	$class = explode('.', $where)[1];
+
+        if (strpos($where, '::') !== false)
+                $class = explode('::', $where)[0];
+        else
+                $class = explode('.', $where)[1];
+
 	if ( !$class::$debug ) return;
 	hbrain_log($where, $what, "DEBUG");
 }

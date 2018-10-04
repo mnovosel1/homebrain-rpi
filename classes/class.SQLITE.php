@@ -275,6 +275,23 @@ class SQLITE {
         // TABLE findata
         $sql .= "
     /***********************************************************************************/
+    
+        CREATE TABLE finlog (
+            timestamp timestamp PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
+            name TEXT NOT NULL,
+            amount double NOT NULL
+        );
+        ";
+
+        $output = '';
+        exec('sqlite3 '. DIR .'/var/hbrain.db \'.dump "finlog"\' | grep \'^INSERT\'', $output);
+        foreach ( $output as $line )
+            $sql .= "\n        ".trim($line);
+
+
+        // TABLE findata
+        $sql .= "
+    /***********************************************************************************/
 
         CREATE TABLE findata (
             timestamp timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,

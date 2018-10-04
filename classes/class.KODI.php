@@ -46,13 +46,17 @@ class KODI {
 	
 	public static function on() {
 		LAN::SSH("KODI", "kodi > /dev/null &");
+		LAN::SSH("KODI", "echo \"as\" | /usr/bin/cec-client -s >> /dev/null &");
 		SQLITE::update("states", "active", 1, "`name`='KODI'");
 		HomeBrain::wakecheck();
+		return "true";
     }
 	
 	public static function off() {
+		TV::off();
 		LAN::SSH("KODI", "kodi-send --action='Quit' > /dev/null &");
 		SQLITE::update("states", "active", 0, "`name`='KODI'");
+		return "true";
     }
     
 }

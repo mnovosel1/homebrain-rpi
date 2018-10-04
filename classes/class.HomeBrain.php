@@ -36,10 +36,10 @@ class HomeBrain {
     }
 
     public static function allOff() {
+	Amp::off();
         TV::off();
         KODI::off();
         MPD::off();
-        Amp::off();
     }
 
     public static function dbBackup() {
@@ -71,7 +71,7 @@ class HomeBrain {
     public static function isOnline() {
         $online = exec("ping -c1 google.com | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
         if ($online == 1 ) return true;
-        exec(DIR ."/homebrain hbrain alert 15");
+        // exec(DIR ."/homebrain hbrain alert 15");
         return "false";
     }
 
@@ -110,6 +110,7 @@ class HomeBrain {
             }
 
             $newStates[$hostName]["active"] = $newState;
+
             /*
             if ( $oldState != $newState ) {
                 $msg = $class." is".(((bool)$newState) ? " " : " not ").$method.".";
@@ -215,7 +216,7 @@ class HomeBrain {
             break;
 
             default:
-            if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
+            // if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
             $msg = ["is off..", "is on!"];
         }
         hbrain_log(__METHOD__, $row["state"] ." ". $msg[$row["changedto"]]);

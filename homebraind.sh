@@ -1,6 +1,7 @@
 #!/bin/bash
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+date=`date +"%d-%m-%Y"`
 hour=$(( $((10#$(date +'%H')))*1 ))
 minute=$(( $((10#$(date +'%M')))*1 ))
 lastminute=$(( minute-1 ))
@@ -44,8 +45,13 @@ while true ; do
 			$DIR/homebrain amp off
 
 			# $DIR/homebrain hserv wake DailyWake
-			echo "" > $DIR/var/hbrain.log
 			sudo /sbin/shutdown -F -r now
+		fi
+		
+		# u ponoć
+		if [ $((hour)) -eq 23 -a $((minute)) -eq 59 ]; then
+			cp $DIR/var/hbrain.log /srv/PiStorage/backups/hbrain_$date.log
+			echo "" > $DIR/var/hbrain.log
 		fi
 	fi
 

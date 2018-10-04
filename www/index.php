@@ -25,7 +25,7 @@
     <div class="container text-center">
       <br>
       <a href="#"><h1>HomeBrain</h1></a><br>
-      <a href="#"><h1>Financije</h1></a><br>
+      <a href="fin"><h1>Financije</h1></a><br>
     </div>
   </div>
 

@@ -47,7 +47,7 @@ while true ; do
 			# $DIR/homebrain hserv wake DailyWake
 			sudo /sbin/shutdown -F -r now
 		fi
-		
+
 		# u ponoć
 		if [ $((hour)) -eq 23 -a $((minute)) -eq 59 ]; then
 			cp $DIR/var/hbrain.log /srv/PiStorage/backups/hbrain_$date.log

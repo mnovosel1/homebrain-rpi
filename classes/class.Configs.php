@@ -11,15 +11,15 @@ class Configs {
             return $configs[strtoupper($cfg1)][strtoupper($cfg2)];
         return false;
     }
-    
+
     public static function getMAC($host) {
         return Configs::get($host, "MAC");
     }
-    
+
     public static function getIP($host) {
         return Configs::get($host, "IP");
     }
-        
+
     public static function getFCM($config) {
         return Configs::get("FCM", $config);
     }

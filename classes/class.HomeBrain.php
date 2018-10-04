@@ -237,8 +237,12 @@ class HomeBrain {
     }
 
     public static function isSilentTime() {
-        if (date("H") > Configs::get("SILENT_TIME_START") && date("H") < Configs::get("SILENT_TIME_END")) {
-            hbrain_log(__METHOD__, "It's SilentTime!");
+        $silentTimeStart = Configs::get("SILENT_TIME_START");
+        $silentTimeEnd = Configs::get("SILENT_TIME_END");
+        $timeNow = date('G');
+
+        if ($timeNow > $silentTimeStart || $timeNow < $silentTimeEnd) {
+            hbrain_log(__METHOD__, "SilentTime is from ".$silentTimeStart." to ".$silentTimeEnd."h.");
             return true;
         }
         return false;

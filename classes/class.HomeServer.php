@@ -1,7 +1,7 @@
 <?php
 
 class HomeServer {
-    public static $debug = false;
+    public static $debug = true;
 
     public static function h() {
         return MyAPI::help(HomeServer::class);
@@ -153,17 +153,21 @@ class HomeServer {
 
 	public static function getWakeTime() {
 
-		$waketimeLog = exec('cat '.DIR.'/var/srvWakeTime.log');
+		$wakeTimeLog = exec('cat '.DIR.'/var/srvWakeTime.log');
+		debug_log(__METHOD__, "WakeTime in log: ". date("d.m.Y. H:i:s", $wakeTimeLog));
 
 		if ( HomeServer::isOn() == "true" ) {
-			debug_log(__METHOD__, "Requesting waketime from HomeServer..");
+			debug_log(__METHOD__, "HomeServer live, requesting waketime..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
+
 			if ($waketime == 0) {
-				if ( date('G') <  1 + date("G", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
+				if ( date('U') <  date("U", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
 					$waketime = strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"));
+					debug_log(__METHOD__, "WakeTime is TODAY: ". date("d.m.Y. H:i:S", $waketime));
 				}
 				else {
 					$waketime = strtotime("tomorrow ". Configs::get("HomeServer", "DAILY_WAKE"));
+					debug_log(__METHOD__, "WakeTime is TOMORROW: ". date("d.m.Y. H:i:s", $waketime));
 				}
 			}
 			if ($waketime < $waketimeLog || $waketimeLog == 0) {
@@ -171,10 +175,8 @@ class HomeServer {
 			}
 		}
 		else {
-			$waketime = $waketimeLog;
+			$waketime = $wakeTimeLog;
 		}
-
-		debug_log(__METHOD__, "Waketime: ". $waketime);
 
 		return $waketime;
 	}

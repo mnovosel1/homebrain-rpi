@@ -132,8 +132,9 @@ class HomeBrain {
                     $reason .= "KODI ";
                 break;
 
-                case ($srvWakeTime < 1800):
+                case (($srvWakeTime-time()) < 1800):
                     hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
+		    Notifier::fcmBcast("HomeBrain", "thinks it's DailyWake (".date("H:i d.m.", $srvWakeTime).")");
                     //$reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
             }

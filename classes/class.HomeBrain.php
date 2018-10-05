@@ -82,7 +82,7 @@ class HomeBrain {
 
     public static function wakeCheck() {
 
-	hbrain_log(__METHOD__, "checking..");
+	hbrain_log(__METHOD__, "WakeChecking..");
 
         // get old states from db
         $rows = SQLITE::fetch("states", ["name", "auto", "active"], 1);
@@ -123,6 +123,7 @@ class HomeBrain {
         // HomeServer is off
         if ( !(bool)$newStates["HomeServer"]["active"] ) {
 
+	    $srvWakeTime = HomeServer::getWakeTime();
             // wake HomeServer if:
             $reason = "";
             switch (true) {
@@ -131,9 +132,9 @@ class HomeBrain {
                     $reason .= "KODI ";
                 break;
 
-                case ((HomeServer::getWakeTime()-time()) < 1800):
-                    hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime.");
-                    $reason .= "WakeTime ".date("H:i d.m.", HomeServer::getWakeTime())." ";
+                case ($srvWakeTime < 1800):
+                    hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
+                    //$reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
             }
             if ( $reason != "" ) HomeServer::wake($reason);

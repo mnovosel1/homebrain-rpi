@@ -160,6 +160,7 @@ class HomeServer {
 			debug_log(__METHOD__, "HomeServer live, requesting waketime..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
 		}
+		else $waketime = $wakeTimeLog;
 
 		if ($waketime == 0) {
 			if ( date('U') <  date("U", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
@@ -174,9 +175,6 @@ class HomeServer {
 
 		if ($waketime < $waketimeLog || $waketimeLog == 0) {
 			exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
-		}
-		else {
-			$waketime = $wakeTimeLog;
 		}
 
 		return $waketime;

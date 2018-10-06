@@ -134,8 +134,8 @@ class HomeBrain {
 
                 case (($srvWakeTime-time()) < 1800):
                     hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
-		    Notifier::fcmBcast("HomeBrain", "thinks it's DailyWake (".date("H:i d.m.", $srvWakeTime).")");
-                    //$reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
+		    Notifier::fcmBcast("HomeBrain", "it's HomeServer WakeTime (".date("H:i d.m.", $srvWakeTime).")");
+                    $reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
             }
             if ( $reason != "" ) HomeServer::wake($reason);

@@ -279,6 +279,7 @@ class SQLITE {
         CREATE TABLE finlog (
             timestamp timestamp PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
             name TEXT NOT NULL,
+            category TEXT DEFAULT NULL,
             amount double NOT NULL
         );
         ";

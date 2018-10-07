@@ -1,37 +1,42 @@
 ;<?php
-;die(); // For further security
+;die();
 ;/*
 
-DEBUG_LOG="dbg.log.txt"
+DEBUG[0]="SQLITE"
+DEBUG[1]="FinMan"
 
-HOMEBRAIN[IP]="xxxxxxx"
+ALARM="6:00 AM"
 
-HOMESERVER[IP]="xxxxxx"
-HOMESERVER[MAC]="xxxx"
+HOMEBRAIN[IP]="xxx.xxx.xxx.xxx"
+HOMEBRAIN[USER]="user"
+HOMEBRAIN[LOG]="hbrain.log"
+HOMEBRAIN[DB]="hbrain.db"
+HOMEBRAIN[PUBKEY]="/path/to/.ssh/id_rsa.pub"
+HOMEBRAIN[PRIVKEY]="/path/to/.ssh/id_rsa"
 
-HOMEBRAIN_DB="hbrain.db"
+DB_REPLICATION[HOST]="example.com"
+DB_REPLICATION[USER]="db_user"
+DB_REPLICATION[PASS]="dbpassword"
+DB_REPLICATION[DBNAME]="db_name"
 
-DB_REPLIC_HOST=...
-DB_REPLIC_USER=...
-DB_REPLIC_PASS=...
-DB_REPLIC_DBNAME=...
+HOMESERVER[USER]="hbrain"
+HOMESERVER[DAILY_WAKE]="5:30 AM"
 
-HEAT_HYST=0.2
-TEMPSET_EMPTY=17
-TEMPSET_NIGHT=17
-TEMPSET_MAX=20.5
-TEMPSET_MIN=10
-TEMPSET_FORCE=20
+TEMP[HYST]="0.2"
+TEMP[EMPTY]="17"
+TEMP[NIGHT]="17"
+TEMP[MAX]="20.5"
+TEMP[MIN]="10"
+TEMP[FORCE]="20"
 
-SILENT_TIME_START="23"
-SILENT_TIME_END="6"
+SILENT_TIME[START]="23"
+SILENT_TIME[END]="6"
 
-#HOST[]='name|mac|allwaysOn|heating|turnOn'
-
+SOUND[MAX]="-20"
+SOUND[MAX_WHEN_SILENT_TIME]="-30"
 
 FCM[URL]="https://fcm.googleapis.com/fcm/send"
-FCM[API_KEY]="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+FCM[API_KEY]="xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 
 ;*/
-
 ;?>

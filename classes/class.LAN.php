@@ -49,8 +49,8 @@ class LAN {
         }
         if (!ssh2_auth_pubkey_file($connection,
                                     Configs::get($host, "user"),
-                                    Configs::get("pubkeyfile"),
-                                    Configs::get("privkeyfile"))) {
+                                    Configs::get("HOMEBRAIN", "PUBKEY"),
+                                    Configs::get("HOMEBRAIN", "PRIVKEY"))) {
             hbrain_log(_FILE_, "SSH auth failed on ". $host);
             return false;
         }

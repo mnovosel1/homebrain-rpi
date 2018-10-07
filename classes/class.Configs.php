@@ -24,8 +24,58 @@ class Configs {
         return Configs::get("FCM", $config);
     }
 
+    public static function debug($class) {
+        $debug = Configs::get("DEBUG");
+        return in_array($class, $debug);
+    }
+
     private static function getAll() {
         return parse_ini_file(DIR.'/'.INI_FILE);
+    }
+
+    public static function set($key, $value) {
+        $configs = Configs::getAll();
+        $key = strtoupper($key);
+
+        if (!array_key_exists($key, $configs)) {
+            debug_log(__METHOD__, $key ."=>". $value ." doesn't exist..");
+            return false;
+        }
+
+        if ($key == "DEBUG") {
+            $key = array_search($value, $configs["DEBUG"]);
+            if ($key === false) {
+                $configs["DEBUG"][] = $value;
+            }
+            else {
+                array_splice($configs["DEBUG"], $key, 1);
+            }
+        }
+        else {
+            $configs[$key] = $value;
+        }
+
+
+        $out = ";<?php". PHP_EOL .";die();". PHP_EOL .";/*". PHP_EOL;
+        $last_k = "";
+
+        foreach ($configs as $k => $v) {
+            $out .= ($k != $last_k) ? PHP_EOL : "";
+            $last_k = $k;
+
+            if(!is_array($v)) {
+                $out .= "$k=\"$v\"". PHP_EOL;
+            }
+
+            else {
+                foreach ($v as $k2 => $v2) {
+                    $out .= $k ."[".$k2."]=\"".$v2."\"".PHP_EOL;
+                }
+            }
+
+        }
+        $out .= PHP_EOL .";*/". PHP_EOL .";?>";
+        file_put_contents(DIR.'/'.INI_FILE, $out);
     }
 }
 

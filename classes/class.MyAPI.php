@@ -23,6 +23,7 @@ class MyAPI extends API {
         "HomeBrain::user",
         "HomeBrain::mobappconfig",
         "HomeBrain::uploaddata",
+        "HomeBrain::debug",
         "HomeServer::power",
         "HomeServer::wake",
         "HomeServer::shut",
@@ -125,7 +126,11 @@ class MyAPI extends API {
             if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
 
             if ( $ret == "" ) {
-                if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
+                if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
+                    hbrain_log(__METHOD__, $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."');");
+                    return trim($name::$verb(trim($_POST["param1"]), trim($_POST["param2"])));
+                }
+                else if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
                     hbrain_log(__METHOD__, $name."::".$this->verb."('".$_POST["param1"]."');");
                     return trim($name::$verb(trim($_POST["param1"])));
                 } else {

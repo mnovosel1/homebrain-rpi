@@ -5,6 +5,19 @@
 define('DIR', str_replace('/classes', '', dirname(__FILE__)));
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+//* autoload CLASS definitions *///////////////////////////////////////////////////////////////////
+spl_autoload_register(function ($class_name) {
+	require_once DIR . "/classes/class.".$class_name.".php";
+});
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
+//* Requests from the same server don't have a HTTP_ORIGIN header *////////////////////////////////
+if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
+    $_SERVER['HTTP_ORIGIN'] = $_SERVER['SERVER_NAME'];
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 //* DEBUGGING stuff *//////////////////////////////////////////////////////////////////////////////
 
 function debug_log($where, $what) {
@@ -14,7 +27,7 @@ function debug_log($where, $what) {
         else
                 $class = explode('.', $where)[1];
 
-	if ( !$class::$debug ) return;
+	if ( !Configs::debug($class) ) return;
 	hbrain_log($where, $what, "DEBUG");
 }
 
@@ -33,20 +46,7 @@ function hbrain_log($where, $what, $logLevel = "INFO") {
 	var_dump($what);
 	$out = ob_get_clean();
 
-	file_put_contents(DIR.'/var/'.Configs::get("LOG"), $out, FILE_APPEND);
-}
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//* autoload CLASS definitions *///////////////////////////////////////////////////////////////////
-spl_autoload_register(function ($class_name) {
-	require_once DIR . "/classes/class.".$class_name.".php";
-});
-
-
-///////////////////////////////////////////////////////////////////////////////////////////////////
-//* Requests from the same server don't have a HTTP_ORIGIN header *////////////////////////////////
-if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
-    $_SERVER['HTTP_ORIGIN'] = $_SERVER['SERVER_NAME'];
+	file_put_contents(DIR.'/var/'.Configs::get("HOMEBRAIN", "LOG"), $out, FILE_APPEND);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

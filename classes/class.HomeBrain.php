@@ -1,7 +1,6 @@
 <?php
 
 class HomeBrain {
-    public static $debug = false;
 
     public static function h() {
         return MyAPI::help(HomeBrain::class);
@@ -40,6 +39,7 @@ class HomeBrain {
         TV::off();
         KODI::off();
         MPD::off();
+        LAN::SSH("KODI", "sudo /sbin/shutdown -r now > /dev/null &");
     }
 
     public static function dbBackup() {
@@ -334,6 +334,17 @@ class HomeBrain {
                         true);
 
         return $in .":". $out;
+    }
+
+    public static function debug() {
+        $numArgs = func_num_args();
+
+        if ($numArgs == 1) {
+            $args = func_get_args();
+            Configs::set("DEBUG", $args[0]);
+        }
+
+        return implode(", ", Configs::get("DEBUG"));
     }
 }
 

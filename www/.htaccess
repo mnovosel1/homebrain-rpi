@@ -9,3 +9,10 @@ Options -Indexes
         Require ip 10.10.10
         Require ip 179.61.232.251
 </Limit>
+
+<IfModule mod_rewrite.c>
+	RewriteEngine On
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule (.*)$ /api.php?request=$1 [QSA,NC,L]
+</IfModule>

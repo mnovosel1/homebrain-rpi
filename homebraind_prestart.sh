@@ -2,9 +2,9 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-if [[ ! -L $DIR/www/api/api.php ]]; then
-	rm -rf $DIR/www/api/api.php
-	ln -s $DIR/classes/api.php $DIR/www/api/api.php
+if [[ ! -L $DIR/www/api.php ]]; then
+	rm -rf $DIR/www/api.php
+	ln -s $DIR/classes/api.php $DIR/www/api.php
 fi
 
 

@@ -56,7 +56,7 @@ class MyAPI extends API {
         "TV::on",
         "TV::off",
         "TV::power",
-        "TV::input",
+        "TV::kodi",
         "TV::ison",
         "TV::status",
         "KODI::ison",

@@ -30,6 +30,7 @@ class Notifier {
 
     public static function fcmBcast($title, $msg, $data = null) {
         if ( !Auth::allowedIP() ) return false;
+        hbrain_log(__METHOD__, $title .": ". $msg);
         if ( $title === null ) $title = "HomeBrain";
 
         Notifier::kodi($msg, $title);

@@ -44,7 +44,7 @@ class Heating {
     }
 
     public static function isOn() {
-        
+        return 0;
     }
 
     public static function updateMob() {

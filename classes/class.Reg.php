@@ -2,9 +2,17 @@
 
 class Reg {
 
+    public static function h() {
+        return MyAPI::help(self::class);
+    }
+
+    public static function help() {
+        return MyAPI::help(self::class);
+    }
+
     public static function register() {
 
-        if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) return false;        
+        if (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)) return false;
 
         $ret = SQLITE::insert("fcm", ["timestamp", "email", "token"], ["datetime('now', 'localtime')", "'".$_POST["email"]."'", "'".$_POST["token"]."'"], true);
 
@@ -29,7 +37,7 @@ class Reg {
             SQLITE::approve($verified);
             return true;
         }
-        
+
         return false;
     }
 }

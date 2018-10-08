@@ -253,12 +253,7 @@ class HomeBrain {
     }
 
     public static function notify($msg) {
-
-        $msg = str_replace("_", " ", $msg);
-        $logMsg = "Not sent!";
-        if (Notifier::fcmBcast("HomeBrain", $msg)) $logMsg = "FCM sent OK!";
-
-        debug_log(__METHOD__, 'Notifier::fcmBcast("HomeBrain", "'.$msg.'"); '.$logMsg);
+        Notifier::notify($msg);
     }
 
     public static function alert($secs) {

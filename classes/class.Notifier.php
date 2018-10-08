@@ -14,10 +14,8 @@ class Notifier {
         return MyAPI::help(Notifier::class);
     }
 
-    public static function notify($msg, $title = "HomeBrain") {
-        if ( !Auth::allowedIP() ) return false;
-        Notifier::kodi();
-        
+    public static function notify($msg, $title = "HomeBrain") {        
+        $msg = str_replace("_", " ", $msg);
         if ( Notifier::fcmBcast($title, $msg) ) return null;
         return false;
     }
@@ -25,15 +23,17 @@ class Notifier {
     public static function kodi($msg, $title = "HomeBrain") {
         if ( !Auth::allowedIP() ) return false;
         $data = Notifier::getPostData();
-
-        exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.25:80/jsonrpc 2>/dev/null');
+        LAN::SSH("KODI", "/usr/bin/kodi-send -a 'Notification(". $title .", ". $msg .")'");
+        //exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.25:80/jsonrpc 2>/dev/null');
         return true;
     }
 
     public static function fcmBcast($title, $msg, $data = null) {
         if ( !Auth::allowedIP() ) return false;
         if ( $title === null ) $title = "HomeBrain";
-        
+
+        Notifier::kodi($msg, $title);
+
         $tokens = SQLITE::fetch("fcm", ["token"], "approved='true'");
         foreach ( $tokens as $tok ) Notifier::sendFcm($title, $msg, $data, $tok['token']);
         return true;

@@ -55,7 +55,7 @@ foreach ($file_info as $file) {
         echo $file . PHP_EOL;
     }
     if ( $filesUpdated !== null && $i%10 == 0 ) {
-        $command = DIR . "/homebrain homebrain mobAppUpdate '{\"appupdates\":".json_encode($filesUpdated, JSON_UNESCAPED_SLASHES)."}'";
+        $command = DIR . "/homebrain homebrain mobAppUpdate '{\"updates\":".json_encode($filesUpdated, JSON_UNESCAPED_SLASHES)."}'";
         exec($command);
         $filesUpdated = null;
         sleep(2);
@@ -63,10 +63,12 @@ foreach ($file_info as $file) {
     $filesNewState .= $thisFile;
 }
 if ( $filesUpdated !== null ) {
-    $command = DIR . "/homebrain homebrain mobAppUpdate '{\"appupdates\":'".json_encode($filesUpdated, JSON_UNESCAPED_SLASHES)."'}'";
+    $command = DIR . "/homebrain homebrain mobAppUpdate '{\"updates\":'".json_encode($filesUpdated, JSON_UNESCAPED_SLASHES)."'}'";
     exec($command);
     $filesUpdated = null;
 }
+
+// echo $command;
 
 file_put_contents(DIR . "/www/app/" . FILES_DAT, $filesNewState);
 

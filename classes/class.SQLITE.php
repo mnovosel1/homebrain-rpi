@@ -105,7 +105,7 @@ class SQLITE {
         if ( $ret == "not an error" ) {
             $ret = null;
         }
-        else hbrain_log(__METHOD__, $ret);
+        else hbrain_log(__METHOD__, $ret ." SQL: ". $sql);
 
         return $ret;
     }

@@ -21,7 +21,7 @@ class Medvedi {
         if (Medvedi::$newData["medvedGolova"] > Medvedi::$logData["medvedGolova"]) {
             hbrain_log(__METHOD__, "Medvedi goool!");
             Notifier::alert(5);
-            Notifier::fcmBcast("Medvedi", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
+            Notifier::fcmBcast("MedvediGoal", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
         }
 
         if ( Medvedi::$newData == Medvedi::$logData ) return;

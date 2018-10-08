@@ -42,6 +42,10 @@ class TV {
     public static function input() {
         exec("sudo ". DIR ."/bin/nrf 1 irsony:0A50 &");
     }
+
+    public static function kodi() {
+        LAN::SSH("KODI", "echo 'as' | /usr/bin/cec-client -s >> /dev/null &");
+    }
 }
 
 ?>

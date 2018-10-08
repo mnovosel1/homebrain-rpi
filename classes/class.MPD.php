@@ -54,6 +54,8 @@ class MPD {
 
     public static function playing() {
 
+        debug_log(__METHOD__, "line: ". __LINE__);
+
         $mpdplay = LAN::SSH("KODI", "/usr/bin/mpc current");
         
         if ($mpdplay == "") {

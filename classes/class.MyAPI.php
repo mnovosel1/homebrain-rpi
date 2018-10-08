@@ -5,8 +5,8 @@ class MyAPI extends API {
 
     // Only callable methods are available from HomeBrain CLI (and Web API)
     private static $callable = array (
-        "Reg::register",
         "Reg::verify",
+        "Reg::register",
         "HomeBrain::todo",
         "HomeBrain::alloff",
         "HomeBrain::getinfo",
@@ -67,7 +67,8 @@ class MyAPI extends API {
         "Medvedi::show",
         "Medvedi::notify",
         "Medvedi::timetogame",
-        "LAN::checknetwork"
+        "LAN::checknetwork",
+        "FinMan::add"
     );
 
     public function __construct($request, $origin) {
@@ -106,6 +107,10 @@ class MyAPI extends API {
 
             case "lan":
                $name = "LAN";
+            break;
+
+            case "finman":
+                $name = "FinMan";
             break;
 
             default:
@@ -147,7 +152,7 @@ class MyAPI extends API {
     }
 
     public static function isCallable($class, $method) {
-        return array_search($class.'::'.$method, self::$callable);
+        return (array_search($class.'::'.$method, self::$callable) !== false);
     }
 
     public static function help($class) {

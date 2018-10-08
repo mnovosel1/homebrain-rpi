@@ -47,11 +47,11 @@ class Auth {
 
         if ( $arrayIPs == "ANY" ) return true;
         
-        $allowedIPs[] = Configs::getIP("HomeBrain"); // HomeBrain is allways allowed
+        $allowedIPs[] = Configs::getIP("HomeBrain", "IP"); // HomeBrain is allways allowed
         foreach ( $arrayIPs as $ip ) $allowedIPs[] = $ip;
 
         if ( array_search($_SERVER["REMOTE_ADDR"], $allowedIPs) === false ) {
-            debug_log(__METHOD__, "IP not allowed");
+            hbrain_log(__METHOD__, "IP not allowed");
             return false;
         }
 

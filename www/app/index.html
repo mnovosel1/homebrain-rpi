@@ -13,6 +13,9 @@
 	<script src="js/jquery.js"></script>
 	<script src="js/jquery.mobile-1.4.5.js"></script>
     <script src="js/homebrain.js"></script>
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" >
+    <link rel="stylesheet" href="css/all.css">
     
 </head>
     <body>
@@ -50,8 +53,8 @@
 
 <!-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
-        <!--        MMUULLTTIIMMEEDDIIAA        -->
-        <div data-role="page" data-title="MultiMedia" id="multimedia">
+        <!--        KKKOOOODDDIII        -->
+        <div data-role="page" data-title="KODI" id="mmkodi">
             <div data-role="content">
 
                 <div class="ui-body ui-body-a ui-corner-all">
@@ -62,10 +65,12 @@
                                     <td><h3>TV</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="tv" id="tv-input" value="input">
-                                            <label for="tv-input">input</label>
-                                            <input type="radio" name="tv" id="tv-power" value="power">
-                                            <label for="tv-power">POWER</label>
+                                            <input type="radio" name="tv" id="tv-on" value="on">
+                                            <label for="tv-on">ON&nbsp;</label>
+                                            <input type="radio" name="tv" id="tv-as" value="kodi">
+                                            <label for="tv-as">KODI</label>
+                                            <input type="radio" name="tv" id="tv-off" value="off">
+                                            <label for="tv-off">OFF</label>
                                         </fieldset>
                                     </td>
                                 </tr>
@@ -79,7 +84,9 @@
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
                                             <input type="checkbox" name="kodi-on" id="kodi-on" value="on">
                                             <label for="kodi-on">ON&nbsp;</label>
-                                            <input type="checkbox" name="kodi-off" id="kodi-off" value="off">
+                                            <input type="checkbox" name="kodi" id="kodi-watch" value="watch">
+                                            <label for="kodi-watch">WATCH</label>
+                                            <input type="checkbox" name="kodi" id="kodi-off" value="off">
                                             <label for="kodi-off">OFF</label>
                                         </fieldset>
                                         </form>
@@ -96,62 +103,44 @@
                                     <td><h3>AMP</h3></td>
                                     <td colspan="2" style="text-align: right;">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="amp" id="amp-on" value="on">
-                                            <label for="amp-on" id="lbl-amp-on">ON&nbsp;</label>
-                                            <input type="radio" name="amp" id="amp-off" value="off">
-                                            <label for="amp-off" id="lbl-amp-off">OFF</label>
+                                            <input type="radio" name="amp" id="amp1-on" value="on">
+                                            <label for="amp1-on" id="lbl-amp1-on"><strong>1</strong></label>
+                                            <input type="radio" name="amp" id="amp1-off" value="off">
+                                            <label for="amp1-off" id="lbl-amp1-off"><strong>0</strong></label>
                                         </fieldset>                                        
                                     </td>
                                 </tr>
                                 <tr>
                                     <td colspan="3" style="text-align: center; background-color: #f0f0f0;"  class="ui-corner-all">
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="amp" id="amp-movie" value="movie">
-                                            <label for="amp-movie" id="lbl-amp-movie">Movie</label>
-                                            <input type="radio" name="amp" id="amp-dolby" value="dolby">
-                                            <label for="amp-dolby" id="lbl-amp-dolby">Dolby Digital</label>
-                                            <input type="radio" name="amp" id="amp-music" value="music">
-                                            <label for="amp-music" id="lbl-amp-music">Music</label>
+                                            <input type="radio" name="amp" id="amp1-movie" value="movie">
+                                            <label for="amp1-movie" id="lbl-amp1-movie">Movie</label>
+                                            <input type="radio" name="amp" id="amp1-dolby" value="dolby">
+                                            <label for="amp1-dolby" id="lbl-amp1-dolby">Dolby Digital</label>
+                                            <input type="radio" name="amp" id="amp1-music" value="music">
+                                            <label for="amp1-music" id="lbl-amp1-music">Music</label>
                                         </fieldset>
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="amp" id="amp-volup2" value="volup2">
-                                            <label for="amp-volup2" id="lbl-amp-volup2">+&nbsp;+</label>
-                                            <input type="radio" name="amp" id="amp-volup1" value="volup1">
-                                            <label for="amp-volup1" id="lbl-amp-volup1">&nbsp;+&nbsp;</label>
-                                            <input type="radio" name="amp" id="amp-mute" value="mute">
-                                            <label for="amp-mute" id="lbl-amp-mute">mute</label>
-                                            <input type="radio" name="amp" id="amp-voldown1" value="voldown1">
-                                            <label for="amp-voldown1" id="lbl-amp-voldown1">&nbsp;-&nbsp;</label>
-                                            <input type="radio" name="amp" id="amp-voldown2" value="voldown2">
-                                            <label for="amp-voldown2" id="lbl-amp-voldown2">-&nbsp;-</label>
+                                            <input type="radio" name="amp" id="amp1-volup2" value="volup2">
+                                            <label for="amp1-volup2" id="lbl-amp1-volup2">+&nbsp;+</label>
+                                            <input type="radio" name="amp" id="amp1-volup1" value="volup1">
+                                            <label for="amp1-volup1" id="lbl-amp1-volup1">&nbsp;+&nbsp;</label>
+                                            <input type="radio" name="amp" id="amp1-mute" value="mute">
+                                            <label for="amp1-mute" id="lbl-amp1-mute">mute</label>
+                                            <input type="radio" name="amp" id="amp1-voldown1" value="voldown1">
+                                            <label for="amp1-voldown1" id="lbl-amp1-voldown1">&nbsp;-&nbsp;</label>
+                                            <input type="radio" name="amp" id="amp1-voldown2" value="voldown2">
+                                            <label for="amp1-voldown2" id="lbl-amp1-voldown2">-&nbsp;-</label>
                                         </fieldset>
                                         <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="radio" name="amp" id="amp-kodi" value="kodi">
-                                            <label for="amp-kodi" id="lbl-amp-kodi">KODI</label>
-                                            <input type="radio" name="amp" id="amp-mpd" value="mpd">
-                                            <label for="amp-mpd" id="lbl-amp-mpd">MPD</label>
-                                            <input type="radio" name="amp" id="amp-aux" value="aux">
-                                            <label for="amp-aux" id="lbl-amp-aux">AUX</label>
+                                            <input type="radio" name="amp" id="amp1-kodi" value="kodi">
+                                            <label for="amp1-kodi" id="lbl-amp1-kodi">KODI</label>
+                                            <input type="radio" name="amp" id="amp1-mpd" value="mpd">
+                                            <label for="amp1-mpd" id="lbl-amp1-mpd">MPD</label>
+                                            <input type="radio" name="amp" id="amp1-aux" value="aux">
+                                            <label for="amp1-aux" id="lbl-amp1-aux">AUX</label>
                                         </fieldset>
                                     </td>
-                                </tr>
-                            </table>
-                        </li>
-                        <li>
-                            <table style="width: 100%; margin-bottom: .7em;">
-                                <tr>
-                                    <td><h3>MPD</h3></td>
-                                    <td colspan="2" style="text-align: right;">
-                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
-                                            <input type="checkbox" name="mpd-on" id="mpd-on" value="on">
-                                            <label for="mpd-on">ON&nbsp;</label>
-                                            <input type="checkbox" name="mpd-off" id="mpd-off" value="off">
-                                            <label for="mpd-off">OFF</label>
-                                        </fieldset>
-                                    </td>
-                                </tr>
-                                <tr id="mpd-info-tr">
-                                    <td colspan="3" id="mpd-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
                                 </tr>
                             </table>
                         </li>
@@ -160,7 +149,103 @@
 
             </div><!-- /content -->        
         </div><!-- /page -->
-        <!--        /MMUULLTTIIMMEEDDIIAA        -->
+        <!--        KKKOOOODDDIII        -->
+
+<!-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
+
+        <!--        MMMMPPPPDDD        -->
+        <div data-role="page" data-title="MPD" id="mmmpd">
+            <div data-role="content">
+
+                <div class="ui-body ui-body-a ui-corner-all">
+                    <ul data-role="listview" data-inset="false">
+                        <li>
+                            <table style="width: 100%; margin-bottom: .7em;">
+                                <tr>
+                                    <td><h3>MPD</h3></td>
+                                    <td colspan="2" style="text-align: right;">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="checkbox" name="mpd-on" id="mpd-on" value="on">
+                                            <label for="mpd-on">1</label>
+                                            <input type="checkbox" name="mpd-off" id="mpd-off" value="off">
+                                            <label for="mpd-off">0</label>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: center; background-color: #f0f0f0;"  class="ui-corner-all">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="mpd" id="mpd-prev" value="prev">
+                                            <label for="mpd-prev"><i class="fas fa-step-backward"></i></label>
+                                            <input type="radio" name="mpd" id="mpd-play" value="play">
+                                            <label for="mpd-play"><i class="fas fa-play"></i></label>
+                                            <input type="radio" name="mpd" id="mpd-pause" value="pause">
+                                            <label for="mpd-pause"><i class="fas fa-pause"></i></label>
+                                            <input type="radio" name="mpd" id="mpd-stop" value="stop">
+                                            <label for="mpd-stop"><i class="fas fa-stop"></i></label>
+                                            <input type="radio" name="mpd" id="mpd-next" value="next">
+                                            <label for="mpd-next"><i class="fas fa-step-forward"></i></label>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                                <tr id="mpd-info-tr">
+                                    <td colspan="3" id="mpd-info" class="ui-corner-all" style="text-align: left; font-size: .8em; white-space: normal; background-color: #f0f0f0; padding: .3em;">..</td>
+                                </tr>
+                            </table>
+                        </li>
+                        <li>
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td><h3>AMP</h3></td>
+                                    <td colspan="2" style="text-align: right;">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="amp" id="amp2-on" value="on">
+                                            <label for="amp2-on" id="lbl-amp2-on">1</label>
+                                            <input type="radio" name="amp" id="amp2-off" value="off">
+                                            <label for="amp2-off" id="lbl-amp2-off">0</label>
+                                        </fieldset>                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="text-align: center; background-color: #f0f0f0;"  class="ui-corner-all">
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="amp" id="amp2-movie" value="movie">
+                                            <label for="amp2-movie" id="lbl-amp2-movie">Movie</label>
+                                            <input type="radio" name="amp" id="amp2-dolby" value="dolby">
+                                            <label for="amp2-dolby" id="lbl-amp2-dolby">Dolby Digital</label>
+                                            <input type="radio" name="amp" id="amp2-music" value="music">
+                                            <label for="amp2-music" id="lbl-amp2-music">Music</label>
+                                        </fieldset>
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="amp" id="amp2-volup2" value="volup2">
+                                            <label for="amp2-volup2" id="lbl-amp2-volup2">+&nbsp;+</label>
+                                            <input type="radio" name="amp" id="amp2-volup1" value="volup1">
+                                            <label for="amp2-volup1" id="lbl-amp2-volup1">&nbsp;+&nbsp;</label>
+                                            <input type="radio" name="amp" id="amp2-mute" value="mute">
+                                            <label for="amp2-mute" id="lbl-amp2-mute">mute</label>
+                                            <input type="radio" name="amp" id="amp2-voldown1" value="voldown1">
+                                            <label for="amp2-voldown1" id="lbl-amp2-voldown1">&nbsp;-&nbsp;</label>
+                                            <input type="radio" name="amp" id="amp2-voldown2" value="voldown2">
+                                            <label for="amp2-voldown2" id="lbl-amp2-voldown2">-&nbsp;-</label>
+                                        </fieldset>
+                                        <fieldset data-role="controlgroup" data-type="horizontal" data-mini="true">
+                                            <input type="radio" name="amp" id="amp2-kodi" value="kodi">
+                                            <label for="amp2-kodi" id="lbl-amp2-kodi">KODI</label>
+                                            <input type="radio" name="amp" id="amp2-mpd" value="mpd">
+                                            <label for="amp2-mpd" id="lbl-amp2-mpd">MPD</label>
+                                            <input type="radio" name="amp" id="amp2-aux" value="aux">
+                                            <label for="amp2-aux" id="lbl-amp2-aux">AUX</label>
+                                        </fieldset>
+                                    </td>
+                                </tr>
+                            </table>
+                        </li>
+                    </ul>
+                </div>
+
+            </div><!-- /content -->        
+        </div><!-- /page -->
+        <!--        MMMMPPPPDDD        -->
 
 <!-- ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 

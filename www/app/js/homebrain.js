@@ -134,6 +134,7 @@ function requestingDone() {
 		$('input:checked[name="hbr"]').prop('checked', false).checkboxradio( 'refresh' );
 		$('input:checked[name="hsrv"]').prop('checked', false).checkboxradio( 'refresh' );
 		$('input:checked[name="amp"]').prop('checked', false).checkboxradio( 'refresh' );
+		$('input:checked[name="mpd"]').prop('checked', false).checkboxradio( 'refresh' );
 		$('input:checked[name="tv"]').prop('checked', false).checkboxradio( 'refresh' );
 		$('input[name="heat-set"]').prop('checked', false).checkboxradio( 'refresh' );
 	 }, 256);

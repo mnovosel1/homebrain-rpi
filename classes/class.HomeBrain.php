@@ -98,6 +98,7 @@ class HomeBrain {
             if ( strpos($hostName, " ") === false ) {
                 $class = $hostName;
                 $condition = $class;
+                debug_log(__METHOD__, $class ."::isOn();");
                 $newState = ($hostName::isOn() == "false") ? 0 : 1;
             }
 
@@ -106,6 +107,7 @@ class HomeBrain {
                 $class = trim($object[0]);
                 $method = trim($object[1]);
                 $condition = $class." ".$method;
+                debug_log(__METHOD__, $class ."::". $method ."();");
                 $newState = ($class::$method() == "false") ? 0 : 1;
             }
 
@@ -195,7 +197,7 @@ class HomeBrain {
 
     public static function mobAppConfig($token = null) {
         if ( $token === null ) $token = $_POST["param1"];
-        $cfgMessage["pages"]    = ["home", "multimedia", "grijanje", "lan", "vrt"];
+        $cfgMessage["pages"]    = ["home", "mmkodi", "mmmpd", "grijanje", "lan", "vrt"];
         $cfgMessage["homeUrl"]  = "10.10.10.10";
 
         Notifier::sendFcm ("HomeBrain", "APP config..", ["configs" => json_encode($cfgMessage)], $token);
@@ -230,7 +232,7 @@ class HomeBrain {
     }
 
     public static function mobAppUpdate() {
-        Notifier::fcmBcast("HomeBrain", "APP update..", array("appupdates" => $_POST["param1"]));
+        Notifier::fcmBcast("HomeBrain", "APP update..", array("appupdate" => $_POST["param1"]));
     }
 
     public static function reboot() {

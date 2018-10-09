@@ -1,11 +1,7 @@
 .configs
-hbrain.sql
-
-dbg.*
-www/git/config.ini
 
 var/
 saved_var/
-www/git/cache/
+www/git/
 
 www/app/files.dat

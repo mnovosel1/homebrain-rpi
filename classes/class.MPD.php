@@ -11,7 +11,7 @@ class MPD {
     }
 
     public static function on() {
-        
+
         Amp::on();
 
         if (MPD::playing() == "false") {
@@ -24,11 +24,15 @@ class MPD {
             LAN::SSH("KODI", "/usr/bin/mpc play 1");
         }
         Amp::mpd();
+
+        HomeBrain::wakecheck();
     }
-    
+
     public static function off() {
         LAN::SSH("KODI", "/usr/bin/mpc clear");
         Amp::off();
+
+        HomeBrain::wakecheck();
     }
 
     public static function play() {
@@ -54,7 +58,7 @@ class MPD {
     public static function playing() {
 
         $mpdplay = LAN::SSH("KODI", "/usr/bin/mpc current");
-        
+
         if ($mpdplay == "") {
             SQLITE::update("states", "active", 0, "`name`='MPD playing'");
             return "false";

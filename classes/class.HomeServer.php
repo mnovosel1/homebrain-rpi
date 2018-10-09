@@ -80,7 +80,7 @@ class HomeServer {
 	public static function shut($reason = "") {
 		if ( HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
-			if ( $reason == "" ) {
+			if ( $reason == "null" || $reason == "" ) {
 				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
 				else $reason = "..";
 			} else $reason = ": ".$reason;

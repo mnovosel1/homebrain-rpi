@@ -1,6 +1,6 @@
 <?php
 
-abstract class HomeBrain {
+abstract class aHomeBrain {
 
     public static function debug() {
         return MyAPI::debug(self::class);

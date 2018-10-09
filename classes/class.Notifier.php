@@ -58,6 +58,8 @@ class Notifier {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
+        hbrain_log(__METHOD__, $title .": ". $msg);
+
         if ( $ttl === null ) $ttl = TTL;
         if ( $title === null ) $title = "HomeBrain";
         else $title = explode(" ", $title)[0];

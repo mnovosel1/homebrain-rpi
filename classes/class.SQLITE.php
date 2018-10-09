@@ -52,16 +52,14 @@ class SQLITE {
     public static function update($table, $attribute, $value, $condition = null) {
         if ( $condition === null ) return false;
 
-        $update = true;
-
         if ( $table == "states" ) {
             SQLITE::query("SELECT `".$attribute."` FROM `states` WHERE ".$condition);
-            if ( $value == SQLITE::$result[0][$attribute] ) {
-                $update = false;
-            }
+            $oldValue = SQLITE::$result[0][$attribute];
         }
 
-        if ( $update ) {
+
+        if ( $value*1 != $oldValue*1 ) {
+            debug_log(__METHOD__, $condition ." changed to ". $value);
             $ret = SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
             SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
             HomeBrain::mobDbUpdate(SQLITE::$result[0]);

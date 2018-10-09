@@ -2,6 +2,7 @@
 
 var/
 saved_var/
-www/git/
 
+www/git/
+www/db
 www/app/files.dat

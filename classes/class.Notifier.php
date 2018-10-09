@@ -18,7 +18,7 @@ class Notifier {
         Notifier::kodi($msg, $title);
 
         if ( HomeBrain::isSilentTime() ) return;
-        
+
         $msg = str_replace("_", " ", $msg);
         if ( Notifier::fcmBcast($title, $msg) ) return null;
         return false;
@@ -36,8 +36,6 @@ class Notifier {
         if ( !Auth::allowedIP() ) return false;
         hbrain_log(__METHOD__, $title .": ". $msg);
         if ( $title === null ) $title = "HomeBrain";
-
-        Notifier::kodi($msg, $title);
 
         $tokens = SQLITE::fetch("fcm", ["token"], "approved='true'");
         foreach ( $tokens as $tok ) Notifier::sendFcm($title, $msg, $data, $tok['token']);
@@ -71,13 +69,13 @@ class Notifier {
             $fields["notification"]["body"]     = $msg;
             $fields["notification"]["sound"]    = strtolower($title);
         }
-        
+
         // DATA message
         else {
-            if ( $data !== null ) { 
+            if ( $data !== null ) {
                 $fields['data'] = $data;
             }
-            
+
             $fields['data']['title']    = $title;
             $fields['data']['body'] 	= $msg;
         }
@@ -103,7 +101,7 @@ class Notifier {
         if ( $result->failure > 0 ) $success = false;
         else $success = true;
 
-        $fields["success"] = $success;        
+        $fields["success"] = $success;
         debug_log(__METHOD__, json_encode( $fields ));
 
         if (!$success) SQLITE::query("DELETE FROM fcm WHERE token = '".$token."'");

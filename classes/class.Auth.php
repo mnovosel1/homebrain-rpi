@@ -23,7 +23,7 @@ class Auth {
             debug_log(__METHOD__, md5('n' . $reqtime));
             */
 
-            switch (true) 
+            switch (true)
             {
                 case ( $_POST['secToken'] == md5('H' . $reqtime) ):
                 case ( $_POST['secToken'] == md5('o' . $reqtime) ):
@@ -46,15 +46,15 @@ class Auth {
     public static function allowedIP($arrayIPs = []) {
 
         if ( $arrayIPs == "ANY" ) return true;
-        
+
         $allowedIPs[] = Configs::getIP("HomeBrain", "IP"); // HomeBrain is allways allowed
         foreach ( $arrayIPs as $ip ) $allowedIPs[] = $ip;
 
         if ( array_search($_SERVER["REMOTE_ADDR"], $allowedIPs) === false ) {
-            hbrain_log(__METHOD__, "IP not allowed");
+            hbrain_log(__METHOD__, "IP ".$_SERVER["REMOTE_ADDR"]." is not allowed!");
             return false;
         }
-
+	hbrain_log(__METHOD__, "IP ".$_SERVER["REMOTE_ADDR"]." is allowed.");
         return true;
     }
 }

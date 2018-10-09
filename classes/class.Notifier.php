@@ -14,7 +14,11 @@ class Notifier {
         return MyAPI::help(Notifier::class);
     }
 
-    public static function notify($msg, $title = "HomeBrain") {        
+    public static function notify($msg, $title = "HomeBrain") {
+        Notifier::kodi($msg, $title);
+
+        if ( HomeBrain::isSilentTime() ) return;
+        
         $msg = str_replace("_", " ", $msg);
         if ( Notifier::fcmBcast($title, $msg) ) return null;
         return false;
@@ -53,8 +57,6 @@ class Notifier {
     //* private helper methods *///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
-
-        if ( HomeBrain::isSilentTime() ) return;
 
         if ( $ttl === null ) $ttl = TTL;
         if ( $title === null ) $title = "HomeBrain";

@@ -82,8 +82,6 @@ class Notifier {
             $fields['data']['body'] 	= $msg;
         }
 
-        hbrain_log(__METHOD__, $title ." - ". $msg);
-
         $fields["to"]               = $token;
         $fields["time_to_live"]     = $ttl;
 

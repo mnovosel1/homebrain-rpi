@@ -343,6 +343,14 @@ class HomeBrain {
 
         return implode(", ", Configs::get("DEBUG"));
     }
+
+    public static function alarm() {
+        if ( date("N") > 5 ) return;
+
+        if (date("H:i", strtotime("-15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) HomeBrain::alert(5);
+        if (date("H:i") == date("H:i", strtotime(Configs::get("ALARM")))) HomeBrain::alert(10);
+        if (date("H:i", strtotime("+15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) HomeBrain::alert(5);
+    }
 }
 
 ?>

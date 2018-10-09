@@ -14,6 +14,7 @@ while true ; do
 		#$DIR/helpers/saveLastTemps.php
 		#/usr/bin/php $DIR/heating/heating.php
 		$DIR/homebrain medvedi check
+		$DIR/homebrain hbrain alarm
 
 		# svakih 2 minute
 		# if [ $(( minute%2 )) -eq 0 ]; then

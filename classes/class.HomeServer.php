@@ -67,7 +67,7 @@ class HomeServer {
 	public static function wake($reason = "") {
 		if ( HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) {
-				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
+				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
 				else $reason = "!";
 			} else $reason = ": ".$reason;
 			Notifier::fcmBcast("HomeBrain", "is waking HomeServer".$reason);
@@ -78,14 +78,18 @@ class HomeServer {
 	}
 
 	public static function shut($reason = "") {
+
 		if ( HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
-			if ( $reason == "null" || $reason == "" ) {
-				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
+
+			if ( $reason == "" ) {
+				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
 				else $reason = "..";
 			} else $reason = ": ".$reason;
+
 			Notifier::fcmBcast("HomeBrain", "is shutting down HomeServer".$reason);
 			hbrain_log(__METHOD__, "HomeBrain is shutting down HomeServer".$reason);
+
 			return null;
 		}
 		return "false";
@@ -95,7 +99,7 @@ class HomeServer {
 		if ( Auth::allowedIP() && HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "reboot");
 			if ( $reason == "" ) {
-				if ( isset($_POST["param1"]) ) $reason = ": ".$_POST["param1"];
+				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
 				else $reason = "..";
 			} else $reason = ": ".$reason;
 			Notifier::fcmBcast("HomeBrain", "is rebooting HomeServer".$reason);

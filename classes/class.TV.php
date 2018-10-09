@@ -14,7 +14,7 @@ class TV {
     public static function status() {
 		return isOn();
     }
-    
+
     public static function isOn() {
         if ( LAN::SSH("KODI", "echo 'pow 0' | /usr/bin/cec-client -s | grep 'power status:' | sed 's/power status: //'") == "on" ) {
             SQLITE::update("states", "active", 1, "`name`='TV'");
@@ -26,15 +26,21 @@ class TV {
     }
 
     public static function on() {
-        if (TV::isOn() == "false") TV::power();
+        if (TV::isOn() == "false") {
+            TV::power();
+            HomeBrain::wakecheck();
+        }
         // LAN::SSH("KODI", "echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &");
     }
 
     public static function off() {
-        if (TV::isOn() == "true") TV::power();
+        if (TV::isOn() == "true") {
+            TV::power();
+            HomeBrain::wakecheck();
+        }
         // LAN::SSH("echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &");
     }
-     
+
     public static function power() {
         exec("sudo ". DIR ."/bin/nrf 1 irsony:0A90 &");
     }
@@ -44,7 +50,7 @@ class TV {
     }
 
     public static function kodi() {
-        LAN::SSH("KODI", "echo 'as' | /usr/bin/cec-client -s >> /dev/null &");
+	LAN::SSH("KODI", "echo \"as\" | /usr/bin/cec-client -s >> /dev/null &");
     }
 }
 

@@ -65,7 +65,7 @@ class HomeServer {
 	}
 
 	public static function wake($reason = "") {
-		if ( HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
+		if ( Auth::allowedIP() && HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
 				else $reason = "!";
@@ -79,7 +79,7 @@ class HomeServer {
 
 	public static function shut($reason = "") {
 
-		if ( HomeServer::isOn() ) {
+		if ( Auth::allowedIP() && HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
 
 			if ( $reason == "" ) {

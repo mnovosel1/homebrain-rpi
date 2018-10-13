@@ -17,8 +17,6 @@ class Notifier {
     public static function notify($msg, $title = "HomeBrain") {
         Notifier::kodi($msg, $title);
 
-        if ( HomeBrain::isSilentTime() ) return;
-
         $msg = str_replace("_", " ", $msg);
         if ( Notifier::fcmBcast($title, $msg) ) return null;
         return false;
@@ -43,12 +41,10 @@ class Notifier {
     }
 
     public static function alert($secs) {
-        if ( HomeBrain::isSilentTime() ) return;
         exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
     }
 
     public static function speak($text) {
-        if ( HomeBrain::isSilentTime() ) return;
         LAN::SSH("KODI", "/usr/bin/flite -voice slt -t '". $text ."' &");
     }
 

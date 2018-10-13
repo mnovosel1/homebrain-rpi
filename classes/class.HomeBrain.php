@@ -253,14 +253,17 @@ class HomeBrain {
     }
 
     public static function notify($msg) {
+        if ( HomeBrain::isSilentTime() ) return;
         Notifier::notify($msg);
     }
 
     public static function alert($secs) {
+        if ( HomeBrain::isSilentTime() ) return;
         Notifier::alert($secs);
     }
 
     public static function speak($text) {
+        if ( HomeBrain::isSilentTime() ) return;
         Notifier::speak($text);
     }
 

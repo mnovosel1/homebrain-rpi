@@ -102,7 +102,8 @@ class Medvedi {
                         $game["tg_name"] = "KHL Medveščak";
                         $medvedGoals = $game["tore_gast"];
                     }
-                    $game["datum"] = substr(str_replace(",", "", $game["datum"]), 4, strlen($game["datum"]));
+                    //$game["datum"] = substr(str_replace(",", "", $game["datum"]), 4, strlen($game["datum"]));
+                    $game["datum"] = str_replace(",", "", $game["datum"]);
                     if ($game["tore_heim_pe"] != "" || $game["tore_gast_pe"] != "") {
                         $trecina = "SO";
                     }
@@ -120,14 +121,21 @@ class Medvedi {
                     }
 
                     Medvedi::$newData = array(  "status"        => $game["event_status"],
-                                                "date"          => date("d.m.Y.", strtotime(explode(" ", $game["datum"])[0])), 
-                                                "time"          => date("H:i", strtotime(explode(" ", $game["datum"])[1])), 
+                                                "date"          => date("d.m.Y.", strtotime(explode(" ", $game["datum"])[1].date("Y"))), 
+                                                "time"          => date("H:i", strtotime(explode(" ", $game["datum"])[2])), 
                                                 "playing"       => trim($game["th_name"]). " - " .trim($game["tg_name"]),
                                                 "period"        => $trecina,
                                                 "score"         => $game["tore_heim"] ." : ". $game["tore_gast"],
                                                 "medvedGolova"  => $medvedGoals
                     );
-                    if (Medvedi::$newData["status"] != "post-event") break 1;
+                    if (Medvedi::$newData["status"] != "post-event") {
+                        if (Medvedi::$newData["status"] == "pre-event") {
+                            Medvedi::$newData["period"] = "";
+                            Medvedi::$newData["score"] = "";
+                            Medvedi::$newData["medvedGolova"] = "";
+                        }
+                        break 1;
+                    }
                 }
             }
             if (Medvedi::$newData != null) {
@@ -143,7 +151,7 @@ class Medvedi {
     public static function timeToGame() {
         Medvedi::getData();
 
-		$gameTime = strtotime(Medvedi::$newData["time"]);
+		$gameTime = strtotime(Medvedi::$newData["date"] ." ". Medvedi::$newData["time"]);
 
 		$howlong = '';
 		$seconds = $gameTime - time(); 
@@ -163,7 +171,6 @@ class Medvedi {
     }
 
     private static function isGameDay() {
-        debug_log(__METHOD__, "Game date: ". Medvedi::$logData["date"]);
         if (date("d.m.Y.") == Medvedi::$logData["date"]) {
             hbrain_log(__METHOD__, "It's GameDay!!");
             return true;
@@ -172,6 +179,8 @@ class Medvedi {
     }
 
     private static function isGameLive() {
+        if (!Medvedi::isGameDay()) return false;
+
         if (Medvedi::$logData["status"] != "post-event" && ceil((strtotime(Medvedi::$logData["time"])-time())/60) < 5) {            
             hbrain_log(__METHOD__, "Game is live!!");
             return true;

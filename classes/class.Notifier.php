@@ -32,11 +32,13 @@ class Notifier {
 
     public static function fcmBcast($title, $msg, $data = null) {
         // if ( !Auth::allowedIP() ) return false;
-        hbrain_log(__METHOD__, $title .": ". $msg);
         if ( $title === null ) $title = "HomeBrain";
 
-        $tokens = SQLITE::fetch("fcm", ["token"], "approved='true'");
-        foreach ( $tokens as $tok ) Notifier::sendFcm($title, $msg, $data, $tok['token']);
+        $tokens = SQLITE::fetch("fcm", ["token", "email"], "approved='true'");
+        foreach ( $tokens as $tok ) {
+            hbrain_log(__METHOD__, $title .": ". $msg ." -> ". $tok['email']);
+            Notifier::sendFcm($title, $msg, $data, $tok['token']);
+        }
         return true;
     }
 
@@ -52,7 +54,7 @@ class Notifier {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
-        hbrain_log(__METHOD__, $title .": ". $msg);
+        // hbrain_log(__METHOD__, $title .": ". $msg);
 
         if ( $ttl === null ) $ttl = TTL;
         if ( $title === null ) $title = "HomeBrain";

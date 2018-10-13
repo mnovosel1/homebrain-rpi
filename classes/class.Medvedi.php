@@ -27,7 +27,28 @@ class Medvedi {
         else {
             if (Medvedi::isGameDay()) {
                 if (Medvedi::isGameLive()) {
-                    if ( Medvedi::$newData != Medvedi::$logData ) Medvedi::notify();
+                    if ( Medvedi::$newData != Medvedi::$logData ) {
+                        $msg = "";
+                        //$msg .= Medvedi::$newData["time"] . " ";
+                        $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"] ." [". Medvedi::$newData["period"] ."] ";
+                        //$msg .= str_replace(" (", " \n".date("H:i")." p:".Medvedi::$newData["period"]." (", Medvedi::$newData["score"]) . " ";
+
+                        switch (true) {
+
+                            case (Medvedi::$newData["status"] == "pre-event" && Medvedi::$logData["status"] == "mid-event"):
+                                $msg .= " Game started.";
+                            break;
+
+                            case (Medvedi::$newData["status"] == "post-event" && Medvedi::$logData["status"] == "mid-event"):
+                                $msg .= " Game ended.";
+                            break;
+
+                        }
+
+                        hbrain_log(__METHOD__, $msg);
+
+                        Notifier::fcmBcast("Medvedi", $msg);
+                    }
                 } else if (strtotime(Medvedi::$logData["time"])-time() > 0) {
                     hbrain_log(__METHOD__, Medvedi::timeToGame() . "!");
                     if (time() - filemtime(DIR . "/var/medvedi.log") >= 60*60) 
@@ -35,8 +56,6 @@ class Medvedi {
                 }
             }
         }
-
-
     }
 
     public static function show() {
@@ -46,19 +65,6 @@ class Medvedi {
 
         var_dump((Medvedi::isGameLive() || time() - filemtime(DIR . "/var/medvedi.log") >= 60*60));
     }
-
-    public static function notify() {
-        Medvedi::getData();
-
-        $msg = "";
-        //$msg .= Medvedi::$newData["time"] . " ";
-        $msg .= Medvedi::$newData["playing"] . " ";
-        $msg .= str_replace(" (", " \n".date("H:i")." ".Medvedi::$newData["period"]." (", Medvedi::$newData["score"]) . " ";
-        hbrain_log(__METHOD__, $msg);
-
-        Notifier::fcmBcast("Medvedi", $msg);
-    }
-
 
 // private methods //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -121,7 +127,7 @@ class Medvedi {
                                                 "score"         => $game["tore_heim"] ." : ". $game["tore_gast"],
                                                 "medvedGolova"  => $medvedGoals
                     );
-                    break 1;
+                    if (Medvedi::$newData["status"] != "post-event") break 1;
                 }
             }
             if (Medvedi::$newData != null) {

@@ -66,7 +66,6 @@ class MyAPI extends API {
         "KODI::off",
         "Medvedi::check",
         "Medvedi::show",
-        "Medvedi::notify",
         "Medvedi::timetogame",
         "LAN::checknetwork",
         "FinMan::add",

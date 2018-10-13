@@ -24,7 +24,7 @@ class MyAPI extends API {
         "HomeBrain::user",
         "HomeBrain::mobappconfig",
         "HomeBrain::uploaddata",
-        "HomeBrain::debug",
+        "HomeBrain::email",
         "HomeServer::power",
         "HomeServer::wake",
         "HomeServer::shut",

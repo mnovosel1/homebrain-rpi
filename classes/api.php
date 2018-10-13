@@ -21,18 +21,12 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 //* DEBUGGING stuff *//////////////////////////////////////////////////////////////////////////////
 
 function debug_log($where, $what) {
-
-        if (strpos($where, '::') !== false)
-                $class = explode('::', $where)[0];
-        else
-                $class = explode('.', $where)[1];
-
-	if ( !Configs::debug($class) ) return;
-	hbrain_log($where, $what, "DEBUG");
-}
+        write_log($where, $what, "DEBUG");}
 
 function hbrain_log($where, $what, $logLevel = "INFO") {
+        write_log($where, $what);}
 
+function write_log ($where, $what, $whichLog = "INFO") {
         if (strpos($where, '::') !== false)
                 $class = explode('::', $where)[0];
         else
@@ -41,12 +35,12 @@ function hbrain_log($where, $what, $logLevel = "INFO") {
 	ob_start();
 	echo date("[d.m.y. H:i:s] ");
 	echo $_SERVER['REMOTE_ADDR'];
-	echo " [".$logLevel."] ";
+	echo " [".$whichLog."] ";
 	echo $where." > ";
 	var_dump($what);
 	$out = ob_get_clean();
 
-	file_put_contents(DIR.'/var/'.Configs::get("HOMEBRAIN", "LOG"), $out, FILE_APPEND);
+	file_put_contents(DIR.'/var/'.Configs::get("HOMEBRAIN", $whichLog), $out, FILE_APPEND);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

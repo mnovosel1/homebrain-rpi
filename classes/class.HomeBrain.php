@@ -16,7 +16,8 @@ class HomeBrain {
             $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"],
                                     "hour BETWEEN ". date("H") ."
                                             AND ". date("H", strtotime("+".$i." hour")) ."
-                                    AND statebefore = (SELECT group_concat(active, '') FROM states)");
+                                    AND statebefore = (SELECT group_concat(active, '') FROM states)
+                                    ORDER BY weight DESC LIMIT 1");
 
             $todoNotify = "";
             $todoRet = "";

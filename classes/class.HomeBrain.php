@@ -337,17 +337,6 @@ class HomeBrain {
         return $in .":". $out;
     }
 
-    public static function debug() {
-        $numArgs = func_num_args();
-
-        if ($numArgs == 1) {
-            $args = func_get_args();
-            Configs::set("DEBUG", $args[0]);
-        }
-
-        return implode(", ", Configs::get("DEBUG"));
-    }
-
     public static function alarm() {
         if ( date("N") > 5 ) return;
 

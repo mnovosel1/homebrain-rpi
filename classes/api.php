@@ -23,7 +23,7 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 function debug_log($where, $what) {
         write_log($where, $what, "DEBUG");}
 
-function hbrain_log($where, $what, $logLevel = "INFO") {
+function hbrain_log($where, $what) {
         write_log($where, $what);}
 
 function write_log ($where, $what, $whichLog = "INFO") {

@@ -3,7 +3,8 @@ alias hbamp='/srv/HomeBrain/homebrain th amp'
 alias hbtv='/srv/HomeBrain/homebrain th tv'
 
 alias hbdir='cd /srv/HomeBrain/'
-alias hblog='tail -f -n 50 /srv/HomeBrain/var/hbrain.log /srv/HomeBrain/var/hbrain_dbg.log'
+alias hblog='tail -f -n 50 /srv/HomeBrain/var/hbrain.log'
+alias hbdebug='tail -f -n 50 -q /srv/HomeBrain/var/hbrain.log /srv/HomeBrain/var/hbrain_dbg.log'
 alias hbnrf='sudo /srv/HomeBrain/bin/nrf'
 
 alias hbrain='/srv/HomeBrain/homebrain hbrain'

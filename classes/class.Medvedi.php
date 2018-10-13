@@ -24,18 +24,19 @@ class Medvedi {
             Notifier::fcmBcast("MedvediGoal", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
         }
 
-        if ( Medvedi::$newData == Medvedi::$logData ) return;
-
-        if (Medvedi::isGameDay()) {
-            if (Medvedi::isGameLive()) {
-                hbrain_log(__METHOD__, Medvedi::$newData["playing"] . " is live!!");
-                Medvedi::notify();
-            } else if (strtotime(Medvedi::$logData["time"])-time() > 0) {
-                hbrain_log(__METHOD__, Medvedi::timeToGame() . "!");
-                if (time() - filemtime(DIR . "/var/medvedi.log") >= 60*60) 
-                    Notifier::fcmBcast("Medvedi", date("H:i") ." ". Medvedi::timeToGame());
+        else {
+            if (Medvedi::isGameDay()) {
+                if (Medvedi::isGameLive()) {
+                    if ( Medvedi::$newData != Medvedi::$logData ) Medvedi::notify();
+                } else if (strtotime(Medvedi::$logData["time"])-time() > 0) {
+                    hbrain_log(__METHOD__, Medvedi::timeToGame() . "!");
+                    if (time() - filemtime(DIR . "/var/medvedi.log") >= 60*60) 
+                        Notifier::fcmBcast("Medvedi", date("H:i") ." ". Medvedi::timeToGame());
+                }
             }
         }
+
+
     }
 
     public static function show() {
@@ -120,6 +121,7 @@ class Medvedi {
                                                 "score"         => $game["tore_heim"] ." : ". $game["tore_gast"],
                                                 "medvedGolova"  => $medvedGoals
                     );
+                    break 1;
                 }
             }
             if (Medvedi::$newData != null) {

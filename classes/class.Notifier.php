@@ -23,7 +23,7 @@ class Notifier {
     }
 
     public static function kodi($msg, $title = "HomeBrain") {
-        if ( !Auth::allowedIP() ) return false;
+        // if ( !Auth::allowedIP() ) return false;
         $data = Notifier::getPostData();
         LAN::SSH("KODI", "/usr/bin/kodi-send -a 'Notification(". $title .", ". $msg .")'");
         //exec('curl -X POST -H "Content-Type: application/json" -d \'{"jsonrpc":"2.0","method":"GUI.ShowNotification","params":{"title":"'.$title.'","message":"'.$msg.'"},"id":1}\' http://10.10.10.25:80/jsonrpc 2>/dev/null');
@@ -31,7 +31,7 @@ class Notifier {
     }
 
     public static function fcmBcast($title, $msg, $data = null) {
-        if ( !Auth::allowedIP() ) return false;
+        // if ( !Auth::allowedIP() ) return false;
         hbrain_log(__METHOD__, $title .": ". $msg);
         if ( $title === null ) $title = "HomeBrain";
 

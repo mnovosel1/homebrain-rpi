@@ -24,14 +24,12 @@ class Medvedi {
             Notifier::fcmBcast("MedvediGoal", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
         }
 
-        else {
+        else if (!HomeBrain::isSilentTime()) {
             if (Medvedi::isGameDay()) {
                 if (Medvedi::isGameLive()) {
                     if ( Medvedi::$newData != Medvedi::$logData ) {
                         $msg = "";
-                        //$msg .= Medvedi::$newData["time"] . " ";
                         $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"] ." [". Medvedi::$newData["period"] ."] ";
-                        //$msg .= str_replace(" (", " \n".date("H:i")." p:".Medvedi::$newData["period"]." (", Medvedi::$newData["score"]) . " ";
 
                         switch (true) {
 
@@ -39,8 +37,19 @@ class Medvedi {
                                 $msg .= " Game started.";
                             break;
 
+                            case (Medvedi::$newData["period"] != Medvedi::$logData["period"]):
+                                $msg .= " ". Medvedi::$newData["period"];
+                            break;
+
                             case (Medvedi::$newData["status"] == "post-event" && Medvedi::$logData["status"] == "mid-event"):
-                                $msg .= " Game ended.";
+                                if ( Medvedi::$newData["medvedGolova"] > Medvedi::$newData["antiMedvedGolova"]) {
+                                    hbrain_log(__METHOD__, "Medved pobjeda ". Medvedi::$newData["score"] ." !");
+                                    Notifier::alert(15);
+                                    $msg .= " POBJEDAAA!!!!";
+                                }
+                                else {
+                                    $msg .= " Game ended.";
+                                }
                             break;
 
                         }
@@ -49,10 +58,11 @@ class Medvedi {
 
                         Notifier::fcmBcast("Medvedi", $msg);
                     }
-                } else if (strtotime(Medvedi::$logData["time"])-time() > 0) {
+                } else if (strtotime(Medvedi::$newData["time"])-time() > 0) {
                     hbrain_log(__METHOD__, Medvedi::timeToGame() . "!");
-                    if (time() - filemtime(DIR . "/var/medvedi.log") >= 60*60) 
-                        Notifier::fcmBcast("Medvedi", date("H:i") ." ". Medvedi::timeToGame());
+                    if ( time() - filemtime(DIR . "/var/medvedi.log") >= 60*60 ) {
+                        Notifier::fcmBcast("Medvedi", date("H:i") .": ". Medvedi::timeToGame());
+                    }
                 }
             }
         }
@@ -98,9 +108,11 @@ class Medvedi {
                     if (strpos($game["th_name"], "Medvescak") !== false) {
                         $game["th_name"] = "KHL Medveščak";
                         $medvedGoals = $game["tore_heim"];
+                        $antiMedvedGoals = $game["tore_gast"];
                     } else if (strpos($game["tg_name"], "Medvescak") !== false) {
                         $game["tg_name"] = "KHL Medveščak";
                         $medvedGoals = $game["tore_gast"];
+                        $antiMedvedGoals = $game["tore_heim"];
                     }
                     //$game["datum"] = substr(str_replace(",", "", $game["datum"]), 4, strlen($game["datum"]));
                     $game["datum"] = str_replace(",", "", $game["datum"]);
@@ -120,19 +132,21 @@ class Medvedi {
                         $trecina = "1/3";
                     }
 
-                    Medvedi::$newData = array(  "status"        => $game["event_status"],
-                                                "date"          => date("d.m.Y.", strtotime(explode(" ", $game["datum"])[1].date("Y"))), 
-                                                "time"          => date("H:i", strtotime(explode(" ", $game["datum"])[2])), 
-                                                "playing"       => trim($game["th_name"]). " - " .trim($game["tg_name"]),
-                                                "period"        => $trecina,
-                                                "score"         => $game["tore_heim"] ." : ". $game["tore_gast"],
-                                                "medvedGolova"  => $medvedGoals
+                    Medvedi::$newData = array(  "status"             => $game["event_status"],
+                                                "date"               => date("d.m.Y.", strtotime(explode(" ", $game["datum"])[1].date("Y"))), 
+                                                "time"               => date("H:i", strtotime(explode(" ", $game["datum"])[2])), 
+                                                "playing"            => trim($game["th_name"]). " - " .trim($game["tg_name"]),
+                                                "period"             => $trecina,
+                                                "score"              => $game["tore_heim"] ." : ". $game["tore_gast"],
+                                                "medvedGolova"       => $medvedGoals,
+                                                "antiMedvedGolova"   => $antiMedvedGoals
                     );
                     if (Medvedi::$newData["status"] != "post-event") {
                         if (Medvedi::$newData["status"] == "pre-event") {
                             Medvedi::$newData["period"] = "";
                             Medvedi::$newData["score"] = "";
                             Medvedi::$newData["medvedGolova"] = "";
+                            Medvedi::$newData["antiMedvedGolova"] = "";
                         }
                         break 1;
                     }

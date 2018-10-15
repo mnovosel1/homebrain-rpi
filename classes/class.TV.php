@@ -16,8 +16,8 @@ class TV {
     }
 
     public static function isOn() {
-//        if ( LAN::SSH("KODI", "echo 'pow 0' | /usr/bin/cec-client -s | grep 'power status:' | sed 's/power status: //'") == "on" ) {
-	  if ( LAN::SSH("KODI", "/usr/bin/cec ison") == "on") {
+        if ( LAN::SSH("KODI", "echo 'pow 0' | /usr/bin/cec-client -s | grep 'power status:' | sed 's/power status: //'") == "on" ) {
+//	  if ( LAN::SSH("KODI", "/usr/bin/cec ison") == "on") {
             SQLITE::update("states", "active", 1, "`name`='TV'");
             return "true";
         }

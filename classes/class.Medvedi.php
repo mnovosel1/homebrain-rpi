@@ -18,7 +18,7 @@ class Medvedi {
         debug_log(__METHOD__, "Checking..");
         Medvedi::getData();
 
-        if (Medvedi::$newData["medvedGolova"] > Medvedi::$logData["medvedGolova"]) {
+        if (Medvedi::$newData["medvedGolova"] > 0 && Medvedi::$newData["medvedGolova"] > Medvedi::$logData["medvedGolova"]) {
             hbrain_log(__METHOD__, "Medvedi goool!");
             Notifier::alert(5);
             Notifier::fcmBcast("MedvediGoal", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
@@ -29,7 +29,7 @@ class Medvedi {
                 if (Medvedi::isGameLive()) {
                     if ( Medvedi::$newData != Medvedi::$logData ) {
                         $msg = "";
-                        $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"] ." [". Medvedi::$newData["period"] ."] ";
+                        $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"];
 
                         switch (true) {
 
@@ -38,7 +38,7 @@ class Medvedi {
                             break;
 
                             case (Medvedi::$newData["period"] != Medvedi::$logData["period"]):
-                                $msg .= " ". Medvedi::$newData["period"];
+                                $msg .= " ". Medvedi::$newData["period"] ." started.";
                             break;
 
                             case (Medvedi::$newData["status"] == "post-event" && Medvedi::$logData["status"] == "mid-event"):
@@ -51,6 +51,9 @@ class Medvedi {
                                     $msg .= " Game ended.";
                                 }
                             break;
+
+			    default:
+				    $msg .= " ". Medvedi::$newData["period"];
 
                         }
 

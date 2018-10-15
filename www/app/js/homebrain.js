@@ -19,7 +19,7 @@ var page = {
 	}
 }
 
-function homebrain(name, verb, params) {	
+function homebrain(name, verb, params) {
 
 	console.log(request);
 	if ( !request ) {
@@ -41,10 +41,10 @@ function initListeners() {
 			case "amp":
 				homebrain(this.name, this.value);
 			break;
-						
+
 			case "heat-set":
 				homebrain('heat', 'set', $('#term-slider').val());
-			
+
 			case "lawn-time":
 			case "garden-time":
 			break;
@@ -56,7 +56,7 @@ function initListeners() {
 	$('input:checkbox').change(function(e) {
 
 		switch (this.name) {
-			
+
 			case "mpd-on":
 				homebrain('mpd', 'on');
 			break;
@@ -64,11 +64,11 @@ function initListeners() {
 			case "mpd-off":
 				homebrain('mpd', 'off');
 			break;
-			
+
 			case "kodi-on":
 				homebrain('kodi', 'on');
 			break;
-			
+
 			case "kodi-off":
 				homebrain('kodi', 'off');
 			break;
@@ -82,7 +82,7 @@ function initListeners() {
 			break;
 
 			case "lawn":
-			case "garden":				
+			case "garden":
 				if ( typeof this.checked !== 'undefined' ) {
 					if ( this.checked )
 						homebrain(this.name, "on", $('input:checked[name='+this.name+'-time]').val());
@@ -91,7 +91,7 @@ function initListeners() {
 				}
 			break;
 
-			default:				
+			default:
 				homebrain(this.name, this.checked ? "on" : "off");
 		}
 
@@ -102,11 +102,11 @@ function initListeners() {
 
 
 function toast(msg) {
-	
+
 	if ( typeof Android !== 'undefined' ) {
 		Android.toast(msg);
 	}
-	
+
 	console.log("Toasting: " + msg);
 }
 
@@ -115,8 +115,8 @@ function speak(msg) {
 	if ( typeof Android !== 'undefined' ) {
 		Android.speak(msg);
 	}
-	
-	console.log("Speaking: " + msg);	
+
+	console.log("Speaking: " + msg);
 }
 
 function requesting() {
@@ -125,8 +125,8 @@ function requesting() {
 	setTimeout(requestingDone, 3072);
 }
 
-function requestingDone() {	
-	setTimeout( function() { 
+function requestingDone() {
+	setTimeout( function() {
 		loading(false);
 		request= false;
 	}, 128);
@@ -145,7 +145,7 @@ function loading(msg) {
 		$("#overlay").fadeIn(96);
 	} else {
 		$("#overlay").delay(128).fadeOut(128);
-	}	
+	}
 }
 
 function notice(connType) {
@@ -160,7 +160,7 @@ function changePage(page, reverse) {
 		});
 }
 
-function slideRight(toPage) {	
+function slideRight(toPage) {
 	if ( arguments.length == 0 ) toPage = page.prev();
 	changePage(toPage, true);
 }
@@ -201,7 +201,7 @@ function go(toPage, allowedPages) {
 
 		$.each(page.list, function() {
 			prependHeader($("#" + this));
-		});		
+		});
 		initListeners();
 
 		$( document ).on( "swiperight", ".ui-page", function( event ) {
@@ -216,7 +216,7 @@ function go(toPage, allowedPages) {
 
 		/*
 		$(document).on("pagecontainerchange", function() {
-			//console.log($(".ui-page-active").jqmData("title"));		
+			//console.log($(".ui-page-active").jqmData("title"));
 			//$("[data-role='header'] h1" ).text($(".ui-page-active").jqmData("title"));
 		});
 		*/
@@ -252,7 +252,7 @@ function getOrdinal(n) {
         v=n%100;
         return n+(s[(v-20)%10]||s[v]||s[0]);
     }
-    return n;     
+    return n;
 }
 
 function updateLogRow(values, refresh) {
@@ -270,11 +270,11 @@ function updateLogRow(values, refresh) {
 		case values.state.indexOf("user") > -1:
 			msg = ["user is logged off..", "user is logged on!"];
 		break;
-		
+
 		case values.state.indexOf("busy") > -1:
 			msg = ["is not busy..", "is busy!"];
 		break;
-		
+
 		case values.state.indexOf("MPD") > -1:
 			msg = ["stopped playing..", "is playing!"];
 		break;
@@ -288,7 +288,7 @@ function updateLogRow(values, refresh) {
 	timestamp 	= '<p class="ui-li-aside"><strong>' + formatTime(new Date(values.timestamp))+ " " + '</strong></p>';
 	subtitle 	= '<p style="white-space: normal;"><strong>' + values.statebefore + ' </strong>';
 	text 		= msg[values.changedto] + '</p>';
-	
+
 	$('#log li')[0].remove();
 	$('<li style="padding: 0 10px;">' + title + subtitle + text + timestamp +'</li>').prependTo('#log');
 	$('<li data-role="list-divider">'+logLastDate+'<span class="ui-li-count">'+logCounter+'</span></li>').prependTo('#log');
@@ -333,7 +333,7 @@ $(document).ready(function(){
 		theme: "a",
 		position: "fixed",
 		tapToggle: false
-	});	
+	});
 	$( "[data-role='footer']" ).toolbar({
 		theme: "a",
 		position: "fixed",

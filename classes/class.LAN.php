@@ -92,6 +92,12 @@ class LAN {
             SQLITE::query("UPDATE lan SET timestamp = datetime(CURRENT_TIMESTAMP, 'localtime'), ip = '". $IPs[$i] ."' WHERE mac = '". $MACs[$i] ."'");
             $ret .= $MACs[$i] ." ". $IPs[$i] ." ". $names[$i] .PHP_EOL;
         }
+
+	SQLITE::query("SELECT timestamp, name, mac, ip FROM lan WHERE strftime('%s', timestamp, 'localtime') > strftime('%s', 'now', '-2 hour', 'localtime') AND known = 0;");
+	$unknown = SQLITE::getResult();
+	foreach ($unknown as $k => $v) {
+		if (date('i')*1 == 0) HomeBrain::notify("!Known device: ". implode("\n   ", $v));
+	}
         return $ret;
     }
 }

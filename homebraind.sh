@@ -52,9 +52,12 @@ while true ; do
 		# u ponoć
 		if [ $((hour)) -eq 23 -a $((minute)) -eq 59 ]; then
 			cp $DIR/var/hbrain.sql /srv/PiStorage/backups/hbrain_$date.sql
+
 			cp $DIR/var/hbrain.log /srv/PiStorage/backups/hbrain_$date.log
-			cp $DIR/var/hbrain_dbg.log /srv/PiStorage/backups/hbrain_dbg_$date.log
 			echo "" > $DIR/var/hbrain.log
+
+			cp $DIR/var/hbrain_dbg.log /srv/PiStorage/backups/hbrain_dbg_$date.log
+			echo "" > $DIR/var/hbrain_dbg.log
 		fi
 	fi
 

@@ -166,7 +166,7 @@ class HomeBrain {
 
             if ($shutDownHomeServer) HomeServer::shut();
         }
-
+/*
         // TV is off, KODI is on
         if ( !(bool)$newStates["TV"]["active"] && (bool)$newStates["KODI"]["active"] ) {
             KODI::off();
@@ -177,7 +177,7 @@ class HomeBrain {
                 Amp::off();
             }
         }
-
+*/
         return null;
     }
 
@@ -198,7 +198,8 @@ class HomeBrain {
 
     public static function mobAppConfig($token = null) {
         if ( $token === null ) $token = $_POST["param1"];
-        $cfgMessage["pages"]    = ["home", "mmkodi", "mmmpd", "grijanje", "lan", "vrt"];
+        //$cfgMessage["pages"]    = ["home", "mmkodi", "mmmpd", "grijanje", "lan", "vrt"];
+        $cfgMessage["pages"]    = ["home", "mmkodi", "mmmpd"];
         $cfgMessage["homeUrl"]  = "10.10.10.10";
 
         Notifier::sendFcm ("HomeBrain", "APP config..", ["configs" => json_encode($cfgMessage)], $token);
@@ -345,6 +346,9 @@ class HomeBrain {
         if (date("H:i", strtotime("+15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(5);
     }
 
+    public static function email ($to, $message) {
+        exec('email '. $to .' "'. $message .'"');
+    }
 
 }
 

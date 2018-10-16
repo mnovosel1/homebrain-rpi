@@ -10,7 +10,7 @@ class Weather {
     public static function help() {
         return MyAPI::help(Weather::class);
     }
-    
+
     public static function tempIn($timestamp = null) {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 

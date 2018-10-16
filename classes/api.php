@@ -40,7 +40,7 @@ function write_log ($where, $what, $whichLog = "INFO") {
 	var_dump($what);
 	$out = ob_get_clean();
 
-	file_put_contents(DIR.'/var/'.Configs::get("HOMEBRAIN", $whichLog), $out, FILE_APPEND);
+	file_put_contents(Configs::get("HOMEBRAIN", $whichLog), $out, FILE_APPEND);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,7 +48,7 @@ function write_log ($where, $what, $whichLog = "INFO") {
 try {
 	$API = new MyAPI($_REQUEST['request'], $_SERVER['HTTP_ORIGIN']);
 	$ret = trim($API->processAPI());
-	
+
 	// if ( !$ret ) header('HTTP/1.0 403 Forbidden');
 	if ( !empty($ret) ) echo $ret . PHP_EOL;
 }

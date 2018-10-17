@@ -27,14 +27,16 @@ while true ; do
 		fi
 
 		# svakih 30 minuta
-		if [ $(( minute%30 )) -eq 0 ]; then
-			$DIR/homebrain hbrain todo
-			$DIR/homebrain lan checknetwork
-		fi
+		# if [ $(( minute%30 )) -eq 0 ]; then
+
+		# fi
 
 		# svaki sat
-		#if [ $((minute)) -eq 0 ]; then
-		#fi
+		if [ $((minute)) -eq 0 ]; then
+			$DIR/homebrain hbrain todo
+			$DIR/homebrain hbrain wifi
+			$DIR/homebrain lan checknetwork
+		fi
 
 		# svako jutro u 4:44
 		if [ $((hour)) -eq 4 -a $((minute)) -eq 44 ]; then

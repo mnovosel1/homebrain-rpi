@@ -169,7 +169,7 @@ class HomeServer {
 		if ($waketime == 0) {
 			if ( date('U') <  date("U", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
 				$waketime = strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"));
-				debug_log(__METHOD__, "WakeTime is TODAY: ". date("d.m.Y. H:i:S", $waketime));
+				debug_log(__METHOD__, "WakeTime is TODAY: ". date("d.m.Y. H:i:s", $waketime));
 			}
 			else {
 				$waketime = strtotime("tomorrow ". Configs::get("HomeServer", "DAILY_WAKE"));

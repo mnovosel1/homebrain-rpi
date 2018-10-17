@@ -15,8 +15,14 @@ class LAN {
 	$out = "";
 	if ($what === null) {
 		$out = exec(DIR ."/bin/wifi.sh active | awk '!/P660HW-T3>/ && /wlan active/'");
-		if (strpos($out, "active 1") !== false) $out = "on";
-		else $out = "off";
+		if (strpos($out, "active 1") !== false) {
+			$out = "on";
+			if (HomeBrain::isSilentTime()) LAN::wifi(0);
+		}
+		else {
+			$out = "off";
+			if (!HomeBrain::isSilentTime()) LAN::wifi(1);
+		}
 	}
 	else {
 		switch ($what) {

@@ -137,7 +137,7 @@ class HomeBrain {
 
                 case (($srvWakeTime-time()) < 1800):
                     hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
-		    Notifier::fcmBcast("HomeBrain", "it's HomeServer WakeTime (".date("H:i d.m.", $srvWakeTime).")");
+//		    Notifier::fcmBcast("HomeBrain", "it's HomeServer WakeTime (".date("H:i d.m.", $srvWakeTime).")");
                     $reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
             }
@@ -272,15 +272,16 @@ class HomeBrain {
     ///// HomeBrain::uploadData() /////////////////////////////////////////////////////////////
     public static function uploadData() {
 
-        $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS timestamp ".
+        $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS utimestamp ".
                                     "FROM changelog ".
                                     "ORDER BY timestamp DESC LIMIT 1");
 
-	SQLITE::query("SELECT * FROM changelog ".
-				"WHERE STRFTIME('%s', timestamp, 'localtime') >= ".$res[1] ." ".
+	$rows = SQLITE::query("SELECT * FROM changelog ".
+				"WHERE STRFTIME('%s', timestamp, 'localtime')*1 >= ". trim($res[1])*1 ." ".
 				"ORDER BY timestamp ASC");
-	$rows = SQLITE::getResult();
+
 	hbrain_log(__METHOD__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]));
+
 	foreach ($rows as $row) {
 
 		$row['light'] = empty(trim($row['light'])) ? "NULL" : $row['light'];
@@ -297,8 +298,11 @@ class HomeBrain {
 					$row['sound'].", ".
 					"'".$row['state']."', ".
 					$row['changedto'].")";
+
+//		debug_log(__METHOD__, "sqlite: ". $row['timestamp'] ."/". strtotime($row['timestamp']) ."  mysql: ". date("H:i:s d.m.Y.", $res[1]) ."/". $res[1]);
+//		debug_log(__METHOD__, strtotime($row['timestamp']) > $res[1]);
+//		debug_log(__METHOD__, $sql);
 		SQLITE::mySqlQuery($sql);
-	        //debug_log(__METHOD__, __LINE__.": row = ".var_export($sql, true));
 	}
     }
 

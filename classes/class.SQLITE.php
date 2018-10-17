@@ -105,7 +105,7 @@ class SQLITE {
         }
         else hbrain_log(__METHOD__, $ret ." SQL: ". $sql);
 
-        return $ret;
+        return SQLITE::$result;
     }
 
     public static function mySqlQuery($sql) {

@@ -354,6 +354,15 @@ class HomeBrain {
         exec('email '. $to .' "'. $message .'"');
     }
 
+	public static function wifi($onoff = null) {
+		if ($onoff === null) {
+			return LAN::wifi();
+		}
+		else {
+			return LAN::wifi($onoff);
+		}
+	}
+
 }
 
 ?>

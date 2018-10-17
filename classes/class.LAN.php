@@ -11,6 +11,26 @@ class LAN {
         return MyAPI::help(LAN::class);
     }
 
+   public static function wifi($what = null) {
+	if ($onoff === null) {
+		$out = exec(DIR ."/bin/wifi.sh active | awk '!/P660HW-T3>/ && /wlan active/'");
+	}
+	else {
+		switch ($what) {
+			case "1":
+                        case "0":
+				$out = exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
+                        break;
+
+			case "scan":
+				$out = exec(DIR ."/bin/wifi.sh ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
+			break;
+		}
+	}
+	hbrain_log(__METHOD__, $out);
+	return $out;
+   }
+
     public static function ping($host) {
         $live = exec("ping -c1 ".Configs::getIP($host)." | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
 		if ($live > 0) {

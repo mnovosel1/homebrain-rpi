@@ -4,7 +4,8 @@
 #If it all goes pear shaped the script will timeout after 20 seconds.
 set timeout 20
 
-set onoff [lindex $argv 0]
+set action [lindex $argv 0]
+set parameter [lindex $argv 1]
 
 spawn telnet 10.10.10.101
 
@@ -16,7 +17,7 @@ send "8\r"
 
 expect "P660HW-T3>"
 
-send "wlan active $onoff\r"
+send "wlan $action $parameter\r"
 
 expect "P660HW-T3>"
 send "exit\r"

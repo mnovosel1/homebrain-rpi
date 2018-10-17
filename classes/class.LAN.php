@@ -12,18 +12,30 @@ class LAN {
     }
 
    public static function wifi($what = null) {
-	if ($onoff === null) {
+	$out = "";
+	if ($what === null) {
 		$out = exec(DIR ."/bin/wifi.sh active | awk '!/P660HW-T3>/ && /wlan active/'");
+		if (strpos($out, "active 1") !== false) $out = "on";
+		else $out = "off";
 	}
 	else {
 		switch ($what) {
 			case "1":
                         case "0":
-				$out = exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
+				exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
                         break;
 
 			case "scan":
-				$out = exec(DIR ."/bin/wifi.sh ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
+				exec(DIR ."/bin/wifi.sh ". $what, $tmpOut);
+				$out = "";
+				$found = false;
+				foreach ($tmpOut as $k => $v) {
+					if (strpos($v, "SSID") !== false) $found = true;
+					if ($found) {
+						$out .= $v . PHP_EOL;
+					}
+					if (strpos($v, "Recommend Channel") !== false) $found = false;
+				}
 			break;
 		}
 	}

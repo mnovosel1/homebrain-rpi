@@ -11,8 +11,6 @@ while true ; do
 	if [ $((minute)) -ne $((lastminute)) ]; then
 
 		# svake minute
-		#$DIR/helpers/saveLastTemps.php
-		#/usr/bin/php $DIR/heating/heating.php
 		$DIR/homebrain medvedi check
 		$DIR/homebrain hbrain alarm
 
@@ -22,7 +20,6 @@ while true ; do
 
 		# svakih 5 minuta
 		if [ $(( minute%5 )) -eq 0 ]; then
-			# /usr/bin/php $DIR/lan/lan.php
 			$DIR/homebrain hbrain wakecheck
 		fi
 
@@ -38,16 +35,12 @@ while true ; do
 			$DIR/homebrain lan checknetwork
 		fi
 
-		# svako jutro u 4:44
-		if [ $((hour)) -eq 4 -a $((minute)) -eq 44 ]; then
+		# svako jutro u 2:22
+		if [ $((hour)) -eq 2 -a $((minute)) -eq 22 ]; then
 
-			$DIR/homebrain hbrain dbbackup
-			# $DIR/lan/dbbackup.php
-			# $DIR/heating/getTempSet.php
-			# $DIR/heating/dbbackup.php
 			$DIR/homebrain amp off
+			$DIR/homebrain hbrain dbbackup
 
-			# $DIR/homebrain hserv wake DailyWake
 			sudo /sbin/shutdown -F -r now
 		fi
 

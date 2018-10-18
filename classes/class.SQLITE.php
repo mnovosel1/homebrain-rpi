@@ -27,28 +27,6 @@ class SQLITE {
         return SQLITE::query($sql, true);
     }
 
-    public static function fetch() {
-        // $table
-        if ( func_num_args() == 1 ) {
-            $sql = "SELECT * FROM ".func_get_arg(0);
-        }
-
-        // $table, $condition
-        else if ( func_num_args() == 2 ) {
-            $sql = "SELECT * FROM ".func_get_arg(0)." WHERE ".func_get_arg(1);
-        }
-
-        // $table, [$attributes], $condition
-        else if ( func_num_args() == 3 ) {
-            $attributes = "";
-            foreach ( func_get_arg(1) as $attribute) $attributes .= $attribute.", ";
-            $sql = "SELECT ".substr($attributes, 0, strlen($attributes)-2)." FROM ".func_get_arg(0)." WHERE ".func_get_arg(2);
-        }
-
-        if ( SQLITE::query($sql) != null ) return false;
-        return SQLITE::$result;
-    }
-
     public static function update($table, $attribute, $value, $condition = null) {
         if ( $condition === null ) return false;
 

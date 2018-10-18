@@ -14,7 +14,10 @@ class Weather {
     public static function tempIn($timestamp = null) {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
-        $oldData = SQLITE::fetch("datalog", ["tempin", "humidin", "light", "sound"], "tempin != 'NULL' AND humidin != 'NULL' ORDER BY timestamp DESC LIMIT 1");
+        $oldData = SQLITE::query("SELECT tempin, humidin, light, sound 
+                                    FROM datalog WHERE tempin != 'NULL'
+                                     AND humidin != 'NULL' 
+                                     ORDER BY timestamp DESC LIMIT 1");
 
         $newData = exec("sudo ". DIR ."/bin/nrf 1 sens");
         $newData = explode(":", $newData);
@@ -53,7 +56,11 @@ class Weather {
         $wind1 = $wind->children(0)->innertext;
         $wind2 = $wind->children(1)->innertext;
 
-        $oldData = SQLITE::fetch("datalog", ["tempout", "humidout"], "tempout != 'NULL' AND humidout != 'NULL' ORDER BY timestamp DESC LIMIT 1");
+        $oldData = SQLITE::query("SELECT tempout, humidout 
+                                    FROM datalog WHERE tempout != 'NULL'
+                                     AND humidout != 'NULL' 
+                                     ORDER BY timestamp DESC 
+                                     LIMIT 1");
 
         $tempOut = abs($tempOut - $oldData[0]["tempout"]) > 5 ? $oldData[0]["tempout"] : $tempOut;
         $humidOut = abs($humidOut - $oldData[0]["humidout"]) > 5 ? $oldData[0]["humidout"] : $humidOut;

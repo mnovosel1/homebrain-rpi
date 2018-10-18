@@ -13,8 +13,9 @@ class HomeBrain {
     public static function toDo() {
 
         for ($i = 0; $i <= 3; $i++) {
-            $rows = SQLITE::fetch("logic", ["weight", "name", "changedto"],
-                                    "hour BETWEEN ". date("H") ."
+            $rows = SQLITE::query("SELECT weight, name, changedto
+                                    FROM logic
+                                    WHERE hour BETWEEN ". date("H") ."
                                             AND ". date("H", strtotime("+".$i." hour")) ."
                                     AND statebefore = (SELECT group_concat(active, '') FROM states)
                                     ORDER BY weight DESC LIMIT 1");
@@ -86,7 +87,7 @@ class HomeBrain {
 	hbrain_log(__METHOD__, "WakeChecking..");
 
         // get old states from db
-        $rows = SQLITE::fetch("states", ["name", "auto", "active"], 1);
+        $rows = SQLITE::query("SELECT name, auto, active FROM states");
 
         $oldStates = array();
         $newStates = array();
@@ -255,7 +256,7 @@ class HomeBrain {
     }
 
     public static function notify($msg) {
-        if ( HomeBrain::isSilentTime() ) return;
+//        if ( HomeBrain::isSilentTime() ) return;
         Notifier::notify($msg);
     }
 

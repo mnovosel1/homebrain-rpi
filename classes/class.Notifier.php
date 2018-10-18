@@ -15,7 +15,8 @@ class Notifier {
     }
 
     public static function notify($msg, $title = "HomeBrain") {
-        Notifier::kodi($msg, $title);
+        debug_log(__METHOD__, $msg);
+	Notifier::kodi($msg, $title);
 
         $msg = str_replace("_", " ", $msg);
         if ( Notifier::fcmBcast($title, $msg) ) return null;
@@ -23,6 +24,7 @@ class Notifier {
     }
 
     public static function kodi($msg, $title = "HomeBrain") {
+	debug_log(__METHOD__, $msg);
         // if ( !Auth::allowedIP() ) return false;
         $data = Notifier::getPostData();
         LAN::SSH("KODI", "/usr/bin/kodi-send -a 'Notification(". $title .", ". $msg .")'");
@@ -34,7 +36,8 @@ class Notifier {
         // if ( !Auth::allowedIP() ) return false;
         if ( $title === null ) $title = "HomeBrain";
 
-        $tokens = SQLITE::fetch("fcm", ["token", "email"], "approved='true'");
+        $tokens = SQLITE::query("SELECT token, email FROM fcm WHERE approved='true'");
+	debug_log(__METHOD__, "tok: ", implode(" ", $tokens));
         foreach ( $tokens as $tok ) {
             hbrain_log(__METHOD__, $title .": ". $msg ." -> ". $tok['email']);
             Notifier::sendFcm($title, $msg, $data, $tok['token']);

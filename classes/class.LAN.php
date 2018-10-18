@@ -45,7 +45,7 @@ class LAN {
 			break;
 		}
 	}
-	hbrain_log(__METHOD__, $out);
+	debug_log(__METHOD__, "WiFi is ". $out);
 	return $out;
    }
 

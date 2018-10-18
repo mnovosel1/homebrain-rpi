@@ -135,14 +135,15 @@ class MyAPI extends API {
             if ( $ret == "" ) {
                 if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
                     hbrain_log(__METHOD__, $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."');");
-                    return trim($name::$verb(trim($_POST["param1"]), trim($_POST["param2"])));
+                    return trim(var_export($name::$verb(trim($_POST["param1"]), trim($_POST["param2"]))));
                 }
                 else if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
                     hbrain_log(__METHOD__, $name."::".$this->verb."('".$_POST["param1"]."');");
-                    return trim($name::$verb(trim($_POST["param1"])));
+                    return trim(var_export($name::$verb(trim($_POST["param1"]))));
                 } else {
                     hbrain_log(__METHOD__, $name."::".$this->verb."();");
-                    return trim($name::$verb());
+
+                    return trim(var_export($name::$verb(), true));
                 }
             }
             else hbrain_log(__METHOD__, $ret);

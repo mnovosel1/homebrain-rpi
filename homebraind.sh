@@ -8,7 +8,7 @@ lastminute=$(( minute-1 ))
 
 while true ; do
 
-	if [ $((minute)) -gt $((lastminute)) ]; then
+	if [ $((minute)) -ne $((lastminute)) ]; then
 
 		# svake minute
 		#$DIR/helpers/saveLastTemps.php
@@ -52,7 +52,7 @@ while true ; do
 		fi
 
 		# u ponoć
-		if [ $((hour)) -eq 23 -a $((minute)) -eq 59 ]; then
+		if [ $((hour)) -eq 0 -a $((minute)) -eq 0 ]; then
 			$DIR/homebrain hbrain uploadData &
 
 			cp $DIR/var/hbrain.sql /srv/PiStorage/backups/hbrain_$date.sql
@@ -63,10 +63,11 @@ while true ; do
 			cp $DIR/var/hbrain_dbg.log /srv/PiStorage/backups/hbrain_dbg_$date.log
 			echo "" > $DIR/var/hbrain_dbg.log
 		fi
+
+		lastminute=$(( minute ))
 	fi
 
-	lastminute=$(( minute ))
-	sleep 45s
+	sleep 30s
 
 	hour=$(( $((10#$(date +'%H')))*1 ))
 	minute=$(( $((10#$(date +'%M')))*1 ))

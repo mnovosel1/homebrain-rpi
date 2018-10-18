@@ -55,12 +55,12 @@ while true ; do
 		if [ $((hour)) -eq 0 -a $((minute)) -eq 0 ]; then
 			$DIR/homebrain hbrain uploadData &
 
-			cp $DIR/var/hbrain.sql /srv/PiStorage/backups/hbrain_$date.sql
+			cp $DIR/var/hbrain.sql /srv/PiStorage/backups/SQL_hbrain_$date.sql
 
-			cp $DIR/var/hbrain.log /srv/PiStorage/backups/hbrain_$date.log
+			cp $DIR/var/hbrain.log /srv/PiStorage/backups/LOG_hbrain_$date.log
 			echo "" > $DIR/var/hbrain.log
 
-			cp $DIR/var/hbrain_dbg.log /srv/PiStorage/backups/hbrain_dbg_$date.log
+			cp $DIR/var/hbrain_dbg.log /srv/PiStorage/backups/LOG_hbrain_dbg_$date.log
 			echo "" > $DIR/var/hbrain_dbg.log
 		fi
 

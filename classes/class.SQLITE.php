@@ -39,8 +39,8 @@ class SQLITE {
         if ( ($value*1) != ($oldValue*1) ) {
             hbrain_log(__METHOD__, $condition ." changed to ". $value);
             SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
-//            SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
-            HomeBrain::mobDbUpdate(SQLITE::$result[0]);
+            $res = SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
+            HomeBrain::mobDbUpdate($res[0]);
 //            return $ret;
         }
 

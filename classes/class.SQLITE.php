@@ -68,7 +68,7 @@ class SQLITE {
                  // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
         }
 
-        if ( !$insert ) {
+        if ( $res !== false && !$insert ) {
             $tmp = array();
             while ( $row = $res->fetchArray(SQLITE3_ASSOC) ) {
                 $tmp[] = $row;

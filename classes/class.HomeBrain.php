@@ -304,6 +304,7 @@ class HomeBrain {
 //		debug_log(__METHOD__, strtotime($row['timestamp']) > $res[1]);
 //		debug_log(__METHOD__, $sql);
 		SQLITE::mySqlQuery($sql);
+        //SQLITE::query("SELECT * FROM changelog WHERE timestamp < (SELECT DATETIME('now', '-30 day'));");
 	}
     }
 

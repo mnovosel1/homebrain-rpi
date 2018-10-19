@@ -189,7 +189,7 @@ class Medvedi {
 
     private static function isGameDay() {
         if (date("d.m.Y.") == Medvedi::$logData["date"]) {
-            hbrain_log(__METHOD__, "It's GameDay!!");
+            debug_log(__METHOD__, "It's GameDay!!");
             return true;
         }
         return false;

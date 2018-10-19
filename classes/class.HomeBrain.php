@@ -84,7 +84,7 @@ class HomeBrain {
 
     public static function wakeCheck() {
 
-	hbrain_log(__METHOD__, "WakeChecking..");
+	debug_log(__METHOD__, "WakeChecking..");
 
         // get old states from db
         $rows = SQLITE::query("SELECT name, auto, active FROM states");

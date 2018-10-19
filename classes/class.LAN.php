@@ -23,12 +23,14 @@ class LAN {
 			$out = "off";
 			if (!HomeBrain::isSilentTime()) LAN::wifi(1);
 		}
+		debug_log(__METHOD__, "WiFi is ". $out);
 	}
 	else {
 		switch ($what) {
 			case "1":
                         case "0":
 				exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
+				debug_log(__METHOD__, "Switching WiFi ". ($what == 1) ? "on." : "off.");
                         break;
 
 			case "scan":
@@ -42,10 +44,10 @@ class LAN {
 					}
 					if (strpos($v, "Recommend Channel") !== false) $found = false;
 				}
+				debug_log(__METHOD__, "WiFi scanning.");
 			break;
 		}
 	}
-	debug_log(__METHOD__, "WiFi is ". $out);
 	return $out;
    }
 

@@ -95,30 +95,6 @@ class SQLITE {
 
     public static function dbdump() {
 
-        // Backup to MySQL /////////////////////////////////////////////////////////////////////////
-        /*
-        $sqlitedb = new SQLite3(DIR .'/var/hbrain.db');
-        debug_log(__METHOD__, $sqlitedb->lastErrorMsg());
-
-        $mysqlidb = new mysqli(Configs::get("DB_REPLIC_HOST"), Configs::get("DB_REPLIC_USER"), Configs::get("DB_REPLIC_PASS"), Configs::get("DB_REPLIC_DBNAME"));
-        debug_log(__METHOD__, $mysqlidb->connect_error);
-        $sqliteres = $sqlitedb->query('SELECT c.timestamp, c.statebefore, c.changedto, s.name state, s.auto FROM changelog c JOIN states s ON c.state = s.name;');
-
-        while ($entry = $sqliteres->fetchArray(SQLITE3_ASSOC)) {
-            $mysqlidb->query("REPLACE INTO changeLog (timestamp, statebefore, state, auto, changedto)
-                                VALUES (
-                                        '".$entry['timestamp']."',
-                                        '".$entry['statebefore']."',
-                                        '".$entry['state']."',
-                                        '".$entry['auto']."',
-                                        ".$entry['changedto']."
-                                        )");
-        }
-
-        $sqlitedb->close();
-        $mysqlidb->close();
-        */
-
         // HBRAIN //////////////////////////////////////////////////////////////////////////////////
         $sql = "
     BEGIN TRANSACTION;

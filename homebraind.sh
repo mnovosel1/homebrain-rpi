@@ -39,14 +39,14 @@ while true ; do
 		if [ $((hour)) -eq 2 -a $((minute)) -eq 22 ]; then
 
 			$DIR/homebrain amp off
-			$DIR/homebrain hbrain dbbackup
 
 			sudo /sbin/shutdown -F -r now
 		fi
 
 		# u ponoć
 		if [ $((hour)) -eq 0 -a $((minute)) -eq 0 ]; then
-			$DIR/homebrain hbrain uploadData &
+			$DIR/homebrain hbrain uploadData
+			$DIR/homebrain hbrain dbbackup
 
 			cp $DIR/var/hbrain.sql /srv/PiStorage/backups/SQL_hbrain_$date.sql
 

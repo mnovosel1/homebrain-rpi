@@ -248,7 +248,7 @@ class HomeBrain {
         $silentTimeEnd = Configs::get("SILENT_TIME", "END");
         $timeNow = date('G');
 
-        if ($timeNow > $silentTimeStart || $timeNow < $silentTimeEnd) {
+        if ($timeNow >= $silentTimeStart || $timeNow < $silentTimeEnd) {
             hbrain_log(__METHOD__, "SilentTime is from ".$silentTimeStart." to ".$silentTimeEnd."h.");
             return true;
         }

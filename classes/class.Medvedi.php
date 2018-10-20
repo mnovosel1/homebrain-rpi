@@ -15,11 +15,11 @@ class Medvedi {
     }
 
     public static function check() {
-        debug_log(__METHOD__, "Checking..");
+        debug_log(__METHOD__.":".__LINE__, "Checking..");
         Medvedi::getData();
 
         if (Medvedi::$newData["medvedGolova"] > 0 && Medvedi::$newData["medvedGolova"] > Medvedi::$logData["medvedGolova"]) {
-            hbrain_log(__METHOD__, "Medvedi goool!");
+            hbrain_log(__METHOD__.":".__LINE__, "Medvedi goool!");
             Notifier::alert(5);
             Notifier::fcmBcast("MedvediGoal", date("H:i")." "."GOOOL!!!!   (".Medvedi::$newData["score"].")");
         }
@@ -31,7 +31,7 @@ class Medvedi {
                         $msg = "";
                         $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"];
 
-                        switch (true) {
+                        switch (false) {
 
                             case (Medvedi::$newData["status"] == "pre-event" && Medvedi::$logData["status"] == "mid-event"):
                                 $msg .= " Game started.";
@@ -41,9 +41,9 @@ class Medvedi {
                                 $msg .= " ". Medvedi::$newData["period"] ." started.";
                             break;
 
-                            case (Medvedi::$newData["status"] == "post-event" && Medvedi::$logData["status"] == "mid-event"):
+                            case (Medvedi::$newData["status"] == "post-event" && trim(Medvedi::$logData["status"]) == ""):
                                 if ( Medvedi::$newData["medvedGolova"] > Medvedi::$newData["antiMedvedGolova"]) {
-                                    hbrain_log(__METHOD__, "Medved pobjeda ". Medvedi::$newData["score"] ." !");
+                                    hbrain_log(__METHOD__.":".__LINE__, "Medved pobjeda ". Medvedi::$newData["score"] ." !");
                                     Notifier::alert(15);
                                     $msg .= " POBJEDAAA!!!!";
                                 }
@@ -52,17 +52,16 @@ class Medvedi {
                                 }
                             break;
 
-			    default:
-				    $msg .= " ". Medvedi::$newData["period"];
+                            default:
+                                $msg .= " p:". Medvedi::$newData["period"] ." s:". Medvedi::$newData["status"];
 
                         }
-
-                        hbrain_log(__METHOD__, $msg);
+                        hbrain_log(__METHOD__.":".__LINE__, $msg);
 
                         Notifier::fcmBcast("Medvedi", $msg);
                     }
                 } else if (strtotime(Medvedi::$newData["time"])-time() > 0) {
-                    hbrain_log(__METHOD__, Medvedi::timeToGame() . "!");
+                    hbrain_log(__METHOD__.":".__LINE__, Medvedi::timeToGame() . "!");
                     if ( time() - filemtime(DIR . "/var/medvedi.log") >= 60*60 ) {
                         Notifier::fcmBcast("Medvedi", date("H:i") .": ". Medvedi::timeToGame());
                     }
@@ -104,7 +103,7 @@ class Medvedi {
             $games = $week["s"];
 
             foreach ($games as $game) {
-                //debug_log(__METHOD__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
+                //debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
                 //if (strpos($game["team_heim_kuerzel"], "MZA") !== false || strpos($game["team_gast_kuerzel"], "MZA") !== false ) {
                 if (strpos($game["th_name"], "Medvescak") !== false || strpos($game["tg_name"], "Medvescak") !== false ) {
 
@@ -189,7 +188,7 @@ class Medvedi {
 
     private static function isGameDay() {
         if (date("d.m.Y.") == Medvedi::$logData["date"]) {
-            debug_log(__METHOD__, "It's GameDay!!");
+            debug_log(__METHOD__.":".__LINE__, "It's GameDay!!");
             return true;
         }
         return false;
@@ -198,8 +197,8 @@ class Medvedi {
     private static function isGameLive() {
         if (!Medvedi::isGameDay()) return false;
 
-        if (Medvedi::$logData["status"] != "post-event" && ceil((strtotime(Medvedi::$logData["time"])-time())/60) < 5) {            
-            hbrain_log(__METHOD__, "Game is live!!");
+        if (Medvedi::$logData["status"] != "post-event" && ceil((strtotime(Medvedi::$logData["time"])-time())/60) < 5) {
+            hbrain_log(__METHOD__.":".__LINE__, "Game is live!!");
             return true;
         }
         return false;

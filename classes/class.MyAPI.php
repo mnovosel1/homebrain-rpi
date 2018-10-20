@@ -124,6 +124,8 @@ class MyAPI extends API {
 
         if ( Auth::OK() ) {
             $ret = "";
+            $cliMethodName = "";
+
             if ( ($verb != 'h' && $verb != 'help') && !self::isCallable($name, $verb) ) {
                 $ret .= $name.'::'.$verb." not callable ";
                 hbrain_log(__METHOD__.":".__LINE__, $name.'::'.$verb .' is not callable.');
@@ -134,15 +136,14 @@ class MyAPI extends API {
 
             if ( $ret == "" ) {
                 if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
-                    debug_log(__METHOD__.":".__LINE__, $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."');");
+                    $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."')";
                     $ret = $name::$verb(trim($_POST["param1"]), trim($_POST["param2"]));
                 }
                 else if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
-                    debug_log(__METHOD__.":".__LINE__, $name."::".$this->verb."('".$_POST["param1"]."');");
+                    $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."')";
                     $ret = $name::$verb(trim($_POST["param1"]));
                 } else {
-                    debug_log(__METHOD__.":".__LINE__, $name."::".$this->verb."();");
-
+                    $cliMethodName = $name."::".$this->verb."()";
                     $ret = $name::$verb();
                 }
             }
@@ -150,8 +151,9 @@ class MyAPI extends API {
             if ( is_array($ret) ) $ret = export_var($ret, true);
             $ret = trim($ret);
 
+            hbrain_log("API ". $cliMethodName." MyAPI:".__LINE__, '$ret='. $ret);
+
             if ($ret != "") {
-                hbrain_log(__METHOD__.":".__LINE__, $ret);
                 return $ret;
             }
         }

@@ -40,7 +40,7 @@ function write_log ($where, $what, $whichLog = "INFO") {
 	var_dump($what);
 	$out = ob_get_clean();
 
-	file_put_contents(Configs::get("HOMEBRAIN", $whichLog), $out, FILE_APPEND);
+	file_put_contents(Configs::get("HOMEBRAIN", "LOG"), $out, FILE_APPEND);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////

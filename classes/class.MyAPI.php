@@ -126,7 +126,7 @@ class MyAPI extends API {
             $ret = "";
             if ( ($verb != 'h' && $verb != 'help') && !self::isCallable($name, $verb) ) {
                 $ret .= $name.'::'.$verb." not callable ";
-                hbrain_log(__METHOD__.": ".__LINE__, $name.'::'.$verb .' is not callable.');
+                hbrain_log(__METHOD__.":".__LINE__, $name.'::'.$verb .' is not callable.');
             }
 
             if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
@@ -134,14 +134,14 @@ class MyAPI extends API {
 
             if ( $ret == "" ) {
                 if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
-                    debug_log(__METHOD__.": ".__LINE__, $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."');");
+                    debug_log(__METHOD__.":".__LINE__, $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."');");
                     $ret = $name::$verb(trim($_POST["param1"]), trim($_POST["param2"]));
                 }
                 else if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
-                    debug_log(__METHOD__.": ".__LINE__, $name."::".$this->verb."('".$_POST["param1"]."');");
+                    debug_log(__METHOD__.":".__LINE__, $name."::".$this->verb."('".$_POST["param1"]."');");
                     $ret = $name::$verb(trim($_POST["param1"]));
                 } else {
-                    debug_log(__METHOD__.": ".__LINE__, $name."::".$this->verb."();");
+                    debug_log(__METHOD__.":".__LINE__, $name."::".$this->verb."();");
 
                     $ret = $name::$verb();
                 }
@@ -151,12 +151,12 @@ class MyAPI extends API {
             $ret = trim($ret);
 
             if ($ret != "") {
-                hbrain_log(__METHOD__.": ".__LINE__, $ret);
+                hbrain_log(__METHOD__.":".__LINE__, $ret);
                 return $ret;
             }
         }
 
-        else hbrain_log(__METHOD__.": ".__LINE__, "AUTH not OK.");
+        else hbrain_log(__METHOD__.":".__LINE__, "AUTH not OK.");
 
         return false;
     }

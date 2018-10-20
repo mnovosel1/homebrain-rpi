@@ -84,7 +84,7 @@ class HomeBrain {
 
     public static function wakeCheck() {
 
-	debug_log(__METHOD__, "WakeChecking..");
+	debug_log(__METHOD__.":".__LINE__, "WakeChecking..");
 
         // get old states from db
         $rows = SQLITE::query("SELECT name, auto, active FROM states");
@@ -100,7 +100,7 @@ class HomeBrain {
             if ( strpos($hostName, " ") === false ) {
                 $class = $hostName;
                 $condition = $class;
-                debug_log(__METHOD__, $class ."::isOn();");
+                debug_log(__METHOD__.":".__LINE__, $class ."::isOn();");
                 $newState = ($hostName::isOn() == "false") ? 0 : 1;
             }
 
@@ -109,7 +109,7 @@ class HomeBrain {
                 $class = trim($object[0]);
                 $method = trim($object[1]);
                 $condition = $class." ".$method;
-                debug_log(__METHOD__, $class ."::". $method ."();");
+                debug_log(__METHOD__.":".__LINE__, $class ."::". $method ."();");
                 $newState = ($class::$method() == "false") ? 0 : 1;
             }
 
@@ -118,7 +118,7 @@ class HomeBrain {
             /*
             if ( $oldState != $newState ) {
                 $msg = $class." is".(((bool)$newState) ? " " : " not ").$method.".";
-                debug_log(__METHOD__, $hostName . ": " . $newState . " `name`='".$condition."'");
+                debug_log(__METHOD__.":".__LINE__, $hostName . ": " . $newState . " `name`='".$condition."'");
                 //SQLITE::update("states", "active", $newState, "`name`='".$condition."'");
             }
             */
@@ -132,12 +132,12 @@ class HomeBrain {
             $reason = "";
             switch (true) {
                 case ((bool)$newStates["KODI"]["active"]):
-                    hbrain_log(__METHOD__, "Waking HomeServer, KODI is on.");
+                    hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, KODI is on.");
                     $reason .= "KODI ";
                 break;
 
                 case (($srvWakeTime-time()) < 1800):
-                    hbrain_log(__METHOD__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
+                    hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
 //		    Notifier::fcmBcast("HomeBrain", "it's HomeServer WakeTime (".date("H:i d.m.", $srvWakeTime).")");
                     $reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
@@ -152,17 +152,17 @@ class HomeBrain {
             // do NOT shutdown HomeServer if:
             if ((bool)$newStates["KODI"]["active"]) {
                 $shutDownHomeServer = false;
-                hbrain_log(__METHOD__, "KODI is active, HomeServer stays on.");
+                hbrain_log(__METHOD__.":".__LINE__, "KODI is active, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeServer busy"]["active"]) {
                 $shutDownHomeServer = false;
-                hbrain_log(__METHOD__, "HomeServer is busy, HomeServer stays on.");
+                hbrain_log(__METHOD__.":".__LINE__, "HomeServer is busy, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeBrain user"]["active"]) {
                 $shutDownHomeServer = false;
-                hbrain_log(__METHOD__, "HomeBrain user is logged on, HomeServer stays on.");
+                hbrain_log(__METHOD__.":".__LINE__, "HomeBrain user is logged on, HomeServer stays on.");
             }
 
             if ($shutDownHomeServer) HomeServer::shut();
@@ -226,8 +226,8 @@ class HomeBrain {
             // if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
             $msg = ["is off..", "is on!"];
         }
-        hbrain_log(__METHOD__, $row["state"] ." ". $msg[$row["changedto"]]);
-        debug_log(__METHOD__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
+        hbrain_log(__METHOD__.":".__LINE__, $row["state"] ." ". $msg[$row["changedto"]]);
+        debug_log(__METHOD__.":".__LINE__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
 
         $dbUpdates["table"] = "changelog";
         $dbUpdates["values"] = $row;
@@ -249,7 +249,7 @@ class HomeBrain {
         $timeNow = date('G');
 
         if ($timeNow >= $silentTimeStart || $timeNow < $silentTimeEnd) {
-            hbrain_log(__METHOD__, "SilentTime is from ".$silentTimeStart." to ".$silentTimeEnd."h.");
+            hbrain_log(__METHOD__.":".__LINE__, "SilentTime is from ".$silentTimeStart." to ".$silentTimeEnd."h.");
             return true;
         }
         return false;
@@ -281,7 +281,7 @@ class HomeBrain {
 				"WHERE STRFTIME('%s', timestamp, 'localtime')*1 >= ". trim($res[1])*1 ." ".
 				"ORDER BY timestamp ASC");
 
-	hbrain_log(__METHOD__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]));
+	hbrain_log(__METHOD__.":".__LINE__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]));
 
 	foreach ($rows as $row) {
 
@@ -300,9 +300,9 @@ class HomeBrain {
 					"'".$row['state']."', ".
 					$row['changedto'].")";
 
-//		debug_log(__METHOD__, "sqlite: ". $row['timestamp'] ."/". strtotime($row['timestamp']) ."  mysql: ". date("H:i:s d.m.Y.", $res[1]) ."/". $res[1]);
-//		debug_log(__METHOD__, strtotime($row['timestamp']) > $res[1]);
-//		debug_log(__METHOD__, $sql);
+//		debug_log(__METHOD__.":".__LINE__, "sqlite: ". $row['timestamp'] ."/". strtotime($row['timestamp']) ."  mysql: ". date("H:i:s d.m.Y.", $res[1]) ."/". $res[1]);
+//		debug_log(__METHOD__.":".__LINE__, strtotime($row['timestamp']) > $res[1]);
+//		debug_log(__METHOD__.":".__LINE__, $sql);
 		SQLITE::mySqlQuery($sql);
         //SQLITE::query("SELECT * FROM changelog WHERE timestamp < (SELECT DATETIME('now', '-30 day'));");
 	}

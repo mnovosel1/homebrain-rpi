@@ -15,7 +15,7 @@ class Notifier {
     }
 
     public static function notify($msg, $title = "HomeBrain") {
-        debug_log(__METHOD__, $msg);
+        debug_log(__METHOD__.":".__LINE__, $msg);
 	Notifier::kodi($msg, $title);
 
         $msg = str_replace("_", " ", $msg);
@@ -24,7 +24,7 @@ class Notifier {
     }
 
     public static function kodi($msg, $title = "HomeBrain") {
-	debug_log(__METHOD__, $msg);
+	debug_log(__METHOD__.":".__LINE__, $msg);
         // if ( !Auth::allowedIP() ) return false;
         $data = Notifier::getPostData();
         LAN::SSH("KODI", "/usr/bin/kodi-send -a 'Notification(". $title .", ". $msg .")'");
@@ -37,9 +37,9 @@ class Notifier {
         if ( $title === null ) $title = "HomeBrain";
 
         $tokens = SQLITE::query("SELECT token, email FROM fcm WHERE approved='true'");
-	debug_log(__METHOD__, "tok: ", implode(" ", $tokens));
+	debug_log(__METHOD__.":".__LINE__, "tok: ", implode(" ", $tokens));
         foreach ( $tokens as $tok ) {
-            hbrain_log(__METHOD__, $title .": ". $msg ." -> ". $tok['email']);
+            hbrain_log(__METHOD__.":".__LINE__, $title .": ". $msg ." -> ". $tok['email']);
             Notifier::sendFcm($title, $msg, $data, $tok['token']);
         }
         return true;
@@ -57,7 +57,7 @@ class Notifier {
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
 
-        // hbrain_log(__METHOD__, $title .": ". $msg);
+        // hbrain_log(__METHOD__.":".__LINE__, $title .": ". $msg);
 
         if ( $ttl === null ) $ttl = TTL;
         if ( $title === null ) $title = "HomeBrain";
@@ -84,7 +84,7 @@ class Notifier {
         $fields["to"]               = $token;
         $fields["time_to_live"]     = $ttl;
 
-        debug_log(__METHOD__, $fields);
+        debug_log(__METHOD__.":".__LINE__, $fields);
 
         $headers[] = 'Authorization: key='.Configs::getFCM("API_KEY");
         $headers[] = 'Content-Type: application/json';
@@ -103,7 +103,7 @@ class Notifier {
         else $success = true;
 
         $fields["success"] = $success;
-        debug_log(__METHOD__, json_encode( $fields ));
+        debug_log(__METHOD__.":".__LINE__, json_encode( $fields ));
 
         if (!$success) SQLITE::query("DELETE FROM fcm WHERE token = '".$token."'");
 

@@ -11,7 +11,7 @@ class SQLITE {
 
     public static function insert($table, $attributes, $values, $insertOrReplace = false) {
         if ( count($attributes) != count($values) ) {
-            hbrain_log(__METHOD__, "Not enough SQL attribute - values!");
+            hbrain_log(__METHOD__.":".__LINE__, "Not enough SQL attribute - values!");
             return false;
         }
 
@@ -22,7 +22,7 @@ class SQLITE {
         if ( $insertOrReplace ) $sql .= " OR REPLACE";
         $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";
 
-        debug_log(__METHOD__, $sql);
+        debug_log(__METHOD__.":".__LINE__, $sql);
 
         return SQLITE::query($sql, true);
     }
@@ -37,7 +37,7 @@ class SQLITE {
 
 
         if ( ($value*1) != ($oldValue*1) ) {
-            hbrain_log(__METHOD__, $condition ." changed to ". $value);
+            hbrain_log(__METHOD__.":".__LINE__, $condition ." changed to ". $value);
             SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
             $res = SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
             HomeBrain::mobDbUpdate($res[0]);
@@ -56,15 +56,15 @@ class SQLITE {
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN", "DB"));
         $tmp = "";
 
-        debug_log(__METHOD__, $sqlite->lastErrorMsg ());
-        debug_log(__METHOD__, $sql);
+        debug_log(__METHOD__.":".__LINE__, $sqlite->lastErrorMsg ());
+        debug_log(__METHOD__.":".__LINE__, $sql);
 
         $res = $sqlite->query($sql);
         $ret = $sqlite->lastErrorMsg();
 
 	if (strtoupper(substr($sql, 0 , 6)) == "INSERT") {
-		 debug_log(__METHOD__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
-                 // debug_log(__METHOD__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
+		 debug_log(__METHOD__.":".__LINE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
+                 // debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
                  // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
         }
 
@@ -81,7 +81,7 @@ class SQLITE {
         if ( $ret == "not an error" ) {
             $ret = null;
         }
-        else hbrain_log(__METHOD__, $ret ." SQL: ". $sql);
+        else hbrain_log(__METHOD__.":".__LINE__, $ret ." SQL: ". $sql);
 
         return SQLITE::$result;
     }
@@ -89,7 +89,7 @@ class SQLITE {
     public static function mySqlQuery($sql) {
 	$sql = preg_replace('# {2,}#', ' ', (str_replace(array("\r\n","\r","\n"),' ',trim($sql))));
 	exec("/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"", $ret);
-	debug_log(__METHOD__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
+	debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
         return $ret;
     }
 

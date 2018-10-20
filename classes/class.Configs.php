@@ -38,7 +38,7 @@ class Configs {
         $key = strtoupper($key);
 
         if (!array_key_exists($key, $configs)) {
-            debug_log(__METHOD__, $key ."=>". $value ." doesn't exist..");
+            debug_log(__METHOD__.":".__LINE__, $key ."=>". $value ." doesn't exist..");
             return false;
         }
 

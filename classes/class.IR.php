@@ -11,7 +11,7 @@ class IR {
         return MyAPI::help(self::class);
     }
 
-    public static function amp($command, $count = 1) {        
+    public static function amp($command, $count = 1) {
         self::irsend("irnec", $command, $count);
     }
     
@@ -23,7 +23,7 @@ class IR {
         for ($i = 0; $i < $count; $i++)
             exec("sudo /usr/bin/nrf 1 ".$command.":".$parameter);
 
-        debug_log(__METHOD__, "sudo /usr/bin/nrf 1 ".$command.":".$parameter);
+        debug_log(__METHOD__.":".__LINE__, "sudo /usr/bin/nrf 1 ".$command.":".$parameter);
     }
 }
 

@@ -25,7 +25,6 @@ while true ; do
 
 		# svakih 30 minuta
 		# if [ $(( minute%30 )) -eq 0 ]; then
-
 		# fi
 
 		# svaki sat
@@ -53,8 +52,8 @@ while true ; do
 			cp $DIR/var/hbrain.log /srv/PiStorage/backups/LOG_hbrain_$date.log
 			echo "" > $DIR/var/hbrain.log
 
-			cp $DIR/var/hbrain_dbg.log /srv/PiStorage/backups/LOG_hbrain_dbg_$date.log
-			echo "" > $DIR/var/hbrain_dbg.log
+			tar -zcf /srv/PiStorage/backups/node-red_$date.tgz /home/hbrain/.node-red/
+			tar -zcf /srv/PiStorage/backups/HomeBrain_$date.tgz /srv/HomeBrain
 		fi
 
 		lastminute=$(( minute ))

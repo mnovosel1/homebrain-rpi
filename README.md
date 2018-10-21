@@ -7,4 +7,7 @@
 
 ## TODO
 
-periodically move backups from PiStorage/backups to HomeServer
+- FinManager
+- wakecheck improve
+- uploading to remote MySQL
+- periodically move backups from PiStorage/backups to HomeServer

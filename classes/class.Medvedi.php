@@ -29,40 +29,43 @@ class Medvedi {
                 if (Medvedi::isGameLive()) {
                     if ( Medvedi::$newData != Medvedi::$logData ) {
                         $msg = "";
-                        $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"];
 
-                        switch (false) {
-
-                            case (Medvedi::$newData["status"] == "pre-event" && Medvedi::$logData["status"] == "mid-event"):
-                                $msg .= " Game started.";
-                            break;
-
-                            case (Medvedi::$newData["period"] != Medvedi::$logData["period"]):
-                                $msg .= " ". Medvedi::$newData["period"] ." started.";
-                            break;
-
-                            case (Medvedi::$newData["status"] == "post-event" && trim(Medvedi::$logData["status"]) == ""):
-                                if ( Medvedi::$newData["medvedGolova"] > Medvedi::$newData["antiMedvedGolova"]) {
-                                    hbrain_log(__METHOD__.":".__LINE__, "Medved pobjeda ". Medvedi::$newData["score"] ." !");
-                                    Notifier::alert(15);
-                                    $msg .= " POBJEDAAA!!!!";
-                                }
-                                else {
-                                    $msg .= " Game ended.";
-                                }
-                            break;
-
-                            default:
-                                $msg .= " p:". Medvedi::$newData["period"] ." s:". Medvedi::$newData["status"];
-
+                        if (Medvedi::$newData["antiMedvedGolova"] > Medvedi::$logData["antiMedvedGolova"]) {
+                            $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"] . " (".Medvedi::$logData["period"].")";
                         }
+
+                        else if (Medvedi::$newData["period"] != Medvedi::$logData["period"]) {
+                            $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"]. PHP_EOL;
+                            $msg .= "trećina: ".Medvedi::$logData["period"];
+                        }
+
+                        else if (Medvedi::$newData["status"] == "post-event") {
+                            if ( Medvedi::$newData["medvedGolova"] > Medvedi::$newData["antiMedvedGolova"]) {
+                                hbrain_log(__METHOD__.":".__LINE__, "Medved pobjeda ". Medvedi::$newData["score"] ." !");
+                                Notifier::alert(15);
+                                $msg .= "  POBJEDAAA!!!! ". PHP_EOL;
+                                $msg .= Medvedi::$newData["playing"] ." ". Medvedi::$newData["score"];
+                            }
+                            else {
+                                $msg .= " Game ended.";
+                            }
+                        }
+
+                        // $msg .= " p:". Medvedi::$newData["period"] ." s:". Medvedi::$newData["status"];
                         hbrain_log(__METHOD__.":".__LINE__, $msg);
 
                         Notifier::fcmBcast("Medvedi", $msg);
                     }
-                } else if (strtotime(Medvedi::$newData["time"])-time() > 0) {
+                }
+
+                else if (strtotime(Medvedi::$newData["time"])-time() > 0) {
                     hbrain_log(__METHOD__.":".__LINE__, Medvedi::timeToGame() . "!");
-                    if ( time() - filemtime(DIR . "/var/medvedi.log") >= 60*60 ) {
+
+                    if (Medvedi::$newData["date"] != Medvedi::$logData["date"]) {
+                        Notifier::fcmBcast("Medvedi", Medvedi::$newData["date"] ." ". Medvedi::$newData["time"] ." ". Medvedi::$newData["playing"]);
+                    }
+
+                    else if ( time() - filemtime(DIR . "/var/medvedi.log") >= 60*60 ) {
                         Notifier::fcmBcast("Medvedi", date("H:i") .": ". Medvedi::timeToGame());
                     }
                 }
@@ -72,10 +75,14 @@ class Medvedi {
 
     public static function show() {
         Medvedi::getData();
-        var_dump(Medvedi::$logData);
-        var_dump(Medvedi::$newData);
 
-        var_dump((Medvedi::isGameLive() || time() - filemtime(DIR . "/var/medvedi.log") >= 60*60));
+        echo "LogData:". PHP_EOL;
+        var_dump(Medvedi::$logData);
+
+        if ((Medvedi::isGameLive() || time() - filemtime(DIR . "/var/medvedi.log") >= 60*60)) {
+            echo "NewData:". PHP_EOL;
+            var_dump(Medvedi::$newData);
+        }
     }
 
 // private methods //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -143,6 +150,7 @@ class Medvedi {
                                                 "medvedGolova"       => $medvedGoals,
                                                 "antiMedvedGolova"   => $antiMedvedGoals
                     );
+                    /*
                     if (Medvedi::$newData["status"] != "post-event") {
                         if (Medvedi::$newData["status"] == "pre-event") {
                             Medvedi::$newData["period"] = "";
@@ -152,6 +160,7 @@ class Medvedi {
                         }
                         break 1;
                     }
+                    */
                 }
             }
             if (Medvedi::$newData != null) {
@@ -167,7 +176,8 @@ class Medvedi {
     public static function timeToGame() {
         Medvedi::getData();
 
-		$gameTime = strtotime(Medvedi::$newData["date"] ." ". Medvedi::$newData["time"]);
+        $gameTime = strtotime(Medvedi::$newData["date"] ." ". Medvedi::$newData["time"]);
+        debug_log(__METHOD__.":".__LINE__, $gameTime);
 
 		$howlong = '';
 		$seconds = $gameTime - time(); 
@@ -177,9 +187,11 @@ class Medvedi {
 		if (abs($days) >= 1) {
 		  $howlong = $days . ' ' . ($days != 1 ? 'dana' : 'dan');
 		} else if (abs($hours) >= 1) {
-		  $howlong = $hours . ' sat' . ($hours != 1 ? 'i' : '');
+            $howlong .= $hours;
+            $howlong .= ($minutes - ($hours * 60)) > 20 ? " i pol " : " ";
+            $howlong .= $hours == 1 ? "sat" : ($hours < 5 ? "sata" : "sati");
 		} else if (abs($minutes) >= 1) {
-		  $howlong = $minutes . ' minuta';
+		  $howlong = $minutes . $minutes == 1 ? " minutu" : ($minutes < 5 ? " minute" : " minuta");
 		} else {
 		  $howlong = $seconds . ' ' . ($seconds != 1 ? 'sekundi' : 'sekunda');
 		}

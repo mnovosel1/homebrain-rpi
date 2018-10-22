@@ -1,67 +1,88 @@
 #!/bin/bash
+
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+date=$(date +%d-%m-%Y)
+lasttime=""
 
-date=`date +"%d-%m-%Y"`
-hour=$(( $((10#$(date +'%H')))*1 ))
-minute=$(( $((10#$(date +'%M')))*1 ))
-lastminute=$(( minute-1 ))
+while true
+do
 
-while true ; do
+nowtime=$(date +%H:%M)
 
-	if [ $((minute)) -ne $((lastminute)) ]; then
+if [ "$lasttime" != "$nowtime" ]; then
 
-		# svake minute
-		$DIR/homebrain medvedi check
-		$DIR/homebrain hbrain alarm
+  lasttime=$nowtime
+  echo $nowtime
 
-		# svakih 2 minute
-		# if [ $(( minute%2 )) -eq 0 ]; then
-		# fi
+  # every midnight
+  case $nowtime in
+    (00:00)
+	$DIR/homebrain hbrain uploadData
+	$DIR/homebrain hbrain dbbackup
 
-		# svakih 5 minuta
-		if [ $(( minute%5 )) -eq 0 ]; then
-			$DIR/homebrain hbrain wakecheck
-		fi
+	cp $DIR/var/hbrain.sql /srv/PiStorage/backups/SQL_hbrain_$date.sql
 
-		# svakih 30 minuta
-		# if [ $(( minute%30 )) -eq 0 ]; then
-		# fi
+	cp $DIR/var/hbrain.log /srv/PiStorage/backups/LOG_hbrain_$date.log
+	echo "" > $DIR/var/hbrain.log
 
-		# svaki sat
-		if [ $((minute)) -eq 0 ]; then
-			$DIR/homebrain hbrain todo
-			$DIR/homebrain hbrain wifi
-			$DIR/homebrain lan checknetwork
-		fi
+	tar -zcf /srv/PiStorage/backups/node-red_$date.tgz /home/hbrain/.node-red/
+	tar -zcf /srv/PiStorage/backups/HomeBrain_$date.tgz /srv/HomeBrain
+	;;
+  esac
 
-		# svako jutro u 2:22
-		if [ $((hour)) -eq 2 -a $((minute)) -eq 22 ]; then
+  # every day at 2:22
+  case $nowtime in
+    (2:22)
+	$DIR/homebrain amp off
+	sudo /sbin/shutdown -F -r now
+	;;
+  esac
 
-			$DIR/homebrain amp off
+  # every hour
+  case $nowtime in
+    (*:00)
+	$DIR/homebrain hbrain todo
+	$DIR/homebrain hbrain wifi
+	$DIR/homebrain lan checknetwork
+	;;
+  esac
 
-			sudo /sbin/shutdown -F -r now
-		fi
+  # every 30 minutes
+  case $nowtime in
+    (*:[03]0)
+	echo 'every 30 minutes'
+	;;
+  esac
 
-		# u ponoć
-		if [ $((hour)) -eq 0 -a $((minute)) -eq 0 ]; then
-			$DIR/homebrain hbrain uploadData
-			$DIR/homebrain hbrain dbbackup
+  case $nowtime in
+    (*:*[0])
+	echo 'every 10 minutes'
+	;;
+  esac
 
-			cp $DIR/var/hbrain.sql /srv/PiStorage/backups/SQL_hbrain_$date.sql
+  # every 5 minutes
+  case $nowtime in
+    (*:*[05])
+	$DIR/homebrain hbrain wakecheck
+	;;
+  esac
 
-			cp $DIR/var/hbrain.log /srv/PiStorage/backups/LOG_hbrain_$date.log
-			echo "" > $DIR/var/hbrain.log
+  # every 2 minutes
+  case $nowtime in
+    (*:*[02468])
+	echo 'every 2 minutes'
+	;;
+  esac
 
-			tar -zcf /srv/PiStorage/backups/node-red_$date.tgz /home/hbrain/.node-red/
-			tar -zcf /srv/PiStorage/backups/HomeBrain_$date.tgz /srv/HomeBrain
-		fi
+  # every minute
+  case $nowtime in
+    (*)
+	$DIR/homebrain medvedi check
+	$DIR/homebrain hbrain alarm
+	;;
+  esac
 
-		lastminute=$(( minute ))
-	fi
-
-	sleep 30s
-
-	hour=$(( $((10#$(date +'%H')))*1 ))
-	minute=$(( $((10#$(date +'%M')))*1 ))
+  sleep 30
+fi
 
 done

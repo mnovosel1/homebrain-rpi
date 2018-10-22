@@ -42,19 +42,7 @@ class Configs {
             return false;
         }
 
-        if ($key == "DEBUG") {
-            $key = array_search($value, $configs["DEBUG"]);
-            if ($key === false) {
-                $configs["DEBUG"][] = $value;
-            }
-            else {
-                array_splice($configs["DEBUG"], $key, 1);
-            }
-        }
-        else {
-            $configs[$key] = $value;
-        }
-
+        $configs[$key] = $value;
 
         $out = ";<?php". PHP_EOL .";die();". PHP_EOL .";/*". PHP_EOL;
         $last_k = "";

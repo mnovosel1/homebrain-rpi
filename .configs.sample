@@ -2,8 +2,7 @@
 ;die();
 ;/*
 
-DEBUG[0]="SQLITE"
-DEBUG[1]="FinMan"
+DEBUG="true"
 
 ALARM="6:00 AM"
 

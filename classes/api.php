@@ -21,10 +21,14 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 //* DEBUGGING stuff *//////////////////////////////////////////////////////////////////////////////
 
 function debug_log($where, $what) {
-        write_log($where, $what, "DEBUG");}
+	if ( Configs::get("DEBUG") == "true" ) {
+		write_log($where, $what, "DEBUG");
+	}
+}
 
 function hbrain_log($where, $what) {
-        write_log($where, $what);}
+        write_log($where, $what);
+}
 
 function write_log ($where, $what, $whichLog = "INFO") {
         if (strpos($where, '::') !== false)

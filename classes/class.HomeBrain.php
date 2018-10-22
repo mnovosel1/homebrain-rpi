@@ -356,14 +356,32 @@ class HomeBrain {
         exec('email '. $to .' "'. $message .'"');
     }
 
-	public static function wifi($onoff = null) {
+    public static function wifi($onoff = null) {
 		if ($onoff === null) {
 			return LAN::wifi();
 		}
 		else {
 			return LAN::wifi($onoff);
 		}
+    }
+
+    public static function debug($set = "") {
+	switch($set) {
+
+		case "1":
+		case "on":
+			Configs::set("DEBUG", "true");
+		break;
+
+		case "0":
+		case "off":
+			Configs::set("DEBUG", "false");
+		break;
+
+		default:
+			return Configs::get("DEBUG");
 	}
+    }
 
 }
 

@@ -33,7 +33,7 @@ if [ "$lasttime" != "$nowtime" ]; then
   # every day at 2:22
   case $nowtime in
     (2:22)
-	$DIR/homebrain amp off
+	$DIR/homebrain hbrain allOff
 	sudo /sbin/shutdown -F -r now
 	;;
   esac

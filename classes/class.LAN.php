@@ -11,17 +11,23 @@ class LAN {
         return MyAPI::help(LAN::class);
     }
 
-   public static function wifi($what = null) {
+   public static function wifi($what = "") {
 	$out = "";
-	if ($what === null) {
+	if ($what == "") {
 		$out = exec(DIR ."/bin/wifi.sh active | awk '!/P660HW-T3>/ && /wlan active/'");
 		if (strpos($out, "active 1") !== false) {
 			$out = "on";
-			if (HomeBrain::isSilentTime()) LAN::wifi(0);
+			if (HomeBrain::isSilentTime()) {
+				hbrain_log(__METHOD__.":".__LINE__, "WiFi should be off");
+				LAN::wifi(0);
+			}
 		}
 		else {
 			$out = "off";
-			if (!HomeBrain::isSilentTime()) LAN::wifi(1);
+			if (!HomeBrain::isSilentTime()) {
+				hbrain_log(__METHOD__.":".__LINE__, "WiFi should be on");
+				LAN::wifi(1);
+			}
 		}
 		debug_log(__METHOD__.":".__LINE__, "WiFi is ". $out);
 	}
@@ -30,7 +36,7 @@ class LAN {
 			case "1":
                         case "0":
 				exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
-				debug_log(__METHOD__.":".__LINE__, "Switching WiFi ". ($what == 1) ? "on." : "off.");
+				debug_log(__METHOD__.":".__LINE__, "Switching WiFi ". ($what == 1 ? "on" : "off"));
                         break;
 
 			case "scan":

@@ -46,12 +46,13 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every 30 minutes
   case $nowtime in (*:[03]0)
-	echo 'every 30 minutes'
+
 	;;
   esac
 
+  #### every 10 minutes
   case $nowtime in (*:*[0])
-	echo 'every 10 minutes'
+
 	;;
   esac
 
@@ -63,7 +64,7 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every 2 minutes
   case $nowtime in (*:*[02468])
-	echo 'every 2 minutes'
+
 	;;
   esac
 

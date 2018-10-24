@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apiurl='http://10.10.10.10/'
+apiurl='http://10.10.10.11/'
 word=HomeBrain
 wlen=${#word}
 rnd=$((RANDOM % wlen))

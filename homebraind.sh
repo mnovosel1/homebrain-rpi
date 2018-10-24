@@ -12,7 +12,7 @@ nowtime=$(date +%H:%M)
 if [ "$lasttime" != "$nowtime" ]; then
 
   lasttime=$nowtime
-  echo $nowtime
+  # echo $nowtime
 
   #### every midnight
   case $nowtime in (00:00)

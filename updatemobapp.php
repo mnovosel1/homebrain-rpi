@@ -4,24 +4,16 @@
 define('DIR', str_replace('/www/app', '', dirname(__FILE__)));
 define('FILES_DAT', 'files.dat');
 
-require_once(DIR . "/classes/class.Configs.php");
-function debug_log($what) {
-	ob_start();
-	var_dump($what);
-	$out = ob_get_clean();
-	file_put_contents(DIR.'/'.Configs::get("DEBUG_LOG"), $out.PHP_EOL, FILE_APPEND);
-}
-
 
 global $file_info; // All the file paths will be pushed here
 $file_info = array();
 
 /**
- * 
+ *
  * @function recursive_scan
  * @description Recursively scans a folder and its child folders
  * @param $path :: Path of the folder/file
- * 
+ *
  * */
 
 function recursive_scan ($path) {
@@ -49,8 +41,8 @@ $filesUpdated = null;
 $i = 0;
 foreach ($file_info as $file) {
     $thisFile = $file . " " . filemtime (DIR . "/www/app/" . $file) . PHP_EOL;
-    $i++;  
-    if ( strpos($filesOldState, $thisFile) === false ) { 
+    $i++;
+    if ( strpos($filesOldState, $thisFile) === false ) {
         $filesUpdated[] = trim($file);
         echo $file . PHP_EOL;
     }

@@ -164,9 +164,9 @@ class HomeServer {
 			debug_log(__METHOD__.":".__LINE__, "HomeServer live, requesting waketime..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
 		}
-		else $waketime = $wakeTimeLog + (60*30);
+		else $waketime = $wakeTimeLog;
 
-		if ($waketime == 0) {
+		if ($waketime == 0 || $waketime - time() > (60*60*24)) {
 			if ( date('U') <  date("U", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
 				$waketime = strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"));
 				debug_log(__METHOD__.":".__LINE__, "WakeTime is TODAY: ". date("d.m.Y. H:i:s", $waketime));
@@ -203,7 +203,7 @@ class HomeServer {
 		  $howlong = $seconds . ' sec' . ($seconds != 1 ? 's' : '');
 		}
 
-		return "Waking HomeServer at ".date("H:i d.m.y.", $waketime)." - ".$howlong." left.";
+		return "Waking HomeServer at ".date("H:i d.m.y.", $waketime)." (".$howlong." left)";
 	}
 }
 

@@ -17,14 +17,14 @@ class LAN {
 		$out = exec(DIR ."/bin/wifi.sh active | awk '!/P660HW-T3>/ && /wlan active/'");
 		if (strpos($out, "active 1") !== false) {
 			$out = "on";
-			if (HomeBrain::isSilentTime()) {
+			if (date("G") == Configs::get("SILENT_TIME", "START")) {
 				hbrain_log(__METHOD__.":".__LINE__, "WiFi should be off");
 				LAN::wifi(0);
 			}
 		}
 		else {
 			$out = "off";
-			if (!HomeBrain::isSilentTime()) {
+			if (date("G") == Configs::get("SILENT_TIME", "END")) {
 				hbrain_log(__METHOD__.":".__LINE__, "WiFi should be on");
 				LAN::wifi(1);
 			}

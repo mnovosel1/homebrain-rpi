@@ -36,6 +36,7 @@ class LAN {
 			case "1":
                         case "0":
 				exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
+				HomeBrain::notify(date("H:i") ." Switching WiFi ". ($what == 1 ? "on" : "off"));
 				debug_log(__METHOD__.":".__LINE__, "Switching WiFi ". ($what == 1 ? "on" : "off"));
                         break;
 
@@ -64,7 +65,7 @@ class LAN {
             return true;
         }
         debug_log(__METHOD__.":".__LINE__, $host . " is not live.");
-		return false;
+	return false;
     }
 
     public static function WOL($mac) {
@@ -115,12 +116,12 @@ class LAN {
         }
         $stream = ssh2_exec($connection, $cmd);
         stream_set_blocking($stream, true);
-		return trim(stream_get_contents($stream));
+	return trim(stream_get_contents($stream));
     }
 
     public static function checkNetwork() {
 
-        exec("sudo nmap 10.10.10.0/24 -sP", $out);
+        exec("sudo nmap -n -sn 10.10.10.0/24 -sP", $out);
 
         foreach ($out as $host) {
             if ( strpos($host, "scan report for") !== false )

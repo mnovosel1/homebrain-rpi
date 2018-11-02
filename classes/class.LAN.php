@@ -79,7 +79,7 @@ class LAN {
         socket_set_option($s, SOL_SOCKET, SO_BROADCAST, 1);
 
         if ( socket_sendto($s, $msg, strlen($msg), 0, "255.255.255.255", 1223) !== false ) {
-            debug_log(__METHOD__.":".__LINE__, "WOL sent..");
+            debug_log(__METHOD__.":".__LINE__, "WOL sent to: ". $mac);
             return true;
         }
         else {

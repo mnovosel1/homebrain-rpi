@@ -112,6 +112,7 @@ class Medvedi {
             foreach ($games as $game) {
                 //debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
                 //if (strpos($game["team_heim_kuerzel"], "MZA") !== false || strpos($game["team_gast_kuerzel"], "MZA") !== false ) {
+                if (strpos($game["event_status"], "pre-event") === false) continue;
                 if (strpos($game["th_name"], "Medvescak") !== false || strpos($game["tg_name"], "Medvescak") !== false ) {
 
                     if (strpos($game["th_name"], "Medvescak") !== false) {
@@ -161,6 +162,7 @@ class Medvedi {
                         break 1;
                     }
                     */
+                    break;
                 }
             }
             if (Medvedi::$newData != null) {

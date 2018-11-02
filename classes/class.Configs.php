@@ -13,11 +13,13 @@ class Configs {
     }
 
     public static function getMAC($host) {
-        return Configs::get($host, "MAC");
+	return SQLITE::query("SELECT mac FROM lan WHERE name = '". strtolower($host) ."'")[0]["mac"];
+//        return Configs::get($host, "MAC");
     }
 
     public static function getIP($host) {
-        return Configs::get($host, "IP");
+	return SQLITE::query("SELECT ip FROM lan WHERE name = '". strtolower($host) ."'")[0]["ip"];
+//        return Configs::get($host, "IP");
     }
 
     public static function getFCM($config) {

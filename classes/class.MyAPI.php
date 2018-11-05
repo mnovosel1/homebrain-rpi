@@ -71,7 +71,8 @@ class MyAPI extends API {
         "Medvedi::timetogame",
         "LAN::checknetwork",
         "FinMan::add",
-        "Notifier::kodi"
+        "Notifier::kodi",
+        "Notifier::rgb"
     );
 
     public function __construct($request, $origin) {

@@ -4,6 +4,8 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 date=$(date +%d-%m-%Y)
 lasttime=""
 
+$DIR/bin/rgb.py &
+
 while true
 do
 

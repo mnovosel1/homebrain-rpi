@@ -53,6 +53,12 @@ class Notifier {
         LAN::SSH("KODI", "/usr/bin/flite -voice slt -t '". $text ."' &");
     }
 
+    public static function rgb($values) {
+        $fifo = fopen("/tmp/RGB", 'w');
+        var_dump($fifo);
+        fwrite($fifo, $values); 
+    }
+
     //* private helper methods *///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {

@@ -112,7 +112,20 @@ class Medvedi {
             foreach ($games as $game) {
                 //debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
                 //if (strpos($game["team_heim_kuerzel"], "MZA") !== false || strpos($game["team_gast_kuerzel"], "MZA") !== false ) {
-                if (strpos($game["event_status"], "pre-event") === false) continue;
+
+		$game["datum"] = str_replace(",", "", $game["datum"]);
+		$game["datum"] = explode(" ", $game["datum"]);
+
+		$date = substr($game["datum"][1], 0, 6);
+		$time = substr($game["datum"][2], 0, 6);
+
+		$date = strtotime($date.date("Y. ", strtotime("this year")));
+		if (!Medvedi::isGameDay() && strpos($game["event_status"], "pre-event") !== false && $date < time())
+			$date = strtotime(date("d.m.", $date).date("Y", strtotime("next year")));
+		$date = date("d.m.Y.", $date);
+
+		if (strpos($game["event_status"], "pre-event") !== false && date("d.m.Y." != $date)) continue;
+
                 if (strpos($game["th_name"], "Medvescak") !== false || strpos($game["tg_name"], "Medvescak") !== false ) {
 
                     if (strpos($game["th_name"], "Medvescak") !== false) {
@@ -124,8 +137,7 @@ class Medvedi {
                         $medvedGoals = $game["tore_gast"];
                         $antiMedvedGoals = $game["tore_heim"];
                     }
-                    //$game["datum"] = substr(str_replace(",", "", $game["datum"]), 4, strlen($game["datum"]));
-                    $game["datum"] = str_replace(",", "", $game["datum"]);
+
                     if ($game["tore_heim_pe"] != "" || $game["tore_gast_pe"] != "") {
                         $trecina = "SO";
                     }
@@ -143,8 +155,8 @@ class Medvedi {
                     }
 
                     Medvedi::$newData = array(  "status"             => $game["event_status"],
-                                                "date"               => date("d.m.Y.", strtotime(explode(" ", $game["datum"])[1].date("Y"))), 
-                                                "time"               => date("H:i", strtotime(explode(" ", $game["datum"])[2])), 
+                                                "date"               => $date,
+                                                "time"               => $time,
                                                 "playing"            => trim($game["th_name"]). " - " .trim($game["tg_name"]),
                                                 "period"             => $trecina,
                                                 "score"              => $game["tore_heim"] ." : ". $game["tore_gast"],
@@ -167,6 +179,7 @@ class Medvedi {
             }
             if (Medvedi::$newData != null) {
                 file_put_contents(DIR . "/var/medvedi.log", json_encode(Medvedi::$newData));
+                file_put_contents("/srv/PiStorage/debug/".date("dmHis")."_medvedi.log", json_encode(Medvedi::$newData));
             }
         }
 

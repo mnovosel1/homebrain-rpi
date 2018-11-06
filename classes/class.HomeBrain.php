@@ -47,7 +47,7 @@ class HomeBrain {
     public static function dbBackup() {
         SQLITE::dbdump();
         exec("chmod -R 0770 ". DIR ."/var");
-        exec("cp -a ". DIR ."/var/* ". DIR ."/saved_var");
+        exec("cp -a ". DIR ."/var/* ". DIR ."/saved_var"); /**/
     }
 
     public static function dbRestore($fromDump = "false") {
@@ -58,7 +58,7 @@ class HomeBrain {
         }
 
         else {
-            exec("cp -f ". DIR ."/saved_var/* ". DIR ."/var");
+            exec("cp -f ". DIR ."/saved_var/* ". DIR ."/var"); /**/
         }
     }
 
@@ -114,14 +114,6 @@ class HomeBrain {
             }
 
             $newStates[$hostName]["active"] = $newState;
-
-            /*
-            if ( $oldState != $newState ) {
-                $msg = $class." is".(((bool)$newState) ? " " : " not ").$method.".";
-                debug_log(__METHOD__.":".__LINE__, $hostName . ": " . $newState . " `name`='".$condition."'");
-                //SQLITE::update("states", "active", $newState, "`name`='".$condition."'");
-            }
-            */
         }
 
         // HomeServer is off
@@ -138,7 +130,6 @@ class HomeBrain {
 
                 case (($srvWakeTime-time()) < 1800):
                     hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
-//		    Notifier::fcmBcast("HomeBrain", "it's HomeServer WakeTime (".date("H:i d.m.", $srvWakeTime).")");
                     $reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
             }
@@ -256,7 +247,7 @@ class HomeBrain {
     }
 
     public static function notify($msg) {
-//        if ( HomeBrain::isSilentTime() ) return;
+        if ( HomeBrain::isSilentTime() ) return;
         Notifier::notify($msg);
     }
 

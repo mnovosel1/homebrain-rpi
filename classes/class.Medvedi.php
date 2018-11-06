@@ -98,6 +98,8 @@ class Medvedi {
 
     private static function getTickerData() {
 
+	Medvedi::$newData = null;
+
         if (Medvedi::isGameLive() || time() - filemtime(DIR . "/var/medvedi.log") >= 60*60) {
             $command = "curl ". Medvedi::$tickerUrl ."?". time() ."  2>/dev/null";
             exec($command, $output);

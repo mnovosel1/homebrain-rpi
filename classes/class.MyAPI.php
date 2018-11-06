@@ -72,7 +72,9 @@ class MyAPI extends API {
         "LAN::checknetwork",
         "FinMan::add",
         "Notifier::kodi",
-        "Notifier::rgb"
+        "Notifier::rgb",
+	"Sound::isloud",
+	"Sound::ison"
     );
 
     public function __construct($request, $origin) {
@@ -151,6 +153,7 @@ class MyAPI extends API {
             }
 
             if ( is_array($ret) ) $ret = export_var($ret, true);
+	    if ( is_bool($ret) ) $ret = $ret ? "true" : "false";
             $ret = trim($ret);
 
             hbrain_log("API ". $cliMethodName." MyAPI:".__LINE__, '$ret='. $ret);
@@ -166,7 +169,8 @@ class MyAPI extends API {
     }
 
     public static function isCallable($class, $method) {
-        return (array_search($class.'::'.$method, self::$callable) !== false);
+	debug_log(__METHOD__.":".__LINE__, $class.'::'.$method);
+        return (array_search($class.'::'.$method, MyAPI::$callable) !== false);
     }
 
     public static function help($class) {

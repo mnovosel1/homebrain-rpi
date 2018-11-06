@@ -23,9 +23,8 @@ class MPD {
             LAN::SSH("KODI", "/usr/bin/mpc load radio");
             LAN::SSH("KODI", "/usr/bin/mpc play 1");
         }
-        Amp::mpd();
 
-        HomeBrain::wakecheck();
+        Amp::mpd();
     }
 
     public static function off() {

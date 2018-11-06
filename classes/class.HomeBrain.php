@@ -203,18 +203,22 @@ class HomeBrain {
     public static function mobDbUpdate($row) {
         switch (true) {
             case (bool)strpos($row["state"], "user"):
-            $msg = ["user is logged off..", "user is logged on!"];
+            	$msg = ["user is logged off..", "user is logged on!"];
             break;
 
             case (bool)strpos($row["state"], "busy"):
-            $msg = ["is not busy..", "is busy!"];
-            // if ($row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is busy!
+            	$msg = ["is not busy..", "is busy!"];
+            	// if ($row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is busy!
+            break;
+
+            case (bool)strpos($row["state"], "Sound"):
+            	$msg = ["is OK..", "is loud!"];
+            	if ($row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 4 &");
             break;
 
             default:
-            // if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
-	    if ($row["state"] == "Sound" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 4 &");
-            $msg = ["is off..", "is on!"];
+            	// if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
+            	$msg = ["is off..", "is on!"];
         }
         hbrain_log(__METHOD__.":".__LINE__, $row["state"] ." ". $msg[$row["changedto"]]);
         debug_log(__METHOD__.":".__LINE__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');

@@ -14,8 +14,9 @@ class Sound {
     	return Sound::isLoud();
     }
 
-    public static function isLoud() }
-	return false;
+    public static function isLoud() {
+	return true;
     }
+}
 
 ?>

@@ -99,16 +99,14 @@ class HomeBrain {
 
             if ( strpos($hostName, " ") === false ) {
                 $class = $hostName;
-                $condition = $class;
                 debug_log(__METHOD__.":".__LINE__, $class ."::isOn();");
-                $newState = ($hostName::isOn() == "false") ? 0 : 1;
+                $newState = ($class::isOn() == "false") ? 0 : 1;
             }
 
             else {
                 $object = explode(" ", $hostName);
                 $class = trim($object[0]);
                 $method = trim($object[1]);
-                $condition = $class." ".$method;
                 debug_log(__METHOD__.":".__LINE__, $class ."::". $method ."();");
                 $newState = ($class::$method() == "false") ? 0 : 1;
             }

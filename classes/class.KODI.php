@@ -38,6 +38,8 @@ class KODI {
 	}
 
 	public static function on() {
+		if (KODI::isOn()) return "true";
+
 		LAN::SSH("KODI", "kodi-standalone > /dev/null &");
 		SQLITE::update("states", "active", 1, "`name`='KODI'");
 		HomeBrain::wakecheck();

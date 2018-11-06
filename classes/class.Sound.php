@@ -24,7 +24,7 @@ class Sound {
     }
 
     public static function isLoud() {
-	$res = SQLITE::query("SELECT AVG(sound) FROM datalog WHERE DATETIME(timestamp) >= DATETIME('now', '-30 minutes')");
+	$res = SQLITE::query("SELECT AVG(sound) FROM datalog WHERE DATETIME(timestamp) >= DATETIME('now', '-10 minutes')");
 	return $res[0]["AVG(sound)"] > Configs::get("SOUND", "MAX");
     }
 }

@@ -213,6 +213,7 @@ class HomeBrain {
 
             default:
             // if ($row["state"] == "HomeServer" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 3 &"); // alert if server is on
+	    if ($row["state"] == "Sound" && $row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 4 &");
             $msg = ["is off..", "is on!"];
         }
         hbrain_log(__METHOD__.":".__LINE__, $row["state"] ." ". $msg[$row["changedto"]]);

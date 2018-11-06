@@ -26,14 +26,14 @@ class Weather {
         $humidIn = abs($oldData[0]["humidin"] - $newData[1]) > 20 ? $oldData[0]["humidin"] : $newData[1];
         $light = abs($oldData[0]["light"] - $newData[2]) > 1000 ? $oldData[0]["light"] : $newData[2];
         $sound = abs($oldData[0]["sound"] - $newData[3]) > 40 ? $oldData[0]["sound"] : $newData[3];
-
+/*
         if (!HomeBrain::isSilentTime() && $sound > Configs::get("SOUND", "MAX")) {
             HomeBrain::notify(date("H:i") ." Sound: ". $sound);
             Notifier::alert(5);
         } else if (HomeBrain::isSilentTime() && $sound > Configs::get("SOUND", "MAX_WHEN_SILENT_TIME")) {
             HomeBrain::notify(date("H:i") ." SilentTime sound: ". $sound);
         }
-
+*/
         return $tempIn .":". $humidIn .":". $light .":". $sound;
     }
 

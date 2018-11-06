@@ -41,10 +41,7 @@ class SQLITE {
             SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
             $res = SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
             HomeBrain::mobDbUpdate($res[0]);
-//            return $ret;
         }
-
-//        return null;
     }
 
     public static function approve($token) {

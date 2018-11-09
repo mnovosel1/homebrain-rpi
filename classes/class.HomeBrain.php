@@ -41,7 +41,7 @@ class HomeBrain {
         TV::off();
         KODI::off();
         MPD::off();
-        LAN::SSH("KODI", "sudo /sbin/shutdown -r now > /dev/null &");
+        LAN::SSH("KODI", "sudo /sbin/shutdown -r +3 > /dev/null &");
     }
 
     public static function dbBackup() {
@@ -212,7 +212,7 @@ class HomeBrain {
             break;
 
             case (bool)strpos($row["state"], "Sound"):
-            	$msg = ["is OK..", "is loud!"];
+		$msg = ["is OK..", "is loud!"];
             	if ($row["changedto"] == 1) exec(DIR ."/homebrain hbrain alert 4 &");
             break;
 

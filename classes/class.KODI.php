@@ -40,7 +40,7 @@ class KODI {
 	public static function on() {
 		if (KODI::isOn()) return "true";
 
-		LAN::SSH("KODI", "kodi-standalone > /dev/null &");
+		LAN::SSH("KODI", "/usr/bin/kodi-standalone > /dev/null &");
 		SQLITE::update("states", "active", 1, "`name`='KODI'");
 		HomeBrain::wakecheck();
 		return "true";
@@ -48,7 +48,7 @@ class KODI {
 
 	public static function off() {
 		TV::off();
-		LAN::SSH("KODI", "kodi-send --action='Quit' > /dev/null &");
+		LAN::SSH("KODI", "/usr/bin/kodi-send --action='Quit' > /dev/null &");
 		SQLITE::update("states", "active", 0, "`name`='KODI'");
 		return "true";
     }

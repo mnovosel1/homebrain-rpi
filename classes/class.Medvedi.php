@@ -124,9 +124,10 @@ class Medvedi {
 		$date = strtotime($date.date("Y. ", strtotime("this year")));
 		if (!Medvedi::isGameDay() && strpos($game["event_status"], "pre-event") !== false && $date < time())
 			$date = strtotime(date("d.m.", $date).date("Y", strtotime("next year")));
+
 		$date = date("d.m.Y.", $date);
 
-		if (strpos($game["event_status"], "pre-event") !== false && date("d.m.Y." != $date)) continue;
+		if (strpos($game["event_status"], "pre-event") !== false && date("d.m.Y.") != $date) continue;
 
                 if (strpos($game["th_name"], "Medvescak") !== false || strpos($game["tg_name"], "Medvescak") !== false ) {
 

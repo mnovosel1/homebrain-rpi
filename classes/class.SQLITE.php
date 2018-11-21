@@ -118,7 +118,7 @@ class SQLITE {
     /***********************************************************************************/
 
         CREATE TABLE lan (
-            timestamp  DATETIME DEFAULT datetime(CURRENT_TIMESTAMP, 'localtime'),
+            timestamp DATETIME DEFAULT (DATETIME('now', 'localtime')),
             mac varchar(20) PRIMARY KEY,
             ip varchar(20) DEFAULT NULL,
             name varchar(99) DEFAULT NULL,
@@ -179,7 +179,7 @@ class SQLITE {
         foreach ( $output as $line )
             $sql .= "\n        ".trim($line);
 
-        // VIEWS logic AND todo
+        // VIEW logic
         $sql .= "
 
     /***********************************************************************************/
@@ -197,6 +197,24 @@ class SQLITE {
             GROUP BY c.statebefore, hour, wday, s.name, c.changedto
             ORDER BY weight DESC;
         ";
+
+        // VIEW tmpavg
+        $sql .= "
+
+    /***********************************************************************************/
+
+        CREATE VIEW tmpavg AS
+		SELECT
+			STRFTIME('%d-%m-%Y', timestamp) AS date,
+			ROUND(AVG(tempin), 1) AS avgtemp,
+			ROUND(AVG(humidin), 1) AS avghumid,
+			ROUND(AVG(tempin)-AVG(tempout), 1) AS tmpdiff,
+			heatingon
+		FROM datalog
+		GROUP BY STRFTIME('%d-%m-%Y', timestamp)
+		ORDER BY timestamp DESC;
+        ";
+
 
         // TABLE datalog
         $sql .= "
@@ -226,7 +244,7 @@ class SQLITE {
         // TABLE finlog
         $sql .= "
     /***********************************************************************************/
-    
+
         CREATE TABLE finlog (
             timestamp timestamp PRIMARY KEY DEFAULT CURRENT_TIMESTAMP,
             name TEXT NOT NULL,

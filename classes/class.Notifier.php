@@ -37,7 +37,6 @@ class Notifier {
         if ( $title === null ) $title = "HomeBrain";
 
         $tokens = SQLITE::query("SELECT token, email FROM fcm WHERE approved='true'");
-	debug_log(__METHOD__.":".__LINE__, "tok: ", implode(" ", $tokens));
         foreach ( $tokens as $tok ) {
             hbrain_log(__METHOD__.":".__LINE__, $title .": ". $msg ." -> ". $tok['email']);
             Notifier::sendFcm($title, $msg, $data, $tok['token']);
@@ -56,7 +55,7 @@ class Notifier {
     public static function rgb($values) {
         $fifo = fopen("/tmp/RGB", 'w');
         var_dump($fifo);
-        fwrite($fifo, $values); 
+        fwrite($fifo, $values);
     }
 
     //* private helper methods *///////////////////////////////////////////////////////////////////

@@ -266,40 +266,82 @@ class HomeBrain {
 
     ///// HomeBrain::uploadData() /////////////////////////////////////////////////////////////
     public static function uploadData() {
+        uploadChangeLogData();
+        uploadDataLogData();
+    }
+
+    public static function uploadChangeLogData() {
 
         $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS utimestamp ".
                                     "FROM changelog ".
                                     "ORDER BY timestamp DESC LIMIT 1");
 
-	$rows = SQLITE::query("SELECT * FROM changelog ".
-				"WHERE STRFTIME('%s', timestamp, 'localtime')*1 >= ". trim($res[1])*1 ." ".
-				"ORDER BY timestamp ASC");
+        $rows = SQLITE::query("SELECT * FROM changelog ".
+                    "WHERE STRFTIME('%s', timestamp, 'localtime')-(60*60*2) >= ". trim($res[1])*1 ." ".
+                    "ORDER BY timestamp ASC");
 
-	hbrain_log(__METHOD__.":".__LINE__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]));
+        hbrain_log(__METHOD__.":".__LINE__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]) . " - " . $res[1]);
 
-	foreach ($rows as $row) {
+        foreach ($rows as $row) {
 
-		$row['light'] = empty(trim($row['light'])) ? "NULL" : $row['light'];
-		$row['tempin'] = empty(trim($row['tempin'])) ? "NULL" : $row['tempin'];
-		$row['tempout'] = empty(trim($row['tempout'])) ? "NULL" : $row['tempout'];
-		$row['sound'] = empty(trim($row['sound'])) ? "NULL" : $row['sound'];
+            $row['light'] = empty(trim($row['light'])) ? "NULL" : $row['light'];
+            $row['tempin'] = empty(trim($row['tempin'])) ? "NULL" : $row['tempin'];
+            $row['tempout'] = empty(trim($row['tempout'])) ? "NULL" : $row['tempout'];
+            $row['sound'] = empty(trim($row['sound'])) ? "NULL" : $row['sound'];
 
-		$sql = "INSERT INTO changelog ".
-				"VALUES('".$row['timestamp']."', ".
-					"'".$row['statebefore']."', ".
-					$row['light'].", ".
-					$row['tempin'].", ".
-					$row['tempout'].", ".
-					$row['sound'].", ".
-					"'".$row['state']."', ".
-					$row['changedto'].")";
+            $sql = "INSERT INTO changelog ".
+                    "VALUES('".$row['timestamp']."', ".
+                        "'".$row['statebefore']."', ".
+                        $row['light'].", ".
+                        $row['tempin'].", ".
+                        $row['tempout'].", ".
+                        $row['sound'].", ".
+                        "'".$row['state']."', ".
+                        $row['changedto'].")";
 
-//		debug_log(__METHOD__.":".__LINE__, "sqlite: ". $row['timestamp'] ."/". strtotime($row['timestamp']) ."  mysql: ". date("H:i:s d.m.Y.", $res[1]) ."/". $res[1]);
-//		debug_log(__METHOD__.":".__LINE__, strtotime($row['timestamp']) > $res[1]);
-//		debug_log(__METHOD__.":".__LINE__, $sql);
-		SQLITE::mySqlQuery($sql);
-        //SQLITE::query("SELECT * FROM changelog WHERE timestamp < (SELECT DATETIME('now', '-30 day'));");
-	}
+            // debug_log(__METHOD__.":".__LINE__, $sql);
+            SQLITE::mySqlQuery($sql);
+        }
+    }
+
+    public static function uploadDataLogData() {
+
+        $res = SQLITE::mySqlQuery("SELECT unix_timestamp(timestamp) AS utimestamp ".
+                                    "FROM datalog ".
+                                    "ORDER BY timestamp DESC LIMIT 1");
+
+        $sql = "SELECT * FROM datalog ".
+                    "WHERE STRFTIME('%s', timestamp, 'localtime')-(60*60*2) >= ". trim($res[1])*1 ." ".
+                    "ORDER BY timestamp ASC";
+        $rows = SQLITE::query($sql);
+
+        hbrain_log(__METHOD__.":".__LINE__, "Uploading ". count($rows) ." rows to datalog, since ". date("d.m.Y H:i:s", $res[1]) . " - " . $res[1]);
+
+        foreach ($rows as $row)
+        {
+            $row['tempset'] = empty(trim($row['tempset'])) ? "NULL" : $row['tempset'];
+            $row['tempin'] = empty(trim($row['tempin'])) ? "NULL" : $row['tempin'];
+            $row['tempout'] = empty(trim($row['tempout'])) ? "NULL" : $row['tempout'];
+            $row['heatingon'] = empty(trim($row['heatingon'])) ? "NULL" : $row['heatingon'];
+            $row['humidin'] = empty(trim($row['humidin'])) ? "NULL" : $row['humidin'];
+            $row['humidout'] = empty(trim($row['humidout'])) ? "NULL" : $row['humidout'];
+            $row['light'] = empty(trim($row['light'])) ? "NULL" : $row['light'];
+            $row['sound'] = empty(trim($row['sound'])) ? "NULL" : $row['sound'];
+
+            $sql = "INSERT INTO datalog ".
+                    "VALUES('".$row['timestamp']."', ".
+                    $row['tempset'].", ".
+                    $row['tempin'].", ".
+                    $row['tempout'].", ".
+                    $row['heatingon'].", ".
+                    $row['humidin'].", ".
+                    $row['humidout'].", ".
+                    $row['light'].", ".
+                    $row['sound'].")";
+
+            // debug_log(__METHOD__.":".__LINE__, $sql);
+            SQLITE::mySqlQuery($sql);
+        }
     }
 
     ///// HomeBrain::getTemps() ///////////////////////////////////////////////////////////////

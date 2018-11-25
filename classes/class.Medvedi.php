@@ -112,8 +112,8 @@ class Medvedi {
             $games = $week["s"];
 
             foreach ($games as $game) {
-                //debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
-                //if (strpos($game["team_heim_kuerzel"], "MZA") !== false || strpos($game["team_gast_kuerzel"], "MZA") !== false ) {
+                // debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
+                // if (strpos($game["team_heim_kuerzel"], "MZA") !== false || strpos($game["team_gast_kuerzel"], "MZA") !== false ) {
 
 		$game["datum"] = str_replace(",", "", $game["datum"]);
 		$game["datum"] = explode(" ", $game["datum"]);
@@ -122,12 +122,13 @@ class Medvedi {
 		$time = substr($game["datum"][2], 0, 6);
 
 		$date = strtotime($date.date("Y. ", strtotime("this year")));
+
 		if (!Medvedi::isGameDay() && strpos($game["event_status"], "pre-event") !== false && $date < time())
 			$date = strtotime(date("d.m.", $date).date("Y", strtotime("next year")));
 
 		$date = date("d.m.Y.", $date);
 
-		if (strpos($game["event_status"], "pre-event") !== false && date("d.m.Y.") != $date) continue;
+		if (strpos($game["event_status"], "pre-event") === false && date("d.m.Y.") != $date) continue;
 
                 if (strpos($game["th_name"], "Medvescak") !== false || strpos($game["tg_name"], "Medvescak") !== false ) {
 
@@ -166,6 +167,7 @@ class Medvedi {
                                                 "medvedGolova"       => $medvedGoals,
                                                 "antiMedvedGolova"   => $antiMedvedGoals
                     );
+var_dump(Medvedi::$newData);
                     /*
                     if (Medvedi::$newData["status"] != "post-event") {
                         if (Medvedi::$newData["status"] == "pre-event") {

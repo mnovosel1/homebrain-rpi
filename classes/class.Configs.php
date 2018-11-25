@@ -13,7 +13,10 @@ class Configs {
     }
 
     public static function getMAC($host) {
-	return SQLITE::query("SELECT mac FROM lan WHERE name = '". strtolower($host) ."'")[0]["mac"];
+	$mac = SQLITE::query("SELECT mac FROM lan WHERE name = '". strtolower($host) ."'")[0]["mac"];
+	debug_log(__METHOD__.":".__LINE__, $mac);
+	return $mac;
+
 //        return Configs::get($host, "MAC");
     }
 

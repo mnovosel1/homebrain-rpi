@@ -1,8 +1,6 @@
 <?php
 
 class TV {
-    public static $debug = false;
-
     public static function h() {
         return MyAPI::help(self::class);
     }
@@ -27,17 +25,13 @@ class TV {
     }
 
     public static function on() {
-        if (TV::isOn() == "false") {
-            TV::power();
-        }
-        // LAN::SSH("KODI", "echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &");
+        LAN::SSH("KODI", "echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &");
+        SQLITE::update("states", "active", 1, "name='TV'");
     }
 
     public static function off() {
-        if (TV::isOn() == "true") {
-            TV::power();
-        }
-        // LAN::SSH("echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &");
+        LAN::SSH("echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &");
+        SQLITE::update("states", "active", 0, "name='TV'");
     }
 
     public static function power() {
@@ -49,7 +43,7 @@ class TV {
     }
 
     public static function kodi() {
-	LAN::SSH("KODI", "echo \"as\" | /usr/bin/cec-client -s >> /dev/null &");
+	    LAN::SSH("KODI", "echo \"as\" | /usr/bin/cec-client -s >> /dev/null &");
     }
 }
 

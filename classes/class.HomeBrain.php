@@ -277,7 +277,7 @@ class HomeBrain {
                                     "ORDER BY timestamp DESC LIMIT 1");
 
         $rows = SQLITE::query("SELECT * FROM changelog ".
-                    "WHERE STRFTIME('%s', timestamp, 'localtime')-(60*60*2) >= ". trim($res[1])*1 ." ".
+                    "WHERE STRFTIME('%s', timestamp, 'localtime')-(60*60*0) >= ". trim($res[1])*1 ." ".
                     "ORDER BY timestamp ASC");
 
         hbrain_log(__METHOD__.":".__LINE__, "Uploading ". count($rows) ." rows to changelog, since ". date("d.m.Y H:i:s", $res[1]) . " - " . $res[1]);
@@ -311,7 +311,7 @@ class HomeBrain {
                                     "ORDER BY timestamp DESC LIMIT 1");
 
         $sql = "SELECT * FROM datalog ".
-                    "WHERE STRFTIME('%s', timestamp, 'localtime')-(60*60*2) >= ". trim($res[1])*1 ." ".
+                    "WHERE STRFTIME('%s', timestamp, 'localtime')-(60*60*0) >= ". trim($res[1])*1 ." ".
                     "ORDER BY timestamp ASC";
         $rows = SQLITE::query($sql);
 
@@ -339,7 +339,7 @@ class HomeBrain {
                     $row['light'].", ".
                     $row['sound'].")";
 
-            // debug_log(__METHOD__.":".__LINE__, $sql);
+            debug_log(__METHOD__.":".__LINE__, $sql);
             SQLITE::mySqlQuery($sql);
         }
     }
@@ -354,6 +354,9 @@ class HomeBrain {
         $out = Weather::tempOut($timestamp);
         $outArr = explode(":", $out);
 
+        $heatingOn = (int)Heating::isOn();
+        $tempSet = Heating::getSetTemp();
+
         SQLITE::insert("datalog",
                         ["timestamp",
                         "tempset",
@@ -365,17 +368,25 @@ class HomeBrain {
                         "light",
                         "sound"],
                         ["'". $timestamp ."'",
-                        "(SELECT tempinavg FROM tempconf
-                                    WHERE hour = STRFTIME('%H', DATETIME('now', 'localtime')) * 1
-                                        AND wday = STRFTIME('%w', DATETIME('now', 'localtime')) * 1)",
+                        $tempSet,
                         $inArr[0],
                         $outArr[0],
-                        "(SELECT active FROM states WHERE name = 'Heating')",
+                        $heatingOn,
                         $inArr[1],
                         $outArr[1],
                         $inArr[2],
                         $inArr[3]],
                         true);
+
+        file_put_contents(DIR . "/var/lastTemp.dat",
+                                    date("H:i:s") ."|".
+                                    $inArr[0] ."|".     // tempIn
+                                    $inArr[1] ."|".     // humidIn
+                                    $outArr[0] ."|".    // tempOut
+                                    $outArr[1] ."|".    // humidOut
+                                    $heatingOn ."|".
+                                    $tempSet
+                                );
 
         return $in .":". $out;
     }

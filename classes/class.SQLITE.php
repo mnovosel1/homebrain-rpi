@@ -30,7 +30,7 @@ class SQLITE {
     public static function update($table, $attribute, $value, $condition = null) {
         if ( $condition === null ) return false;
 
-	debug_log(__METHOD__.":".__LINE__, $attribute ." ". $condition);
+	    debug_log(__METHOD__.":".__LINE__, $attribute ." ". $condition);
 
         if ( $table == "states" ) {
             SQLITE::query("SELECT `".$attribute."` FROM `states` WHERE ".$condition);

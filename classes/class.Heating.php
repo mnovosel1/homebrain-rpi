@@ -57,14 +57,14 @@ class Heating {
     }
 
     public static function isOn() {
-        $isOn = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
-        $light = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
-        $temps = Heating::getTemps();
-        $tempSet = Heating::getSetTemp() + 0.0;
+        $isOn       = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
+        $light      = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
+        $temps      = Heating::getTemps();
+        $tempSet    = Heating::getSetTemp() + 1.0;
 
-        $logMsg = "Heating is ";
-        $logMsg .= $isOn > 0 ? "on.": "off. ";
-        $logMsg .= "tempIn: ".$temps[1]." tempOut: ".$temps[3]." tempSet: ".$tempSet.". ";
+        $logMsg     = "Heating is ";
+        $logMsg     .= $isOn > 0 ? "on.": "off. ";
+        $logMsg     .= "tempIn: ".$temps[1]." tempOut: ".$temps[3]." tempSet: ".$tempSet.". ";
 
         // Heating enabled only if tempIn - tempOut > Temp difference
         if ($temps[1] - $temps[3] <= Configs::get("TEMP", "DIFF")) {
@@ -107,14 +107,14 @@ class Heating {
         $green  = 0;
         $blue   = 0;
 
-        if ($light > 60 && !HomeBrain::isSilentTime())  {
+        if ($light > Configs::get("LIGHT", "MIN") && !HomeBrain::isSilentTime())  {
 
             $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP);
             $red = $red < 0 ? 0 : $red;
 
             $green = $isOn > 0 ? 2 : 0;
 
-            $blue = round($temps[2] - 55, 0, PHP_ROUND_HALF_UP);
+            $blue = round($temps[2] - 54, 0, PHP_ROUND_HALF_UP);
             $blue = $blue < 0 ? 0 : $blue;
 
             if ($green > 0) {

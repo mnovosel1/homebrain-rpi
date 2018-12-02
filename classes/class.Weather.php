@@ -1,7 +1,6 @@
 <?php
 
 class Weather {
-    public static $debug = true;
 
     public static function h() {
         return MyAPI::help(Weather::class);
@@ -56,10 +55,10 @@ class Weather {
         $wind1 = $wind->children(0)->innertext;
         $wind2 = $wind->children(1)->innertext;
 
-        $oldData = SQLITE::query("SELECT tempout, humidout 
+        $oldData = SQLITE::query("SELECT tempout, humidout
                                     FROM datalog WHERE tempout != 'NULL'
-                                     AND humidout != 'NULL' 
-                                     ORDER BY timestamp DESC 
+                                     AND humidout != 'NULL'
+                                     ORDER BY timestamp DESC
                                      LIMIT 1");
 
         $tempOut = abs($tempOut - $oldData[0]["tempout"]) > 5 ? $oldData[0]["tempout"] : $tempOut;

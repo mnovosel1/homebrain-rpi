@@ -45,7 +45,7 @@ class Notifier {
     }
 
     public static function alert($secs) {
-        exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
+        exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
     }
 
     public static function speak($text) {

@@ -12,13 +12,13 @@ class Heating {
     public static function on() {
         exec(DIR ."/bin/green 2");
         exec("/usr/bin/gpio mode 5 out");
-        SQLITE::update("states", "active", 1, "`name`='Heating'");
+        SQLITE::update("states", "active", 1, "name='Heating'");
     }
 
     public static function off() {
         exec(DIR ."/bin/green 0");
         exec("/usr/bin/gpio mode 5 in");
-        SQLITE::update("states", "active", 0, "`name`='Heating'");
+        SQLITE::update("states", "active", 0, "name='Heating'");
     }
 
     public static function getTemps() {
@@ -102,9 +102,9 @@ class Heating {
 
         hbrain_log(__METHOD__.":".__LINE__, trim($logMsg));
 
-        $red = 0;
-        $green = 0;
-        $blue = 0;
+        $red    = 0;
+        $green  = 0;
+        $blue   = 0;
 
         if (!HomeBrain::isSilentTime())  {
             $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP);
@@ -116,10 +116,6 @@ class Heating {
                 $green = $blue > $green ? $blue : $green;
             }
         }
-        
-        debug_log(__METHOD__.":".__LINE__, "/bin/red ". $red);
-        debug_log(__METHOD__.":".__LINE__, "/bin/green ". $green);
-        debug_log(__METHOD__.":".__LINE__, "/bin/blue ". $blue);
 
         exec(DIR ."/bin/red ". $red);
         exec(DIR ."/bin/green ". $green);

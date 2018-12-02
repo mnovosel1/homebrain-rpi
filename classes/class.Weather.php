@@ -33,6 +33,13 @@ class Weather {
             HomeBrain::notify(date("H:i") ." SilentTime sound: ". $sound);
         }
 */
+        $soundMax = SQLITE::query("SELECT round((light/1500), 2)*(10)-40 AS maxsound FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["maxsound"];
+
+        if ($sound > $soundMax) {
+            HomeBrain::notify(date("H:i") ." Sound: ". $sound);
+            AMP::volDown(5);
+        }
+
         return $tempIn .":". $humidIn .":". $light .":". $sound;
     }
 

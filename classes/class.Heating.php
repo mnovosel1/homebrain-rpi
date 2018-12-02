@@ -58,8 +58,9 @@ class Heating {
 
     public static function isOn() {
         $isOn = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
+        $light = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
         $temps = Heating::getTemps();
-        $tempSet = Heating::getSetTemp();
+        $tempSet = Heating::getSetTemp() + 0.0;
 
         $logMsg = "Heating is ";
         $logMsg .= $isOn > 0 ? "on.": "off. ";
@@ -106,10 +107,15 @@ class Heating {
         $green  = 0;
         $blue   = 0;
 
-        if (!HomeBrain::isSilentTime())  {
+        if ($light > 60 && !HomeBrain::isSilentTime())  {
+
             $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP);
+            $red = $red < 0 ? 0 : $red;
+
             $green = $isOn > 0 ? 2 : 0;
-            $blue = round($temps[2] - 50, 0, PHP_ROUND_HALF_UP);
+
+            $blue = round($temps[2] - 55, 0, PHP_ROUND_HALF_UP);
+            $blue = $blue < 0 ? 0 : $blue;
 
             if ($green > 0) {
                 $green = $red > $green ? $red : $green;

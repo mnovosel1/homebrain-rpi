@@ -37,7 +37,8 @@ class HomeBrain {
     }
 
     public static function allOff() {
-	Amp::off();
+        Amp::volDown(10);
+	    Amp::off();
         TV::off();
         KODI::off();
         MPD::off();
@@ -392,11 +393,31 @@ class HomeBrain {
     }
 
     public static function alarm() {
+
         if ( date("N") > 5 ) return;
 
-        // if (date("H:i", strtotime("-15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(5);
-        if (date("H:i") == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(10);
-        if (date("H:i", strtotime("+15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(5);
+        else if (date("H:i", strtotime("+5 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+            Amp::on();
+
+            Amp::volDown(30);
+            sleep(30);
+            Amp::volDown(30);
+        }
+
+        else if (date("H:i", strtotime("+2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+            MPD::on();
+        }
+
+        else if (date("H:i") == date("H:i", strtotime(Configs::get("ALARM")))) {
+            Notifier::alert(15);
+            Amp::volUp(10);
+        }
+
+        else if (date("H:i", strtotime("-2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+            Amp::volUp(10);
+        }
+
+        if (date("H:i", strtotime("-15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(10);
     }
 
     public static function email ($to, $message) {

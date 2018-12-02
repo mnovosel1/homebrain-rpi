@@ -28,11 +28,11 @@ class Amp {
     }
 
     public static function volUp1() {
-        self::volup(1);
+        Amp::volUp(1);
     }
 
     public static function volUp2() {
-        self::volup(2);
+        Amp::volUp(2);
     }
 
     public static function mute() {
@@ -47,11 +47,11 @@ class Amp {
     }
 
     public static function volDown1() {
-        self::voldown(1);
+        Amp::volDown(1);
     }
 
     public static function volDown2() {
-        self::voldown(2);
+        Amp::volDown(2);
     }
 
     public static function mpd() {

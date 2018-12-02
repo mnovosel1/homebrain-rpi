@@ -37,7 +37,7 @@ class Weather {
 
         if ($sound > $soundMax) {
             HomeBrain::notify(date("H:i") ." Sound: ". $sound);
-            AMP::volDown(5);
+            Amp::volDown(5);
         }
 
         return $tempIn .":". $humidIn .":". $light .":". $sound;

@@ -31,11 +31,11 @@ class Heating {
                         AND wday = STRFTIME('%w', DATETIME('now', 'localtime')) * 1");
         return (float) $res[0]["tempSet"];
     }
-    
+
     public static function getInTemp() {
         return (float) Heating::getTemps()[1];
     }
-    
+
     public static function getInHumid() {
         return (float) Heating::getTemps()[2];
     }
@@ -109,13 +109,15 @@ class Heating {
 
         if ($light > Configs::get("LIGHT", "MIN") && !HomeBrain::isSilentTime())  {
 
-            $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP);
+            $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP) + round($light/100)-1;
             $red = $red < 0 ? 0 : $red;
+            $red = $red > 255 ? 255 : $red;
 
-            $green = $isOn > 0 ? 2 : 0;
+            $green = $isOn > 0 ? 2 + round($light/100)-1 : 0;
 
-            $blue = round($temps[2] - 54, 0, PHP_ROUND_HALF_UP);
+            $blue = round($temps[2] - 54, 0, PHP_ROUND_HALF_UP) + round($light/100)-1;
             $blue = $blue < 0 ? 0 : $blue;
+            $blue = $blue > 255 ? 255 : $blue;
 
             if ($green > 0) {
                 $green = $red > $green ? $red : $green;
@@ -123,9 +125,7 @@ class Heating {
             }
         }
 
-        exec(DIR ."/bin/red ". $red);
-        exec(DIR ."/bin/green ". $green);
-        exec(DIR ."/bin/blue ". $blue);
+	Notifier::rgb($red, $green, $blue);
 
         return $isOn;
     }

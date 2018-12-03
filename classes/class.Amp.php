@@ -23,6 +23,8 @@ class Amp {
 
     public static function volUp($count = 1) {
         // VOLUME_UP
+        debug_log(__METHOD__.":".__LINE__, "Amp::volUp(".$count.")");
+
         for ($i = 0; $i < $count; $i++)
             exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA158A7 &");
     }
@@ -42,6 +44,8 @@ class Amp {
 
     public static function volDown($count = 1) {
         // VOLUME_DOWN
+        debug_log(__METHOD__.":".__LINE__, "Amp::volDown(".$count.")");
+
         for ($i = 0; $i < $count; $i++)
             exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1D827 &");
     }

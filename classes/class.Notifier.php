@@ -45,17 +45,20 @@ class Notifier {
     }
 
     public static function alert($secs) {
-        exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
+	hbrain_log(__METHOD__.":".__LINE__, "Alerting ". $secs ." secs.");
+	exec('sudo '. DIR .'/bin/nrf 0 on >/dev/null 2>&1 && sleep '. $secs .' && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 && sudo '. DIR .'/bin/nrf 0 off >/dev/null 2>&1 &');
     }
 
     public static function speak($text) {
         LAN::SSH("KODI", "/usr/bin/flite -voice slt -t '". $text ."' &");
     }
 
-    public static function rgb($values) {
-        $fifo = fopen("/tmp/RGB", 'w');
-        var_dump($fifo);
-        fwrite($fifo, $values);
+    public static function rgb($r = NULL, $g = NULL, $b = NULL) {
+	hbrain_log(__METHOD__.":".__LINE__, "RGB: ". $r .", ". $g .", ". $b);
+
+	if ($r !== NULL) exec(DIR ."/bin/red ". $r);
+	if ($g !== NULL) exec(DIR ."/bin/green ". $g);
+	if ($b !== NULL) exec(DIR ."/bin/blue ". $b);
     }
 
     //* private helper methods *///////////////////////////////////////////////////////////////////

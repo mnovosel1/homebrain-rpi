@@ -13,9 +13,9 @@ class Weather {
     public static function tempIn($timestamp = null) {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
-        $oldData = SQLITE::query("SELECT tempin, humidin, light, sound 
+        $oldData = SQLITE::query("SELECT tempin, humidin, light, sound
                                     FROM datalog WHERE tempin != 'NULL'
-                                     AND humidin != 'NULL' 
+                                     AND humidin != 'NULL'
                                      ORDER BY timestamp DESC LIMIT 1");
 
         $newData = exec("sudo ". DIR ."/bin/nrf 1 sens");

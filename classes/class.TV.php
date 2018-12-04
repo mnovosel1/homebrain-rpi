@@ -26,12 +26,10 @@ class TV {
 
     public static function on() {
         LAN::SSH("KODI", "echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &");
-        SQLITE::update("states", "active", 1, "name='TV'");
     }
 
     public static function off() {
-        LAN::SSH("echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &");
-        SQLITE::update("states", "active", 0, "name='TV'");
+        LAN::SSH("KODI", "echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &");
     }
 
     public static function power() {

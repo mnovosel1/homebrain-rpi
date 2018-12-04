@@ -209,7 +209,7 @@ class SQLITE {
 			ROUND(AVG(tempin), 1) AS avgtemp,
 			ROUND(AVG(humidin), 1) AS avghumid,
 			ROUND(AVG(tempin)-AVG(tempout), 1) AS tmpdiff,
-			heatingon
+                        ROUND(AVG(hindex), 1) AS avghindex
 		FROM datalog
 		GROUP BY STRFTIME('%d-%m-%Y', timestamp)
 		ORDER BY timestamp DESC;
@@ -230,6 +230,7 @@ class SQLITE {
             humidout double DEFAULT NULL,
             light double DEFAULT NULL,
             sound double DEFAULT NULL,
+            hindex double DEFAULT NULL,
             PRIMARY KEY (timestamp)
         );
         ";

@@ -10,15 +10,11 @@ class Heating {
     }
 
     public static function on() {
-        exec(DIR ."/bin/green 2");
         exec("/usr/bin/gpio mode 5 out");
-        SQLITE::update("states", "active", 1, "name='Heating'");
     }
 
     public static function off() {
-        exec(DIR ."/bin/green 0");
         exec("/usr/bin/gpio mode 5 in");
-        SQLITE::update("states", "active", 0, "name='Heating'");
     }
 
     public static function getTemps() {
@@ -49,7 +45,7 @@ class Heating {
     }
 
     public static function set() {
-        
+
     }
 
     public static function auto() {
@@ -58,13 +54,20 @@ class Heating {
 
     public static function isOn() {
         $isOn       = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
-        $light      = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
         $temps      = Heating::getTemps();
-        $tempSet    = Heating::getSetTemp() + 1.0;
+	    $tempInMax  = Configs::get("TEMP", "MAX");
+        $tempSet    = Heating::getSetTemp() + 0.00;
+	    $tempSetMax = Configs::get("TEMP", "MAXSET");
+        $hyst = Configs::get("TEMP", "HYST");
+
+	if ($tempSet > $tempSetMax) {
+		hbrain_log(__METHOD__.":".__LINE__, "tempSet: ". $tempSet ." tempMaxSet: ". $tempSetMax .", correcting.");
+		$tempSet = $tempSetMax;
+	}
 
         $logMsg     = "Heating is ";
-        $logMsg     .= $isOn > 0 ? "on.": "off. ";
-        $logMsg     .= "tempIn: ".$temps[1]." tempOut: ".$temps[3]." tempSet: ".$tempSet.". ";
+        $logMsg     .= $isOn > 0 ? "on, ": "off, ";
+        $logMsg     .= "tempIn: ".$temps[1]." tempOut: ".$temps[3]." tempSet: ".$tempSet.", ";
 
         // Heating enabled only if tempIn - tempOut > Temp difference
         if ($temps[1] - $temps[3] <= Configs::get("TEMP", "DIFF")) {
@@ -78,56 +81,55 @@ class Heating {
         // Heating enabled only if tempIn - tempOut > Temp difference
         else {
             if ($isOn > 0) { // Heating is on
-                hbrain_log(__METHOD__.":".__LINE__, "Heating is  is on...");
-                if ($temps[1] > Configs::get("TEMP", "MAX")) {
-                    $logMsg .= "Temp over the MAX, switching off. ";
+                if ($temps[1] > $tempInMax) {
+                    $logMsg .= "temp over the MAX, switching off. ";
                     Heating::off();
+                    $isOn = 0;
                 }
-                else if ($temps[1] >= $tempSet + Configs::get("TEMP", "HYST")) {
-                    $logMsg .= "TempSet reached, switching off. ";
+                else if (!Heating::isBoosting() && $temps[1] >= $tempSet + $hyst) {
+                    $logMsg .= "tempSet reached, switching off. ";
                     Heating::off();
+                    $isOn = 0;
                 }
-                else $logMsg .= "And it stays on. ";
+                else $logMsg .= "and it stays on. ";
             }
 
             else {// Heating is off
-                if ($temps[1] <= $tempSet) {
-                    $logMsg .= "TempIn close to tempSet, switching on. ";
+                if ((Heating::isBoosting() && $temps[1] <= $tempInMax)
+			 || $temps[1] <= $tempSet - $hyst) {
+                    $logMsg .= "tempIn <= tempSet, switching on. ";
                     Heating::on();
+                    $isOn = 1;
                 }
-                else $logMsg .= "And it stays off. ";
+                else $logMsg .= "and it stays off. ";
             }
         }
 
-        $isOn = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
+        SQLITE::update("states", "active", $isOn, "name='Heating'");
 
         hbrain_log(__METHOD__.":".__LINE__, trim($logMsg));
 
-        $red    = 0;
-        $green  = 0;
-        $blue   = 0;
+        $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP);
+        $red = $red < 0 ? 0 : $red;
 
-        if ($light > Configs::get("LIGHT", "MIN") && !HomeBrain::isSilentTime())  {
+        $green = $isOn > 0 ? 2 : 0;
 
-            $red = round($temps[1] - 20, 0, PHP_ROUND_HALF_UP) + round($light/100)-1;
-            $red = $red < 0 ? 0 : $red;
-            $red = $red > 255 ? 255 : $red;
+        $blue = round($temps[2] - 55, 0, PHP_ROUND_HALF_UP);
+        $blue = $blue < 0 ? 0 : $blue;
 
-            $green = $isOn > 0 ? 2 + round($light/100)-1 : 0;
-
-            $blue = round($temps[2] - 54, 0, PHP_ROUND_HALF_UP) + round($light/100)-1;
-            $blue = $blue < 0 ? 0 : $blue;
-            $blue = $blue > 255 ? 255 : $blue;
-
-            if ($green > 0) {
-                $green = $red > $green ? $red : $green;
-                $green = $blue > $green ? $blue : $green;
-            }
+        if ($green > 0) {
+            $green = $red > $green ? $red : $green;
+            $green = $blue > $green ? $blue : $green;
         }
 
-	Notifier::rgb($red, $green, $blue);
+	    Notifier::rgb($red, $green, $blue);
 
         return $isOn;
+    }
+
+    public static function isBoosting() {
+        hbrain_log(__METHOD__.":".__LINE__, "Not boosting..");
+        return false;
     }
 
     public static function updateMob() {

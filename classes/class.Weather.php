@@ -14,8 +14,9 @@ class Weather {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
         $oldData = SQLITE::query("SELECT tempin, humidin, light, sound
-                                    FROM datalog WHERE tempin != 'NULL'
-                                     AND humidin != 'NULL'
+                                    FROM datalog
+                                     WHERE tempin != 'NULL'
+                                      AND humidin != 'NULL'
                                      ORDER BY timestamp DESC LIMIT 1");
 
         $newData = exec("sudo ". DIR ."/bin/nrf 1 sens");
@@ -25,22 +26,16 @@ class Weather {
         $humidIn = abs($oldData[0]["humidin"] - $newData[1]) > 20 ? $oldData[0]["humidin"] : $newData[1];
         $light = abs($oldData[0]["light"] - $newData[2]) > 1000 ? $oldData[0]["light"] : $newData[2];
         $sound = abs($oldData[0]["sound"] - $newData[3]) > 40 ? $oldData[0]["sound"] : $newData[3];
-/*
-        if (!HomeBrain::isSilentTime() && $sound > Configs::get("SOUND", "MAX")) {
-            HomeBrain::notify(date("H:i") ." Sound: ". $sound);
-            Notifier::alert(5);
-        } else if (HomeBrain::isSilentTime() && $sound > Configs::get("SOUND", "MAX_WHEN_SILENT_TIME")) {
-            HomeBrain::notify(date("H:i") ." SilentTime sound: ". $sound);
-        }
-*/
-        $soundMax = SQLITE::query("SELECT round((light/1500), 2)*(10)-40 AS maxsound FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["maxsound"];
-
-        if ($sound > $soundMax) {
-            HomeBrain::notify(date("H:i") ." Sound: ". $sound);
-            Amp::volDown(5);
-        }
 
         return $tempIn .":". $humidIn .":". $light .":". $sound;
+    }
+
+    public static function heatIndex($temperature, $humidity) {
+        $tempF = 1.80 * $temperature + 32.0;
+        $heatIndex = -42.379 + 2.04901523 * $tempF + 10.14333127 * $humidity - 0.22475541 * $tempF * $humidity - 6.83783 * (pow(10, -3)) * (pow($tempF, 2)) - 5.481717 * (pow(10, -2)) * (pow($humidity, 2)) + 1.22874 * (pow(10, -3)) * (pow($tempF, 2)) * $humidity + 8.5282 * (pow(10, -4)) * $tempF * (pow($humidity, 2)) - 1.99 * (pow(10, -6)) * (pow($tempF, 2)) * (pow($humidity,2));
+        $heatIndex = round(($heatIndex - 32) * 0.556, 1);
+
+        return $heatIndex;
     }
 
     public static function tempOut($timestamp = null) {

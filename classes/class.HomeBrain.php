@@ -328,6 +328,7 @@ class HomeBrain {
             $row['humidout'] = empty(trim($row['humidout'])) ? "NULL" : $row['humidout'];
             $row['light'] = empty(trim($row['light'])) ? "NULL" : $row['light'];
             $row['sound'] = empty(trim($row['sound'])) ? "NULL" : $row['sound'];
+            $row['hindex'] = empty(trim($row['hindex'])) ? "NULL" : $row['hindex'];
 
             $sql = "INSERT INTO datalog ".
                     "VALUES('".$row['timestamp']."', ".
@@ -338,7 +339,8 @@ class HomeBrain {
                     $row['humidin'].", ".
                     $row['humidout'].", ".
                     $row['light'].", ".
-                    $row['sound'].")";
+                    $row['sound'].", ".
+                    $row['hindex'].")";
 
             debug_log(__METHOD__.":".__LINE__, $sql);
             SQLITE::mySqlQuery($sql);
@@ -357,6 +359,7 @@ class HomeBrain {
 
         $heatingOn = (int)Heating::isOn();
         $tempSet = Heating::getSetTemp();
+        $hindex = Weather::heatIndex($inArr[0], $inArr[1]);
 
         SQLITE::insert("datalog",
                         ["timestamp",
@@ -367,7 +370,8 @@ class HomeBrain {
                         "humidin",
                         "humidout",
                         "light",
-                        "sound"],
+                        "sound",
+                        "hindex"],
                         ["'". $timestamp ."'",
                         $tempSet,
                         $inArr[0],
@@ -376,7 +380,8 @@ class HomeBrain {
                         $inArr[1],
                         $outArr[1],
                         $inArr[2],
-                        $inArr[3]],
+                        $inArr[3],
+                        $hindex],
                         true);
 
         file_put_contents(DIR . "/var/lastTemp.dat",
@@ -386,10 +391,11 @@ class HomeBrain {
                                     $outArr[0] ."|".    // tempOut
                                     $outArr[1] ."|".    // humidOut
                                     $heatingOn ."|".
-                                    $tempSet
+                                    $tempSet ."|".
+                                    $hindex
                                 );
 
-        return $in .":". $out;
+        return $in .":". $out .":". $hindex;
     }
 
     public static function alarm() {
@@ -398,7 +404,6 @@ class HomeBrain {
 
         else if (date("H:i", strtotime("+5 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
             Amp::on();
-
             Amp::volDown(30);
             sleep(30);
             Amp::volDown(30);
@@ -406,15 +411,16 @@ class HomeBrain {
 
         else if (date("H:i", strtotime("+2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
             MPD::on();
+            Amp::volUp(15);
         }
 
         else if (date("H:i") == date("H:i", strtotime(Configs::get("ALARM")))) {
-            Notifier::alert(15);
-            Amp::volUp(10);
+            Amp::volUp(15);
         }
 
         else if (date("H:i", strtotime("-2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
-            Amp::volUp(10);
+	    Notifier::alert(15);
+            Amp::volUp(15);
         }
 
         if (date("H:i", strtotime("-15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(10);

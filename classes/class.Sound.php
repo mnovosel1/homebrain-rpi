@@ -24,8 +24,16 @@ class Sound {
     }
 
     public static function isLoud() {
-	$res = SQLITE::query("SELECT AVG(sound) FROM datalog WHERE DATETIME(timestamp) >= DATETIME('now', '-5 minutes')");
-	return $res[0]["AVG(sound)"] > Configs::get("SOUND", "MAX");
+	$sound = SQLITE::query("SELECT AVG(sound) FROM datalog WHERE DATETIME(timestamp) >= DATETIME('now', '-5 minutes')")[0]["AVG(sound)"];
+        $soundMax = SQLITE::query("SELECT round((light/1500), 2)*(15)-40 AS maxsound FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["maxsound"];
+
+        if ($sound > $soundMax) {
+            HomeBrain::notify(date("H:i") ." Sound: ". $sound);
+            Amp::volDown(3);
+            return true;
+        }
+
+	return false;
     }
 }
 

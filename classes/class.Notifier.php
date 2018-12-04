@@ -54,11 +54,42 @@ class Notifier {
     }
 
     public static function rgb($r = NULL, $g = NULL, $b = NULL) {
-	hbrain_log(__METHOD__.":".__LINE__, "RGB: ". $r .", ". $g .", ". $b);
 
-	if ($r !== NULL) exec(DIR ."/bin/red ". $r);
-	if ($g !== NULL) exec(DIR ."/bin/green ". $g);
-	if ($b !== NULL) exec(DIR ."/bin/blue ". $b);
+        $light = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
+
+        if ($light <= Configs::get("LIGHT", "MIN") || HomeBrain::isSilentTime()) {
+            if ($r !== NULL) $r = 0;
+            if ($g !== NULL) $g = 0;
+            if ($b !== NULL) $b = 0;
+        }
+
+        else {
+            $lightCorrection = round($light/100)-1;
+
+            if ($r !== NULL && $r != 0) {
+                $r += $lightCorrection;
+                $r = $r < 0 ? 0 : $r;
+                $r = $r > 255 ? 255 : $r;
+            }
+
+            if ($g !== NULL && $g != 0) {
+                $g += $lightCorrection;
+                $g = $g < 0 ? 0 : $g;
+                $g = $g > 255 ? 255 : $g;
+            }
+
+            if ($b !== NULL && $b != 0) {
+                $b += $lightCorrection;
+                $b = $b < 0 ? 0 : $b;
+                $b = $b > 255 ? 255 : $b;
+            }
+        }
+
+        debug_log(__METHOD__.":".__LINE__, "RGB: ". $r .", ". $g .", ". $b);
+
+        if ($r !== NULL) exec(DIR ."/bin/red ". $r);
+        if ($g !== NULL) exec(DIR ."/bin/green ". $g);
+        if ($b !== NULL) exec(DIR ."/bin/blue ". $b);
     }
 
     //* private helper methods *///////////////////////////////////////////////////////////////////

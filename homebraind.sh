@@ -4,8 +4,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 date=$(date +%d-%m-%Y)
 lasttime=""
 
-$DIR/hubot/bin/hubot &
-
 while true
 do
 

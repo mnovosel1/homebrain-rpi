@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 date=$(date +%d-%m-%Y)
 lasttime=""
 
-$DIR/bin/rgb.py &
+$DIR/hubot/bin/hubot &
 
 while true
 do
@@ -18,32 +18,32 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every midnight
   case $nowtime in (00:00)
-	$DIR/homebrain hbrain uploadData
-	$DIR/homebrain hbrain dbbackup
+    $DIR/homebrain hbrain uploadData
+    $DIR/homebrain hbrain dbbackup
 
-	cp $DIR/var/hbrain.sql /srv/PiStorage/backups/SQL_hbrain_$date.sql
+    cp $DIR/var/hbrain.sql /srv/PiStorage/backups/SQL_hbrain_$date.sql
 
-	cp $DIR/var/hbrain.log /srv/PiStorage/backups/LOG_hbrain_$date.log
-	echo "" > $DIR/var/hbrain.log
+    cp $DIR/var/hbrain.log /srv/PiStorage/backups/LOG_hbrain_$date.log
+    echo "" > $DIR/var/hbrain.log
 
-	tar -zcf /srv/PiStorage/backups/node-red_$date.tgz /home/hbrain/.node-red/
-	tar -zcf /srv/PiStorage/backups/HomeBrain_$date.tgz /srv/HomeBrain
-	;;
+    tar -zcf /srv/PiStorage/backups/node-red_$date.tgz /home/hbrain/.node-red/
+    tar -zcf /srv/PiStorage/backups/HomeBrain_$date.tgz /srv/HomeBrain
+  ;;
   esac
 
   #### every day at 2:22
-  case $nowtime in (2:22)
-	$DIR/homebrain hbrain allOff
-	sudo /sbin/shutdown -F -r +5
-	;;
+    case $nowtime in (2:22)
+    $DIR/homebrain hbrain allOff
+    sudo /sbin/shutdown -F -r +5
+  ;;
   esac
 
   #### every hour
   case $nowtime in (*:00)
-	$DIR/homebrain hbrain todo
-	$DIR/homebrain hbrain wifi
-	$DIR/homebrain lan checknetwork
-	;;
+    $DIR/homebrain hbrain todo
+    $DIR/homebrain hbrain wifi
+    $DIR/homebrain lan checknetwork
+  ;;
   esac
 
   #### every 30 minutes
@@ -72,8 +72,8 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every minute
   case $nowtime in (*)
-	$DIR/homebrain medvedi check
-	$DIR/homebrain hbrain alarm
+    $DIR/homebrain medvedi check
+    $DIR/homebrain hbrain alarm
 	;;
   esac
 

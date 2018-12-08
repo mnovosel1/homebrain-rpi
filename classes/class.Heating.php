@@ -22,10 +22,12 @@ class Heating {
     }
 
     public static function getSetTemp() {
-        $res = SQLITE::query("SELECT tempinavg AS tempSet FROM tempconf
+        $boosting   = Heating::isBoosting();
+        $tempSet = SQLITE::query("SELECT tempinavg AS tempSet FROM tempconf
                         WHERE hour = STRFTIME('%H', DATETIME('now', 'localtime')) * 1
-                        AND wday = STRFTIME('%w', DATETIME('now', 'localtime')) * 1");
-        return (float) $res[0]["tempSet"];
+                        AND wday = STRFTIME('%w', DATETIME('now', 'localtime')) * 1")[0]["tempSet"];
+
+        return (float) $boosting ? $boosting : $tempSet;
     }
 
     public static function getInTemp() {
@@ -55,22 +57,18 @@ class Heating {
     public static function isOn() {
         $isOn       = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
         $temps      = Heating::getTemps();
-	    $tempInMax  = Configs::get("TEMP", "MAX");
-        $tempSet    = Heating::getSetTemp() + 0.00;
-	    $tempSetMax = Configs::get("TEMP", "MAXSET");
-        $hyst = Configs::get("TEMP", "HYST");
-
-	if ($tempSet > $tempSetMax) {
-		hbrain_log(__METHOD__.":".__LINE__, "tempSet: ". $tempSet ." tempMaxSet: ". $tempSetMax .", correcting.");
-		$tempSet = $tempSetMax;
-	}
+        $boosting   = Heating::isBoosting();
+        $tempSet    = Heating::getSetTemp();
+	    $tempMax    = Configs::get("TEMP", "MAX");
+        $tempDiff   = Configs::get("TEMP", "DIFF");
+        $hyst       = Configs::get("TEMP", "HYST");
 
         $logMsg     = "Heating is ";
         $logMsg     .= $isOn > 0 ? "on, ": "off, ";
         $logMsg     .= "tempIn: ".$temps[1]." tempOut: ".$temps[3]." tempSet: ".$tempSet.", ";
 
-        // Heating enabled only if tempIn - tempOut > Temp difference
-        if ($temps[1] - $temps[3] <= Configs::get("TEMP", "DIFF")) {
+        // Temp in/out difference
+        if ($temps[1] - $temps[3] <= $tempDiff) {
             $logMsg .= "DIFF too low. ";
             if ($isOn > 0) {
                 Heating::off();
@@ -78,15 +76,19 @@ class Heating {
             }
         }
 
-        // Heating enabled only if tempIn - tempOut > Temp difference
+        // TempMax fuse
+        else if ($temps[1] >= $tempMax) {
+            $logMsg .= "Temperature >= tempMax. ";
+            if ($isOn > 0) {
+                Heating::off();
+                $logMsg .= "Switching off. ";
+            }
+        }
+
+        // Heating enabled only if tempIn - tempOut > Temp difference and tempIn < $tempMax
         else {
             if ($isOn > 0) { // Heating is on
-                if ($temps[1] > $tempInMax) {
-                    $logMsg .= "temp over the MAX, switching off. ";
-                    Heating::off();
-                    $isOn = 0;
-                }
-                else if (!Heating::isBoosting() && $temps[1] >= $tempSet + $hyst) {
+                if ($temps[1] >= $tempSet + $hyst) {
                     $logMsg .= "tempSet reached, switching off. ";
                     Heating::off();
                     $isOn = 0;
@@ -95,8 +97,7 @@ class Heating {
             }
 
             else {// Heating is off
-                if ((Heating::isBoosting() && $temps[1] <= $tempInMax)
-			 || $temps[1] <= $tempSet - $hyst) {
+                if ($temps[1] <= $tempSet - $hyst) {
                     $logMsg .= "tempIn <= tempSet, switching on. ";
                     Heating::on();
                     $isOn = 1;
@@ -128,6 +129,13 @@ class Heating {
     }
 
     public static function isBoosting() {
+        $boosting = explode("|", trim(file_get_contents(DIR ."/var/tempBoost.dat")));
+
+        if ($boosting[0]+$boosting[1]*60 > time()) {
+            hbrain_log(__METHOD__.":".__LINE__, date("H:i", $boosting[0]) ." Boosting ". $boosting[1] ." mins at ". $boosting[2] ." C.");
+            return $boosting[2];
+        }
+
         hbrain_log(__METHOD__.":".__LINE__, "Not boosting..");
         return false;
     }

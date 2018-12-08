@@ -17,6 +17,7 @@ class Weather {
                                     FROM datalog
                                      WHERE tempin != 'NULL'
                                       AND humidin != 'NULL'
+                                      AND light != 'NULL'
                                      ORDER BY timestamp DESC LIMIT 1");
 
         $newData = exec("sudo ". DIR ."/bin/nrf 1 sens");

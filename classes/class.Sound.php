@@ -11,29 +11,28 @@ class Sound {
     }
 
     public static function isOn() {
-	if ( Sound::isLoud() ) {
-		debug_log(__METHOD__.":".__LINE__, "Sound is loud..");
-			SQLITE::update("states", "active", 1, "name='Sound'");
-			return "true";
-	}
-
-        else {
-               SQLITE::update("states", "active", 0, "name='Sound'");
-               return "false";
-        }
+        return Sound::isLoud();
     }
 
     public static function isLoud() {
-	$sound = SQLITE::query("SELECT AVG(sound) FROM datalog WHERE DATETIME(timestamp) >= DATETIME('now', '-5 minutes')")[0]["AVG(sound)"];
-        $soundMax = SQLITE::query("SELECT round((light/1500), 2)*(15)-40 AS maxsound FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["maxsound"];
+	    $sound      = SQLITE::query("SELECT AVG(sound) 
+                                        FROM datalog 
+                                        WHERE DATETIME(timestamp) >= DATETIME('now', '-10 minutes')"
+                                    )[0]["AVG(sound)"];
+
+        $soundMax   = SQLITE::query("SELECT round((light/1500), 2)*(15)-40 AS maxsound
+                                         FROM datalog
+                                         ORDER BY timestamp DESC
+                                         LIMIT 1"
+                                    )[0]["maxsound"];
 
         if ($sound > $soundMax) {
-            HomeBrain::notify(date("H:i") ." Sound: ". $sound);
-            Amp::volDown(3);
+            HomeBrain::notify(date("H:i") ." Sound: ". round($sound, 1) ." max: ". round($soundMax, 1));
+            Amp::volDown(1);
             return true;
         }
 
-	return false;
+	    return false;
     }
 }
 

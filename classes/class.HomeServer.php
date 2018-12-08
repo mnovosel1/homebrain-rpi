@@ -177,7 +177,7 @@ class HomeServer {
 			}
 		}
 
-		if ($waketime < $waketimeLog || $waketimeLog == 0) {
+		if ($waketime < $wakeTimeLog || $wakeTimeLog == 0) {
 			exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
 		}
 

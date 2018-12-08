@@ -98,7 +98,7 @@ class LAN {
                                     Configs::get($host, "user"),
                                     Configs::get("HOMEBRAIN", "PUBKEY"),
                                     Configs::get("HOMEBRAIN", "PRIVKEY"))) {
-            hbrain_log(_FILE_, "SSH auth failed on ". $host);
+            debug_log(__METHOD__.":".__LINE__, "SSH auth failed on ". $host);
             return false;
         }
 

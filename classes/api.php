@@ -18,6 +18,26 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
+//* tsinking *//////////////////////////////////////////////////////////////////////////////////////
+function think($what) {
+	$lastLine = exec("tail -n 1 ". DIR ."/". Configs::get("HOMEBRAIN", "THINK"));
+        exec("tail -n 4 ". DIR ."/". Configs::get("HOMEBRAIN", "THINK"), $lastFewLines);
+
+	$what = trim($what);
+
+	if (strpos($lastLine, $what) !== false) {
+		$what = "I'm doing the same thing over and over again... :-/";
+	}
+	else if (strpos(implode(" ", $lastFewLines), $what) !== false) {
+		if (strpos(implode(" ", $lastFewLines), "(I did that already, haven't I?)") === false) {
+			$what = $what ." (I did that already, haven't I?)";
+		}
+	}
+
+	file_put_contents(DIR ."/". Configs::get("HOMEBRAIN", "THINK"), date("H:i") ." ". $what .PHP_EOL, FILE_APPEND);
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////
 //* DEBUGGING stuff *//////////////////////////////////////////////////////////////////////////////
 
 function debug_log($where, $what) {

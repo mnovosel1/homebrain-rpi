@@ -1,3 +1,10 @@
+alias gs='git status'
+alias ga='git add'
+alias gb='git branch'
+alias gc='git commit'
+alias gco='git checkout'
+alias gd='git diff'
+
 alias hbalert='/srv/HomeBrain/homebrain th hbrain alert'
 alias hbamp='/srv/HomeBrain/homebrain th amp'
 alias hbtv='/srv/HomeBrain/homebrain th tv'
@@ -12,4 +19,3 @@ alias hbmpd='/srv/HomeBrain/homebrain mpd'
 alias hbkodi='/srv/HomeBrain/homebrain kodi'
 alias hbtemps='/srv/HomeBrain/homebrain hbrain gettemps'
 alias hbmedvedi='/srv/HomeBrain/homebrain medvedi'
-

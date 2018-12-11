@@ -38,14 +38,14 @@ class HomeBrain {
 
     public static function allOff() {
         Amp::volDown(10);
-	    Amp::off();
+        Amp::off();
         TV::off();
         KODI::off();
         MPD::off();
-        LAN::SSH("KODI", "sudo /sbin/shutdown -r +3 > /dev/null &");
     }
 
     public static function dbBackup() {
+        think("Doing database backup.");
         SQLITE::dbdump();
         exec("chmod -R 0770 ". DIR ."/var");
         exec("cp -a ". DIR ."/var/* ". DIR ."/saved_var"); /**/
@@ -84,8 +84,9 @@ class HomeBrain {
     }
 
     public static function wakeCheck() {
+        think("I'm wakechecking now. That is important..");
 
-	    debug_log(__METHOD__.":".__LINE__, "WakeChecking..");
+        debug_log(__METHOD__.":".__LINE__, "WakeChecking..");
 
         // get old states from db
         $rows = SQLITE::query("SELECT name, auto, active FROM states");
@@ -112,6 +113,8 @@ class HomeBrain {
                 $newState = ($class::$method() == "false") ? 0 : 1;
             }
 
+	    // if ( $oldState != $newState ) think(ucfirst($hostName) ." is now ". (($newState == "false") ? "off" : "on") .". (". $oldState ."/". $newState . ")");
+
             $newStates[$hostName]["active"] = $newState;
         }
 
@@ -123,11 +126,13 @@ class HomeBrain {
             $reason = "";
             switch (true) {
                 case ((bool)$newStates["KODI"]["active"]):
+                    think("KODI is on, I'm waking up Homeserver!");
                     hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, KODI is on.");
                     $reason .= "KODI ";
                 break;
 
                 case (($srvWakeTime-time()) < 1800):
+                    think("It's time to wake HomeServer: ". date("H:i d.m.", $srvWakeTime) .".");
                     hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));
                     $reason .= "WakeTime ".date("H:i d.m.", $srvWakeTime)." ";
                 break;
@@ -142,20 +147,30 @@ class HomeBrain {
             // do NOT shutdown HomeServer if:
             if ((bool)$newStates["KODI"]["active"]) {
                 $shutDownHomeServer = false;
+		$thought .= "KODI is active. ";
                 hbrain_log(__METHOD__.":".__LINE__, "KODI is active, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeServer busy"]["active"]) {
                 $shutDownHomeServer = false;
+		$thought .= "HomeServer is busy. ";
                 hbrain_log(__METHOD__.":".__LINE__, "HomeServer is busy, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeBrain user"]["active"]) {
                 $shutDownHomeServer = false;
+		$thought .= "HomeBrain user is logged on. ";
                 hbrain_log(__METHOD__.":".__LINE__, "HomeBrain user is logged on, HomeServer stays on.");
             }
 
-            if ($shutDownHomeServer) HomeServer::shut();
+            if ($shutDownHomeServer) {
+		think("I'm shutting down HomeServer");
+		HomeServer::shut();
+	    }
+
+	    else {
+		think($thought ." It stays on.");
+	    }
         }
 /*
         // TV is off, KODI is on
@@ -419,7 +434,7 @@ class HomeBrain {
         }
 
         else if (date("H:i", strtotime("-2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
-	    Notifier::alert(15);
+	        Notifier::alert(15);
             Amp::volUp(15);
         }
 

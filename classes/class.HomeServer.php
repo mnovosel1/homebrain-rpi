@@ -26,6 +26,7 @@ class HomeServer {
 	}
 
 	public static function busy() {
+		think("I'll check if HomeServer is busy now.");
 		if ( $_POST["param1"] == "1" || $_POST["param1"] == "0" ) {
 			return HomeServer::setbusy($_POST["param1"]);
 		}
@@ -34,29 +35,40 @@ class HomeServer {
 			$state = false;
 			$waketime = HomeServer::getWakeTime();
 
+			if (HomeServer::rpiBackupActive() == "true") {
+				think("HomeServer is busy backuping HomeBrain RPi.");
+				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: RpiBackup in progress..");
+				$state = true;
+			}
+
 			if (HomeServer::dailyCronActive() == "true") {
+                                think("HomeServer is busy because DailyCron is still working.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: DailyCron working..");
 				$state = true;
 			}
 
 			if (HomeServer::gDriveSyncActive() == "true") {
+                                think("HomeServer is busy syncing Google drive.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: gDriveSync in progress..");
 				$state = true;
 			}
 
 			if (HomeServer::usersActive() == "true") {
+                                think("HomeServer is considered busy because some user is still logged on.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: User is logged on..");
 				$state = true;
 			}
 
 			if (HomeServer::torrentActive() == "true") {
+				think("HomeServer has some torrenting to do.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: Torrenting to do..");
 				$state = true;
 			}
 
 			if (($waketime - time()) < 1800 ) {
-					hbrain_log(__METHOD__.":".__LINE__, "HomeServer: It's WakeTime!");
-					$state = true;
+				think("It's time to wake HomeServer.");
+				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: It's WakeTime!");
+				$state = true;
 			}
 
 			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
@@ -65,6 +77,7 @@ class HomeServer {
 	}
 
 	public static function wake($reason = "") {
+		think("Im waking up HomeServer because: ". $reason);
 		if ( Auth::allowedIP() && HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
@@ -134,14 +147,18 @@ class HomeServer {
 		return null;
 	}
 
+	public static function rpiBackupActive() {
+		$dailyCron = (int)LAN::SSH("HomeServer", "/home/hbrain/rpiBackupLock.sh");
+		return ($dailyCron > 0) ? "true" : "false";
+	}
+
 	public static function dailyCronActive() {
-		$dailyCron = (int)LAN::SSH("HomeServer", 
-									"if [ -d /tmp/dailyCron.lock ]; then echo 1; else echo 0; fi");
+		$dailyCron = (int)LAN::SSH("HomeServer", "if [ -d /tmp/dailyCron.lock ]; then echo 1; else echo 0; fi");
 		return ($dailyCron > 0) ? "true" : "false";
 	}
 
 	public static function gDriveSyncActive() {
-		$gDriveSync 		= (int)LAN::SSH("HomeServer", "pgrep -x 'gDriveSync.sh'");
+		$gDriveSync = (int)LAN::SSH("HomeServer", "pgrep -x 'gDriveSync.sh'");
 		return ($gDriveSync > 0) ? "true" : "false";
 	}
 
@@ -177,7 +194,7 @@ class HomeServer {
 			}
 		}
 
-		if ($waketime < $wakeTimeLog || $wakeTimeLog == 0) {
+		if ($waketime < $wakeTimeLog || $wakeTimeLog < time() || $wakeTimeLog == 0) {
 			exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
 		}
 

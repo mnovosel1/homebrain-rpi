@@ -6,6 +6,10 @@
 
 `/etc/profile.d/00-homebrain_aliases.sh -> $DIR/HomeBrain/.aliases`
 
+APACHE running as homebrain user
+
+isOn method must call SQLITE::update
+
 ## TODO
 
 - FinManager

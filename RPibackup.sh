@@ -21,10 +21,10 @@ echo "Backup /srv/HomeBrain to RPi_hbraindir_$date.tgz...."
 tar -zcf /srv/storage/2_backups/RPi_backup/RPi_DIR-hbraindir_$date.tgz /srv/HomeBrain/
 
 echo "Backup /boot to RPi_boot_$date.img...."
-dd if=/dev/mmcblk0p1 of=/srv/storage/2_backups/RPi_backup/RPi_mmcblk0p1-boot_$date.img
+dd if=/dev/mmcblk0p1 | ssh hbrain@10.10.10.100 dd of=/srv/storage/2_backups/RPi_backup/RPi_mmcblk0p1-boot_$date.img
 
 echo "Backup / to RPi_root_$date.img...."
-dd if=/dev/sda2 of=/srv/storage/2_backups/RPi_backup/RPi_sda2-root_$date.img
+dd if=/dev/sda2 | ssh hbrain@10.10.10.100 dd of=/srv/storage/2_backups/RPi_backup/RPi_sda2-root_$date.img
 
 /etc/init.d/cron start
 /etc/init.d/apache2 start

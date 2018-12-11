@@ -42,6 +42,8 @@ class SQLITE {
             hbrain_log(__METHOD__.":".__LINE__, $condition ." changed to ". $value);
             SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
             $res = SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
+
+	    think("I turned ". ucfirst($res[0]["state"]) . (($res[0]["changedto"] == 0) ? " off" : " on") .".");
             HomeBrain::mobDbUpdate($res[0]);
         }
     }

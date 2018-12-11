@@ -27,6 +27,15 @@ class Heating {
                         WHERE hour = STRFTIME('%H', DATETIME('now', 'localtime')) * 1
                         AND wday = STRFTIME('%w', DATETIME('now', 'localtime')) * 1")[0]["tempSet"];
 
+	if ($boosting) {
+		if ($boosting > $tempSet) {
+			think("Someone is to cold, so I'm boosting temperature to ". $boosting ." C for a while.");
+		}
+		else {
+			think("Someone is to warm. Setting temperature to ". $boosting ." C for a while.");
+		}
+	}
+
         return (float) $boosting ? $boosting : $tempSet;
     }
 
@@ -57,7 +66,6 @@ class Heating {
     public static function isOn() {
         $isOn       = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
         $temps      = Heating::getTemps();
-        $boosting   = Heating::isBoosting();
         $tempSet    = Heating::getSetTemp();
 	    $tempMax    = Configs::get("TEMP", "MAX");
         $tempDiff   = Configs::get("TEMP", "DIFF");

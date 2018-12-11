@@ -114,9 +114,11 @@ class LAN {
             default:
             $cmd = $command;
         }
+
         $stream = ssh2_exec($connection, $cmd);
         stream_set_blocking($stream, true);
-	return trim(stream_get_contents($stream));
+
+        return trim(stream_get_contents($stream));
     }
 
     public static function checkNetwork() {

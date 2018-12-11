@@ -20,7 +20,7 @@ class Sound {
                                         WHERE DATETIME(timestamp) >= DATETIME('now', '-10 minutes')"
                                     )[0]["AVG(sound)"];
 
-        $soundMax   = SQLITE::query("SELECT round((light/1500), 2)*(15)-40 AS maxsound
+        $soundMax   = SQLITE::query("SELECT round((light/1500), 2)*(20)-40 AS maxsound
                                          FROM datalog
                                          ORDER BY timestamp DESC
                                          LIMIT 1"

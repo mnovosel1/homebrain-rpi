@@ -17,16 +17,14 @@ class KODI {
 
 	public static function watch() {
 		Amp::on();
-		KODI::on();
-		TV::kodi();
 		Amp::kodi();
+		KODI::on();
 		HomeBrain::wakecheck();
 	}
 
 	public static function isOn() {
 
-			if ( LAN::SSH("KODI",
-					"if pgrep -x 'kodi' >/dev/null; then echo 'on'; else echo 'off'; fi") == "on" ) {
+			if ( exec("ssh ". Configs::get("KODI", "IP") ." 'if pgrep -x \'kodi\' >/dev/null; then echo '\on\'; else echo \'off\'; fi'") == "on" ) {
 				SQLITE::update("states", "active", 1, "`name`='KODI'");
 				return "true";
 			}
@@ -40,16 +38,20 @@ class KODI {
 	public static function on() {
 		if (KODI::isOn()) return "true";
 
-		LAN::SSH("KODI", "/usr/bin/kodi-standalone > /dev/null &");
-		SQLITE::update("states", "active", 1, "`name`='KODI'");
+		TV::on();
+		TV::kodi();
+		sleep(3);
+
+		exec("ssh ". Configs::get("KODI", "IP") ." '/usr/bin/kodi-standalone &'");
+		//LAN::SSH("KODI", "/usr/bin/kodi-standalone &");
 		HomeBrain::wakecheck();
 		return "true";
     }
 
 	public static function off() {
 		TV::off();
-		LAN::SSH("KODI", "/usr/bin/kodi-send --action='Quit' > /dev/null &");
-		SQLITE::update("states", "active", 0, "`name`='KODI'");
+		exec("ssh ". Configs::get("KODI", "IP") ." '/usr/bin/kodi-send --action=\'Quit\' &'");
+		//LAN::SSH("KODI", "/usr/bin/kodi-send --action='Quit' &");
 		return "true";
     }
 

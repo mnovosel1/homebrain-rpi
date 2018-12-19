@@ -28,7 +28,7 @@ class Weather {
         $light = abs($oldData[0]["light"] - $newData[2]) > 1000 ? $oldData[0]["light"] : $newData[2];
         $sound = abs($oldData[0]["sound"] - $newData[3]) > 40 ? $oldData[0]["sound"] : $newData[3];
 
-        return $tempIn .":". $humidIn .":". $light .":". $sound;
+        return ($tempIn - 1) .":". $humidIn .":". $light .":". $sound;
     }
 
     public static function heatIndex($temperature, $humidity) {

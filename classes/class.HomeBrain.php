@@ -24,6 +24,7 @@ class HomeBrain {
             $todoRet = "";
             foreach ($rows as $row) {
                 $todoNotify .= "[". $row["weight"] ."] ". $row["name"] ." to ".$row["changedto"] . PHP_EOL;
+		think("Should I set ". $row["name"] ." to ". $row["changedto"] ." ?");
                 $todoRet .= $row["name"] .":". $row["changedto"] .":". $row["weight"] ."|";
             }
             if ($todoNotify != "") break;
@@ -84,7 +85,6 @@ class HomeBrain {
     }
 
     public static function wakeCheck() {
-        think("I'm wakechecking now. That is important..");
 
         debug_log(__METHOD__.":".__LINE__, "WakeChecking..");
 
@@ -169,7 +169,7 @@ class HomeBrain {
 	    }
 
 	    else {
-		think($thought ." It stays on.");
+		think($thought ."HomeServer will stay on.");
 	    }
         }
 /*
@@ -197,7 +197,7 @@ class HomeBrain {
             $active = ($hbrainuser > 0) ? 1 : 0;
         }
 
-        SQLITE::update("states", "active", $active, "`name`='HomeBrain user'");
+        SQLITE::update("states", "active", $active, "name='HomeBrain user'");
 
         return ($active > 0) ? "true" : "false";
     }
@@ -417,28 +417,43 @@ class HomeBrain {
 
         if ( date("N") > 5 ) return;
 
-        else if (date("H:i", strtotime("+5 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
-            Amp::on();
-            Amp::volDown(30);
-            sleep(30);
-            Amp::volDown(30);
+        else if (date("H:i", strtotime("+10 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+		Amp::on();
+		Amp::volDown(30);
+		sleep(15);
+		Amp::volDown(30);
         }
 
-        else if (date("H:i", strtotime("+2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
-            MPD::on();
-            Amp::volUp(15);
+        else if (date("H:i", strtotime("+3 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+		MPD::on();
+
+                Amp::volUp(5);
+                sleep(15);
+                Amp::volUp(5);
+                sleep(15);
+                Amp::volUp(5);
+        }
+
+        else if (date("H:i", strtotime("+1 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+		Amp::volUp(5);
+		sleep(15);
+                Amp::volUp(5);
+                sleep(15);
+                Amp::volUp(5);
         }
 
         else if (date("H:i") == date("H:i", strtotime(Configs::get("ALARM")))) {
-            Amp::volUp(15);
+                Amp::volUp(5);
+                Notifier::alert(7);
         }
 
-        else if (date("H:i", strtotime("-2 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
-	        Notifier::alert(15);
-            Amp::volUp(15);
+        else if (date("H:i", strtotime("-1 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+                Amp::volUp(5);
         }
 
-        if (date("H:i", strtotime("-15 min")) == date("H:i", strtotime(Configs::get("ALARM")))) Notifier::alert(10);
+        if (date("H:i", strtotime("-45 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+		MPD::off();
+	}
     }
 
     public static function email ($to, $message) {

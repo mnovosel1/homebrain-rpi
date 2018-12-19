@@ -26,13 +26,20 @@ class HomeServer {
 	}
 
 	public static function busy() {
-		think("I'll check if HomeServer is busy now.");
+
 		if ( $_POST["param1"] == "1" || $_POST["param1"] == "0" ) {
+			think("Someone sais that HomeServer is ". ($_POST["param1"] == 0 ? "not busy anymore." : "busy now."));
 			return HomeServer::setbusy($_POST["param1"]);
 		}
 
-		if ( HomeServer::isOn() ) {
-			$state = false;
+		$state = false;
+		$isOn = false;
+
+		if ( (bool)HomeServer::isOn() ) {
+			$isOn = true;
+
+			think("I'll check if HomeServer is busy now.");
+
 			$waketime = HomeServer::getWakeTime();
 
 			if (HomeServer::rpiBackupActive() == "true") {
@@ -42,19 +49,19 @@ class HomeServer {
 			}
 
 			if (HomeServer::dailyCronActive() == "true") {
-                                think("HomeServer is busy because DailyCron is still working.");
+                think("HomeServer is busy because DailyCron is still working.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: DailyCron working..");
 				$state = true;
 			}
 
 			if (HomeServer::gDriveSyncActive() == "true") {
-                                think("HomeServer is busy syncing Google drive.");
+                think("HomeServer is busy syncing Google drive.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: gDriveSync in progress..");
 				$state = true;
 			}
 
 			if (HomeServer::usersActive() == "true") {
-                                think("HomeServer is considered busy because some user is still logged on.");
+                think("HomeServer is considered busy because some user is still logged on.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: User is logged on..");
 				$state = true;
 			}
@@ -65,15 +72,29 @@ class HomeServer {
 				$state = true;
 			}
 
+			if (HomeServer::tvRecActive() == "true") {
+				think("HomeServer is recording something on TV.");
+				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: TV is recording..");
+				$state = true;
+			}
+
 			if (($waketime - time()) < 1800 ) {
 				think("It's time to wake HomeServer.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: It's WakeTime!");
 				$state = true;
 			}
 
-			SQLITE::update("states", "active", (int)$state, "`name`='HomeServer busy'");
+			if (!$state) {
+				if ($isOn) {
+					think("HomeServer is not doing anything. Maybe I should shut him down.");
+				}
+			}
+
+			SQLITE::update("states", "active", (int)$state, "name='HomeServer busy'");
 			return $state ? "true" : "false";
 		}
+
+		think("HomeServer is off, why am I checking him ?!");
 	}
 
 	public static function wake($reason = "") {
@@ -124,13 +145,15 @@ class HomeServer {
 	public static function isOn() {
 		if ( (bool)LAN::ping("HomeServer") ) {
 			debug_log(__METHOD__.":".__LINE__, "HomeServer is live..");
-			SQLITE::update("states", "active", 1, "`name`='HomeServer'");
+			think("HomeServer is live.");
+			SQLITE::update("states", "active", 1, "name='HomeServer'");
 			return "true";
 		}
 
 		else {
 			debug_log(__METHOD__.":".__LINE__, "HomeServer is not live..");
-			SQLITE::update("states", "active", 0, "`name`='HomeServer'");
+			think("HomeServer is not live. He's not dead actually, just off.");
+			SQLITE::update("states", "active", 0, "name='HomeServer'");
 			return "false";
 		}
 	}
@@ -139,10 +162,10 @@ class HomeServer {
 		if ( !Auth::allowedIP([Configs::getIP("HomeServer")]) ) return false;
 
 		if ( HomeServer::isOn() ) {
-			return SQLITE::update("states", "active", $busy, "`name`='HomeServer busy'");
+			return SQLITE::update("states", "active", $busy, "name='HomeServer busy'");
 		}
 		else
-			return SQLITE::update("states", "active", 0, "`name`='HomeServer busy'");
+			return SQLITE::update("states", "active", 0, "name='HomeServer busy'");
 
 		return null;
 	}
@@ -170,6 +193,11 @@ class HomeServer {
 	public static function torrentActive() {
 		$torrenting = (int)LAN::SSH("HomeServer", "transmission-remote --list | sed '1d;\$d' | grep -v Done | wc -l");
 		return ($torrenting > 0) ? "true" : "false";
+	}
+
+	public static function tvRecActive() {
+		$tvRecActive = (int)LAN::SSH("HomeServer", "curl -s http://bubul:passich@localhost:9981/api/dvr/entry/grid_upcoming | grep -q '\"sched_status\":\"recording\",'; if [ \"$?\" == \"0\" ]; then echo 1; else echo 0; fi;");
+		return ($tvRecActive > 0) ? "true" : "false";
 	}
 
 	public static function getWakeTime() {

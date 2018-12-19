@@ -67,7 +67,7 @@ class Heating {
         $isOn       = SQLITE::query("SELECT active FROM states WHERE name = 'Heating'")[0]["active"];
         $temps      = Heating::getTemps();
         $tempSet    = Heating::getSetTemp();
-	    $tempMax    = Configs::get("TEMP", "MAX");
+        $tempMax    = Configs::get("TEMP", "MAX");
         $tempDiff   = Configs::get("TEMP", "DIFF");
         $hyst       = Configs::get("TEMP", "HYST");
 

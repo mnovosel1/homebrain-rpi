@@ -30,20 +30,21 @@ class SQLITE {
     public static function update($table, $attribute, $value, $condition = null) {
         if ( $condition === null ) return false;
 
-	    debug_log(__METHOD__.":".__LINE__, $attribute ." ". $condition);
+	    debug_log(__METHOD__.":".__LINE__, $attribute ."='". $value ."' WHERE ". $condition);
 
         if ( $table == "states" ) {
-            SQLITE::query("SELECT `".$attribute."` FROM `states` WHERE ".$condition);
+            SQLITE::query("SELECT ".$attribute." FROM states WHERE ".$condition);
             $oldValue = SQLITE::$result[0][$attribute];
         }
 
 
         if ( ($value*1) != ($oldValue*1) ) {
             hbrain_log(__METHOD__.":".__LINE__, $condition ." changed to ". $value);
-            SQLITE::query("UPDATE `".$table."` SET `".$attribute."`='".$value."' WHERE ".$condition);
+            SQLITE::query("UPDATE ".$table." SET ".$attribute."='".$value."' WHERE ".$condition);
             $res = SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
 
-	    think("I turned ". ucfirst($res[0]["state"]) . (($res[0]["changedto"] == 0) ? " off" : " on") .".");
+            think(ucfirst($res[0]["state"]) ." is now ". (($res[0]["changedto"] == 0) ? "off" : "on") .".");
+
             HomeBrain::mobDbUpdate($res[0]);
         }
     }

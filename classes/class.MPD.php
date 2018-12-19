@@ -59,10 +59,10 @@ class MPD {
         $mpdplay = LAN::SSH("KODI", "/usr/bin/mpc current");
 
         if ($mpdplay == "") {
-            SQLITE::update("states", "active", 0, "`name`='MPD playing'");
+            SQLITE::update("states", "active", 0, "name='MPD playing'");
             return "false";
         } else {
-            SQLITE::update("states", "active", 1, "`name`='MPD playing'");
+            SQLITE::update("states", "active", 1, "name='MPD playing'");
             return $mpdplay;
         }
     }

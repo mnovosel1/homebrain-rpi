@@ -25,12 +25,12 @@ class KODI {
 	public static function isOn() {
 
 			if ( exec("ssh ". Configs::get("KODI", "IP") ." 'if pgrep -x \'kodi\' >/dev/null; then echo '\on\'; else echo \'off\'; fi'") == "on" ) {
-				SQLITE::update("states", "active", 1, "`name`='KODI'");
+				SQLITE::update("states", "active", 1, "name='KODI'");
 				return "true";
 			}
 
 			else {
-				SQLITE::update("states", "active", 0, "`name`='KODI'");
+				SQLITE::update("states", "active", 0, "name='KODI'");
 				return "false";
 			}
 	}

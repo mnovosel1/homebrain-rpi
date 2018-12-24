@@ -24,7 +24,7 @@ class HomeBrain {
             $todoRet = "";
             foreach ($rows as $row) {
                 $todoNotify .= "[". $row["weight"] ."] ". $row["name"] ." to ".$row["changedto"] . PHP_EOL;
-		think("Should I set ". $row["name"] ." to ". $row["changedto"] ." ?");
+		        think("Should I set ". $row["name"] ." to ". $row["changedto"] ." ?");
                 $todoRet .= $row["name"] .":". $row["changedto"] .":". $row["weight"] ."|";
             }
             if ($todoNotify != "") break;
@@ -143,23 +143,24 @@ class HomeBrain {
         // HomeServer is on
         else {
             $shutDownHomeServer = true;
+            $thought = "";
 
             // do NOT shutdown HomeServer if:
             if ((bool)$newStates["KODI"]["active"]) {
                 $shutDownHomeServer = false;
-		$thought .= "KODI is active. ";
+		        $thought .= "KODI is active. ";
                 hbrain_log(__METHOD__.":".__LINE__, "KODI is active, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeServer busy"]["active"]) {
                 $shutDownHomeServer = false;
-		$thought .= "HomeServer is busy. ";
+		        $thought .= "HomeServer is busy. ";
                 hbrain_log(__METHOD__.":".__LINE__, "HomeServer is busy, HomeServer stays on.");
             }
 
             if ((bool)$newStates["HomeBrain user"]["active"]) {
                 $shutDownHomeServer = false;
-		$thought .= "HomeBrain user is logged on. ";
+		        $thought .= "HomeBrain user is logged on. ";
                 hbrain_log(__METHOD__.":".__LINE__, "HomeBrain user is logged on, HomeServer stays on.");
             }
 

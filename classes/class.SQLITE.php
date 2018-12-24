@@ -33,17 +33,35 @@ class SQLITE {
 	    debug_log(__METHOD__.":".__LINE__, $attribute ."='". $value ."' WHERE ". $condition);
 
         if ( $table == "states" ) {
-            SQLITE::query("SELECT ".$attribute." FROM states WHERE ".$condition);
+            SQLITE::query("SELECT * FROM states WHERE ".$condition);
             $oldValue = SQLITE::$result[0][$attribute];
+            $counter =  SQLITE::$result[0]["count"];
+            $state = substr(str_replace("name='", "", $condition), 0, -1);
+            $count = Configs::get(strtoupper($state), "COUNT");
+
+            if ($count !== false) {
+                $newCount = $value > 1 ? ++$counter : --$counter;
+
+                if ($newCount <= 0) {
+                    $value = 0;
+                    $newCount = 0;
+                }
+                else if ($newCount >= $count) {
+                    $value = 1;
+                    $newCount = $count;
+                }
+
+                SQLITE::query("UPDATE ".$table." SET count='".$newCount."' WHERE ".$condition);
+            }
         }
 
-
         if ( ($value*1) != ($oldValue*1) ) {
-            hbrain_log(__METHOD__.":".__LINE__, $condition ." changed to ". $value);
+
+            hbrain_log(__METHOD__.":".__LINE__, str_replace("name='", "", $condition) ." changed to ". $value);
             SQLITE::query("UPDATE ".$table." SET ".$attribute."='".$value."' WHERE ".$condition);
             $res = SQLITE::query("SELECT timestamp, statebefore, state, changedto FROM changelog ORDER BY timestamp DESC LIMIT 1");
 
-            think(ucfirst($res[0]["state"]) ." is now ". (($res[0]["changedto"] == 0) ? "off" : "on") .".");
+            // think(ucfirst($res[0]["state"]) ." is now ". (($res[0]["changedto"] == 0) ? "off" : "on") .".");
 
             HomeBrain::mobDbUpdate($res[0]);
         }
@@ -89,9 +107,9 @@ class SQLITE {
     }
 
     public static function mySqlQuery($sql) {
-	$sql = preg_replace('# {2,}#', ' ', (str_replace(array("\r\n","\r","\n"),' ',trim($sql))));
-	exec("/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"", $ret);
-	debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
+        $sql = preg_replace('# {2,}#', ' ', (str_replace(array("\r\n","\r","\n"),' ',trim($sql))));
+        exec("/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"", $ret);
+        debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
         return $ret;
     }
 
@@ -106,7 +124,8 @@ class SQLITE {
         CREATE TABLE states (
             name varchar(50) PRIMARY KEY,
             auto int(1) NOT NULL DEFAULT 1,
-            active int(1) NOT NULL DEFAULT 0
+            active int(1) NOT NULL DEFAULT 0,
+            count int(1) NOT NULL DEFAULT 0
         );
         ";
 

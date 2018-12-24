@@ -5,11 +5,18 @@ class Configs {
 
     public static function get($cfg1, $cfg2 = null) {
         $configs = Configs::getAll();
-        if ( $cfg2 === null )
-            return $configs[strtoupper($cfg1)];
-        else
-            return $configs[strtoupper($cfg1)][strtoupper($cfg2)];
-        return false;
+
+        if ( $cfg2 === null ) {
+            if (isset($configs[strtoupper($cfg1)])) $ret = $configs[strtoupper($cfg1)];
+            else $ret = false;
+        }
+
+        else {
+            if (isset($configs[strtoupper($cfg1)][strtoupper($cfg2)])) $ret = $configs[strtoupper($cfg1)][strtoupper($cfg2)];
+            else $ret = false;
+        }
+
+        return $ret;
     }
 
     public static function getMAC($host) {
@@ -23,8 +30,8 @@ class Configs {
 
     public static function getIP($host) {
         $ip = SQLITE::query("SELECT ip FROM lan WHERE name = '". strtolower($host) ."'")[0]["ip"];
-	// think("Searching for ". $host ."'s IP address. Looks like it's ". $ip .".");
-	debug_log(__METHOD__.":".__LINE__, $host ." IP: ". var_export($ip, true));
+        // think("Searching for ". $host ."'s IP address. Looks like it's ". $ip .".");
+        debug_log(__METHOD__.":".__LINE__, $host ." IP: ". var_export($ip, true));
         return $ip;
     }
 

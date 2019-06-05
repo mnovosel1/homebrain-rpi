@@ -16,18 +16,22 @@ class LAN {
 	if ($what == "") {
 		$out = exec(DIR ."/bin/wifi.sh active | awk '!/P660HW-T3>/ && /wlan active/'");
 		if (strpos($out, "active 1") !== false) {
-			$out = "on";
+            $out = "on";
+            /*
 			if (date("G") == Configs::get("SILENT_TIME", "START")) {
 				hbrain_log(__METHOD__.":".__LINE__, "WiFi should be off");
 				LAN::wifi(0);
-			}
+            }
+            */
 		}
 		else {
-			$out = "off";
+            $out = "off";
+            /*
 			if (date("G") == Configs::get("SILENT_TIME", "END")) {
 				hbrain_log(__METHOD__.":".__LINE__, "WiFi should be on");
 				LAN::wifi(1);
-			}
+            }
+            */
 		}
 		debug_log(__METHOD__.":".__LINE__, "WiFi is ". $out);
 	}
@@ -65,7 +69,7 @@ class LAN {
             return true;
         }
         debug_log(__METHOD__.":".__LINE__, $host . " is not live.");
-	return false;
+	    return false;
     }
 
     public static function WOL($mac) {
@@ -95,9 +99,11 @@ class LAN {
             return false;
         }
         if (!ssh2_auth_pubkey_file($connection,
-                                    Configs::get($host, "user"),
+                                    Configs::get("HOMEBRAIN", "USER"),
                                     Configs::get("HOMEBRAIN", "PUBKEY"),
                                     Configs::get("HOMEBRAIN", "PRIVKEY"))) {
+            
+            think("I'm not authorized to connect Mr. ". ucfirst($host) . ", you know ?!");
             debug_log(__METHOD__.":".__LINE__, "SSH auth failed on ". $host);
             return false;
         }
@@ -134,6 +140,8 @@ class LAN {
                 $names[] = str_replace(")", "", str_replace("(", "", explode(" ", $host, 4)[3]));
             }
         }
+
+        debug_log(__METHOD__.":".__LINE__ ." MACs = ", $MACs);
 
         $ret = "";
         for ($i = 0; $i < count($MACs); $i++) {

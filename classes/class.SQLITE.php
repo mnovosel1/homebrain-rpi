@@ -22,8 +22,6 @@ class SQLITE {
         if ( $insertOrReplace ) $sql .= " OR REPLACE";
         $sql .= " INTO ".$table." (".$attributes.") VALUES (".$values.")";
 
-        debug_log(__METHOD__.":".__LINE__, $sql);
-
         return SQLITE::query($sql, true);
     }
 
@@ -34,28 +32,32 @@ class SQLITE {
 
         if ( $table == "states" ) {
             SQLITE::query("SELECT * FROM states WHERE ".$condition);
-            $oldValue = SQLITE::$result[0][$attribute];
-            $counter =  SQLITE::$result[0]["count"];
+            $value = $value*1;
+            $oldValue = SQLITE::$result[0][$attribute]*1;
+            $oldCount =  SQLITE::$result[0]["count"];
             $state = substr(str_replace("name='", "", $condition), 0, -1);
-            $count = Configs::get(strtoupper($state), "COUNT");
+            $setCount = Configs::get(strtoupper($state), "COUNT");
 
-            if ($count !== false) {
-                $newCount = $value > 1 ? ++$counter : --$counter;
+            if ($setCount !== false) {
+                $newCount = $value > 0 ? $oldCount+1 : $oldCount-1;
 
                 if ($newCount <= 0) {
                     $value = 0;
                     $newCount = 0;
                 }
-                else if ($newCount >= $count) {
+                else if ($newCount >= $setCount) {
                     $value = 1;
-                    $newCount = $count;
+                    $newCount = $setCount;
+                }
+                else {
+                    $value = $oldValue;
                 }
 
                 SQLITE::query("UPDATE ".$table." SET count='".$newCount."' WHERE ".$condition);
             }
         }
 
-        if ( ($value*1) != ($oldValue*1) ) {
+        if ( $value != $oldValue ) {
 
             hbrain_log(__METHOD__.":".__LINE__, str_replace("name='", "", $condition) ." changed to ". $value);
             SQLITE::query("UPDATE ".$table." SET ".$attribute."='".$value."' WHERE ".$condition);
@@ -79,14 +81,17 @@ class SQLITE {
         debug_log(__METHOD__.":".__LINE__, $sqlite->lastErrorMsg ());
         debug_log(__METHOD__.":".__LINE__, $sql);
 
-        $res = $sqlite->query($sql);
-        $ret = $sqlite->lastErrorMsg();
+        do {
+            $res = $sqlite->query($sql);
+            $ret = $sqlite->lastErrorMsg();
+            sleep(1);
+        } while ($ret != "not an error");
 
 	if (strtoupper(substr($sql, 0 , 6)) == "INSERT") {
-		 debug_log(__METHOD__.":".__LINE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
-                 // debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
-                 // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
-        }
+        debug_log(__METHOD__.":".__LINE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
+        // debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
+        // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
+    }
 
         if ( $res !== false && !$insert ) {
             $tmp = array();

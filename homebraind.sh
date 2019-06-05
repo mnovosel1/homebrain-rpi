@@ -16,8 +16,10 @@ if [ "$lasttime" != "$nowtime" ]; then
   lasttime=$nowtime
   # echo $nowtime
 
-  #### every midnight
-  case $nowtime in (00:00)
+  #### every nigth at 2:30
+  case $nowtime in (02:30)
+    $DIR/homebrain hbrain allOff
+
     $DIR/homebrain hbrain uploadData
     $DIR/homebrain hbrain dbbackup
 
@@ -30,12 +32,7 @@ if [ "$lasttime" != "$nowtime" ]; then
     sudo /bin/tar -zcf /srv/PiStorage/backups/node-red_$date.tgz /home/hbrain/.node-red/
     sudo /bin/tar -zcf /srv/PiStorage/backups/RPi_DIR-etc_$date.tgz /etc/
     sudo /bin/tar -zcf /srv/PiStorage/backups/RPi_DIR-hbraindir_$date.tgz /srv/HomeBrain/
-  ;;
-  esac
 
-  #### every day at 2:22
-    case $nowtime in (2:22)
-    $DIR/homebrain hbrain allOff
     sudo /sbin/shutdown -F -r +5
   ;;
   esac
@@ -43,7 +40,6 @@ if [ "$lasttime" != "$nowtime" ]; then
   #### every hour
   case $nowtime in (*:00)
     $DIR/homebrain hbrain todo
-    $DIR/homebrain hbrain wifi
     $DIR/homebrain lan checknetwork
   ;;
   esac
@@ -74,12 +70,12 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every minute
   case $nowtime in (*)
-    $DIR/homebrain medvedi check
+   #  $DIR/homebrain medvedi check
     $DIR/homebrain hbrain alarm
 
 	if ping -c 1 10.10.10.100 &> /dev/null; then
 
-		if [ $(ssh 10.10.10.100 'if [ -d /tmp/rpiBackup.lock ]; then echo 1; else echo 0; fi') == 1 ]; then
+		if [[ $(ssh 10.10.10.100 'if [ -d /tmp/rpiBackup.lock ]; then echo 1; else echo 0; fi') == 1 ]]; then
 
       echo $(date +%H:%M) "I will now make HomeBrain RPi backup to HomeServer." >> $DIR/var/thinking
 

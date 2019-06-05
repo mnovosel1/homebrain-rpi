@@ -34,6 +34,7 @@ class MyAPI extends API {
         "HomeServer::busy",
         "HomeServer::ison",
         "HomeServer::timetowake",
+        "HomeServer::keepon",
         "MPD::on",
         "MPD::off",
         "MPD::play",

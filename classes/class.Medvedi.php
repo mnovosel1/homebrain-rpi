@@ -157,6 +157,7 @@ class Medvedi {
                     else if ($game["tore_heim_1"] != "" || $game["tore_gast_1"] != "") {
                         $trecina = "1/3";
                     }
+                    else $trecina = "";
 
                     Medvedi::$newData = array(  "status"             => $game["event_status"],
                                                 "date"               => $date,
@@ -167,7 +168,7 @@ class Medvedi {
                                                 "medvedGolova"       => $medvedGoals,
                                                 "antiMedvedGolova"   => $antiMedvedGoals
                     );
-var_dump(Medvedi::$newData);
+
                     /*
                     if (Medvedi::$newData["status"] != "post-event") {
                         if (Medvedi::$newData["status"] == "pre-event") {

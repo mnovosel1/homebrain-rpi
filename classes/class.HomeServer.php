@@ -1,7 +1,6 @@
 <?php
 
 class HomeServer {
-    public static $debug = true;
 
     public static function h() {
         return MyAPI::help(HomeServer::class);
@@ -25,17 +24,20 @@ class HomeServer {
 		}
 	}
 
-	public static function busy() {
-
-		if ( $_POST["param1"] == "1" || $_POST["param1"] == "0" ) {
-			think("Someone sais that HomeServer is ". ($_POST["param1"] == 0 ? "not busy anymore." : "busy now."));
-			return HomeServer::setbusy($_POST["param1"]);
+	public static function keepOn($val) {
+		if ($val != 1) {
+			$val = 0;
 		}
+
+		exec('echo '.$val.' > '.DIR.'/var/serverKeepOn');
+	}
+
+	public static function busy() {
 
 		$state = false;
 		$isOn = false;
 
-		if ( (bool)HomeServer::isOn() ) {
+		if ( HomeServer::isOn() == "true" ) {
 			$isOn = true;
 
 			think("I'll check if HomeServer is busy now.");
@@ -73,7 +75,7 @@ class HomeServer {
 			}
 
 			if (HomeServer::tvRecActive() == "true") {
-				think("HomeServer is recording something on TV.");
+				think("HomeServer is busy recording something on TV.");
 				hbrain_log(__METHOD__.":".__LINE__, "HomeServer: TV is recording..");
 				$state = true;
 			}
@@ -86,7 +88,7 @@ class HomeServer {
 
 			if (!$state) {
 				if ($isOn) {
-					think("HomeServer is not doing anything. Maybe I should shut him down.");
+					think("HomeServer is not doing much. Maybe I should shut him down. Any users active?");
 				}
 			}
 
@@ -99,7 +101,8 @@ class HomeServer {
 
 	public static function wake($reason = "") {
 		think("Im waking up HomeServer because: ". $reason);
-		if ( Auth::allowedIP() && HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
+		// if ( Auth::allowedIP() && HomeServer::isOn() == "false" && LAN::WOL(Configs::getMAC("HomeServer")) ) {
+		if ( LAN::WOL(Configs::getMAC("HomeServer")) ) {
 			if ( $reason == "" ) {
 				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
 				else $reason = "!";
@@ -143,7 +146,7 @@ class HomeServer {
 	}
 
 	public static function isOn() {
-		if ( (bool)LAN::ping("HomeServer") ) {
+		if ( LAN::ping("HomeServer") ) {
 			debug_log(__METHOD__.":".__LINE__, "HomeServer is live..");
 			think("HomeServer is live.");
 			SQLITE::update("states", "active", 1, "name='HomeServer'");
@@ -197,31 +200,48 @@ class HomeServer {
 
 	public static function tvRecActive() {
 		$tvRecActive = (int)LAN::SSH("HomeServer", "curl -s http://bubul:passich@localhost:9981/api/dvr/entry/grid_upcoming | grep -q '\"sched_status\":\"recording\",'; if [ \"$?\" == \"0\" ]; then echo 1; else echo 0; fi;");
+		if (abs(HomeServer::getWakeTime() - time()) < 900) $tvRecActive = 1;
 		return ($tvRecActive > 0) ? "true" : "false";
 	}
 
 	public static function getWakeTime() {
 
 		$wakeTimeLog = exec('cat '.DIR.'/var/srvWakeTime.log');
-		debug_log(__METHOD__.":".__LINE__, "WakeTime in log: ". date("d.m.Y. H:i:s", $wakeTimeLog));
+		$hServerIsOn = HomeServer::isOn();
 
-		if ( HomeServer::isOn() == "true" ) {
+		if ( $hServerIsOn == "true" ) {
 			debug_log(__METHOD__.":".__LINE__, "HomeServer live, requesting waketime..");
 			$waketime = (int)LAN::SSH("HomeServer", "/home/hbrain/getWakeTime");
 		}
 		else $waketime = $wakeTimeLog;
 
-		if ($waketime == 0 || $waketime - time() > (60*60*24)) {
+		if ($hServerIsOn == "true" && $waketime != 0) {
+			$timeToWakeDiff = time() - $waketime;
+			debug_log(__METHOD__.":".__LINE__, 'time() - $waketime = '. $timeToWakeDiff);
+
+			if ($timeToWakeDiff > 0 && $timeToWakeDiff < 900) {
+				think("HomeServer has something to do at: ". date("d.m.Y. H:i", $waketime) .". That's now, I'll keep him busy..");
+			}
+			else {
+				think("HomeServer has something to do at: ". date("d.m.Y. H:i", $waketime) .". I'll do my best to wake him on time.");
+			}
+			debug_log(__METHOD__.":".__LINE__, "WakeTime for TV recording (?) : ". date("d.m.Y. H:i", $waketime));
+		}
+
+		else if ($waketime == 0 || $waketime - time() > (60*60*24)) {
 			if ( date('U') <  date("U", strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"))) ) {
 				$waketime = strtotime("today ". Configs::get("HomeServer", "DAILY_WAKE"));
-				debug_log(__METHOD__.":".__LINE__, "WakeTime is TODAY: ". date("d.m.Y. H:i:s", $waketime));
+				debug_log(__METHOD__.":".__LINE__, "WakeTime is TODAY: ". date("d.m.Y. H:i", $waketime));
 			}
+
 			else {
 				$waketime = strtotime("tomorrow ". Configs::get("HomeServer", "DAILY_WAKE"));
 				debug_log(__METHOD__.":".__LINE__, "WakeTime is TOMORROW: ". date("d.m.Y. H:i:s", $waketime));
 			}
 		}
 
+		think("Next HomeServer waketime will be at: ". date("d.m.Y. H:i.", $waketime));
+	
 		if ($waketime < $wakeTimeLog || $wakeTimeLog < time() || $wakeTimeLog == 0) {
 			exec('echo '.$waketime.' > '. DIR .'/var/srvWakeTime.log');
 		}

@@ -34,15 +34,15 @@ class HomeBrain {
             HomeBrain::notify($todoNotify);
         } else $todoRet = "Dunno.. ";
 
-        return substr($todoRet, 0, strlen($todoRet)-1);
+        return "ToDo: ". substr($todoRet, 0, strlen($todoRet)-1);
     }
 
     public static function allOff() {
+        TV::off();
+        MPD::off();
         Amp::volDown(10);
         Amp::off();
-        TV::off();
         KODI::off();
-        MPD::off();
     }
 
     public static function dbBackup() {
@@ -119,9 +119,9 @@ class HomeBrain {
         }
 
         // HomeServer is off
-        if ( !(bool)$newStates["HomeServer"]["active"] ) {
+        if ( $newStates["HomeServer"]["active"] == 0 ) {
 
-	    $srvWakeTime = HomeServer::getWakeTime();
+	        $srvWakeTime = HomeServer::getWakeTime();
             // wake HomeServer if:
             $reason = "";
             switch (true) {
@@ -146,6 +146,12 @@ class HomeBrain {
             $thought = "";
 
             // do NOT shutdown HomeServer if:
+            if (exec('cat '.DIR.'/var/serverKeepOn') == 1) {
+                $shutDownHomeServer = false;
+		        $thought .= "Someone wants to keep HomeServer on. ";
+                hbrain_log(__METHOD__.":".__LINE__, "serverKeepOn is set, HomeServer stays on.");
+            }
+
             if ((bool)$newStates["KODI"]["active"]) {
                 $shutDownHomeServer = false;
 		        $thought .= "KODI is active. ";
@@ -165,13 +171,14 @@ class HomeBrain {
             }
 
             if ($shutDownHomeServer) {
-		think("I'm shutting down HomeServer");
-		HomeServer::shut();
-	    }
+                think("I'm shutting down HomeServer");
+                HomeServer::shut();
+            }
 
-	    else {
-		think($thought ."HomeServer will stay on.");
-	    }
+            else {
+                think($thought ."HomeServer will stay on.");
+            }
+
         }
 /*
         // TV is off, KODI is on
@@ -411,6 +418,8 @@ class HomeBrain {
                                     $hindex
                                 );
 
+        Sound::isLoud();
+
         return $in .":". $out .":". $hindex;
     }
 
@@ -418,24 +427,33 @@ class HomeBrain {
 
         if ( date("N") > 5 ) return;
 
-        else if (date("H:i", strtotime("+10 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+	$alarmTime = strtotime(Configs::get("ALARM"));
+
+        if (date("H:i", strtotime("+9 min")) == date("H:i", $alarmTime)) {
+		MPD::off();
+		sleep(20);
+
 		Amp::on();
 		Amp::volDown(30);
-		sleep(15);
+		sleep(10);
 		Amp::volDown(30);
         }
 
-        else if (date("H:i", strtotime("+3 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+        else if (date("H:i", strtotime("+3 min")) == date("H:i", $alarmTime)) {
 		MPD::on();
 
-                Amp::volUp(5);
-                sleep(15);
-                Amp::volUp(5);
-                sleep(15);
-                Amp::volUp(5);
+                Amp::volUp(3);
+                sleep(5);
+                Amp::volUp(3);
+                sleep(5);
+                Amp::volUp(3);
+                sleep(5);
+                Amp::volUp(3);
+                sleep(5);
+                Amp::volUp(3);
         }
 
-        else if (date("H:i", strtotime("+1 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+        else if (date("H:i", strtotime("+1 min")) == date("H:i", $alarmTime)) {
 		Amp::volUp(5);
 		sleep(15);
                 Amp::volUp(5);
@@ -443,16 +461,21 @@ class HomeBrain {
                 Amp::volUp(5);
         }
 
-        else if (date("H:i") == date("H:i", strtotime(Configs::get("ALARM")))) {
+        else if (date("H:i") == date("H:i", $alarmTime)) {
                 Amp::volUp(5);
                 Notifier::alert(7);
         }
 
-        else if (date("H:i", strtotime("-1 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+        else if (date("H:i", strtotime("-1 min")) == date("H:i", $alarmTime)) {
+                Amp::volUp(5);
+                Notifier::alert(7);
+        }
+
+        else if (date("H:i", strtotime("-9 min")) == date("H:i", $alarmTime)) {
                 Amp::volUp(5);
         }
 
-        if (date("H:i", strtotime("-45 min")) == date("H:i", strtotime(Configs::get("ALARM")))) {
+        else if (date("H:i", strtotime("-50 min")) == date("H:i", $alarmTime)) {
 		MPD::off();
 	}
     }

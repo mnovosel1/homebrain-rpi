@@ -129,7 +129,7 @@ class LAN {
 
     public static function checkNetwork() {
 
-        exec("sudo nmap -n -sn 10.10.10.0/24 -sP", $out);
+        exec("sudo /usr/bin/nmap -n -sn 10.10.10.0/24 -sP", $out);
 
         foreach ($out as $host) {
             if ( strpos($host, "scan report for") !== false )
@@ -156,6 +156,26 @@ class LAN {
 		if (date('i')*1 == 0) HomeBrain::notify("!Known device: ". implode("\n   ", $v));
 	}
         return $ret;
+    }
+
+    public static function killInet($host) {
+        exec("ssh 10.10.10.10 sudo /sbin/iptables -I INPUT -s ". $host ." -p udp --dport 53 -j DROP");
+    }
+
+    public static function allowInet($host) {
+        $index = "";
+        
+        exec("ssh 10.10.10.10 sudo /sbin/iptables -L", $out);
+        foreach ($out as $key => $line) {
+            if (strpos($line, $host) !== false) {
+                $index = $key - 1;
+                break;
+            }
+        }
+        
+        if ($index != "") {
+            exec("ssh 10.10.10.10 sudo /sbin/iptables -D INPUT " . $index);
+        }
     }
 }
 

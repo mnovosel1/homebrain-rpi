@@ -19,6 +19,7 @@ class MyAPI extends API {
         "HomeBrain::alert",
         "HomeBrain::speak",
         "HomeBrain::gettemps",
+        "HomeBrain::temps",
         "HomeBrain::wakecheck",
         "HomeBrain::mobappupdate",
         "HomeBrain::user",
@@ -27,6 +28,8 @@ class MyAPI extends API {
         "HomeBrain::email",
         "HomeBrain::wifi",
         "HomeBrain::debug",
+        "HomeBrain::killinet",
+        "HomeBrain::allowinet",
         "HomeServer::power",
         "HomeServer::wake",
         "HomeServer::shut",
@@ -71,6 +74,8 @@ class MyAPI extends API {
         "Medvedi::show",
         "Medvedi::timetogame",
         "LAN::checknetwork",
+        "LAN::killinet",
+        "LAN::allowinet",
         "FinMan::add",
         "Notifier::kodi",
         "Notifier::rgb",
@@ -157,7 +162,7 @@ class MyAPI extends API {
 	    if ( is_bool($ret) ) $ret = $ret ? "true" : "false";
             $ret = trim($ret);
 
-            hbrain_log("API ". $cliMethodName." MyAPI:".__LINE__, '$ret='. $ret);
+            hbrain_log("API ". $cliMethodName." MyAPI:".__LINE__, '$ret='. substr($ret, 0, 100));
 
             if ($ret != "") {
                 return $ret;
@@ -170,7 +175,7 @@ class MyAPI extends API {
     }
 
     public static function isCallable($class, $method) {
-	debug_log(__METHOD__.":".__LINE__, $class.'::'.$method);
+	    debug_log(__METHOD__.":".__LINE__, $class.'::'.$method);
         return (array_search($class.'::'.$method, MyAPI::$callable) !== false);
     }
 

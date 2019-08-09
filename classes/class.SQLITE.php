@@ -6,7 +6,7 @@ class SQLITE {
     private static $result;
 
     public static function getResult() {
-	return SQLITE::$result;
+	    return SQLITE::$result;
     }
 
     public static function insert($table, $attributes, $values, $insertOrReplace = false) {
@@ -82,6 +82,7 @@ class SQLITE {
         debug_log(__METHOD__.":".__LINE__, $sql);
 
         do {
+            debug_log(__METHOD__.":".__LINE__, "SQL: ". $sql);
             $res = $sqlite->query($sql);
             $ret = $sqlite->lastErrorMsg();
             sleep(1);
@@ -258,6 +259,10 @@ class SQLITE {
             light double DEFAULT NULL,
             sound double DEFAULT NULL,
             hindex double DEFAULT NULL,
+            tempinliving double DEFAULT NULL,
+            humidinliving double DEFAULT NULL,
+            tempinbath double DEFAULT NULL,
+            humidinbath double DEFAULT NULL,
             PRIMARY KEY (timestamp)
         );
         ";

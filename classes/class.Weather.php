@@ -13,6 +13,10 @@ class Weather {
     public static function tempIn($timestamp = null) {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
+        //$miData = explode("|", LAN::SSH("kodi", "cat /home/hbrain/mitemp/temps.log"));
+        $miData = explode("|", exec("cat ". DIR ."/mitemp/temps.log"));
+        exec(DIR ."/mitemp/temps.py &");
+
         $oldData = SQLITE::query("SELECT tempin, humidin, light, sound
                                     FROM datalog
                                      WHERE tempin != 'NULL'
@@ -28,7 +32,12 @@ class Weather {
         $light = abs($oldData[0]["light"] - $newData[2]) > 1000 ? $oldData[0]["light"] : $newData[2];
         $sound = abs($oldData[0]["sound"] - $newData[3]) > 40 ? $oldData[0]["sound"] : $newData[3];
 
-        return ($tempIn - 1) .":". $humidIn .":". $light .":". $sound;
+        $tempLivingRoom = $miData[4];
+        $humidLivingRoom = $miData[5];
+        $tempBahtRoom = $miData[8];
+        $humidBathRoom = $miData[9];
+
+        return ($tempIn - 1) .":". $humidIn .":". $light .":". $sound .":". $tempLivingRoom .":". $humidLivingRoom .":". $tempBahtRoom .":". $humidBathRoom;
     }
 
     public static function heatIndex($temperature, $humidity) {

@@ -58,7 +58,8 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every 5 minutes
   case $nowtime in (*:*[05])
-	$DIR/homebrain hbrain wakecheck
+    $DIR/homebrain hbrain getTemps
+    $DIR/homebrain hbrain wakecheck
 	;;
   esac
 
@@ -71,7 +72,7 @@ if [ "$lasttime" != "$nowtime" ]; then
   #### every minute
   case $nowtime in (*)
     # $DIR/homebrain medvedi check
-    # $DIR/homebrain hbrain alarm
+    $DIR/homebrain hbrain alarm
 
 	if ping -c 1 10.10.10.100 &> /dev/null; then
 

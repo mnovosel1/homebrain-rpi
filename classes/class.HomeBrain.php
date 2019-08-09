@@ -394,7 +394,11 @@ class HomeBrain {
                         "humidout",
                         "light",
                         "sound",
-                        "hindex"],
+                        "hindex",
+                        "tempinliving",
+                        "humidinliving",
+                        "tempinbath",
+                        "humidinbath"],
                         ["'". $timestamp ."'",
                         $tempSet,
                         $inArr[0],
@@ -404,7 +408,11 @@ class HomeBrain {
                         $outArr[1],
                         $inArr[2],
                         $inArr[3],
-                        $hindex],
+                        $hindex,
+                        $inArr[4],
+                        $inArr[5],
+                        $inArr[6],
+                        $inArr[7]],
                         true);
 
         file_put_contents(DIR . "/var/lastTemp.dat",
@@ -415,12 +423,21 @@ class HomeBrain {
                                     $outArr[1] ."|".    // humidOut
                                     $heatingOn ."|".
                                     $tempSet ."|".
-                                    $hindex
+                                    $hindex ."|".
+                                    $inArr[4] ."|".
+                                    $inArr[5] ."|".
+                                    $inArr[6] ."|".
+                                    $inArr[7]
                                 );
 
         Sound::isLoud();
 
         return $in .":". $out .":". $hindex;
+    }
+
+    public static function temps($limit = 1) {
+        $res = SQLITE::query("SELECT * FROM datalog ORDER BY timestamp DESC LIMIT ". $limit);
+        return json_encode($res);
     }
 
     public static function alarm() {

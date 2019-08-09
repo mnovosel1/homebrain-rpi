@@ -19,3 +19,6 @@ alias hbmpd='/srv/HomeBrain/homebrain mpd'
 alias hbkodi='/srv/HomeBrain/homebrain kodi'
 alias hbtemps='/srv/HomeBrain/homebrain hbrain gettemps'
 alias hbmedvedi='/srv/HomeBrain/homebrain medvedi'
+
+alias hblan='/srv/HomeBrain/homebrain lan'
+

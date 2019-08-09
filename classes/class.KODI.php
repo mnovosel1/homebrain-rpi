@@ -19,6 +19,7 @@ class KODI {
 		Amp::on();
 		Amp::kodi();
 		KODI::on();
+		TV::kodi();
 		HomeBrain::wakecheck();
 	}
 
@@ -36,23 +37,14 @@ class KODI {
 	}
 
 	public static function on() {
-		if (KODI::isOn()) return "true";
-
-		TV::on();
-		TV::kodi();
-		sleep(3);
-
-		//exec("ssh ". Configs::getIP("KODI") ." '/usr/bin/kodi-standalone &; exit'");
-		//LAN::SSH("KODI", "/usr/bin/kodi-standalone &");
-		//LAN::SSH("KODI", "sudo /bin/systemctl restart kodi &");
-		exec("ssh kodi sudo systemctl restart kodi");
-		HomeBrain::wakecheck();
+		exec("ssh kodi sudo /bin/systemctl restart kodi");
+		Amp::kodi();
 		return "true";
     }
 
 	public static function off() {
 		//TV::off();
-		exec("ssh kodi sudo systemctl stop kodi");
+		exec("ssh kodi sudo /bin/systemctl stop kodi");
                 //LAN::SSH("KODI", "sudo /bin/systemctl stop kodi &");
 		//exec("ssh ". Configs::getIP("KODI") ." '/usr/bin/kodi-send --action=\'Quit\' &'");
 		//LAN::SSH("KODI", "/usr/bin/kodi-send --action='Quit' &");

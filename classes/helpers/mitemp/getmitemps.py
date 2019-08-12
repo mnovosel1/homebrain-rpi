@@ -26,7 +26,7 @@ def main():
             print("Polling failed.")
             pass
         else:
-            f = open("../../../var/mitemps.log", "w")
+            f = open("/srv/HomeBrain/var/mitemps.log", "w")
             f.write("{}|livingroom|{}|bathroom|{}".format(t.strftime('%d/%m|%H:%M'), living, bath))
             f.close()
             print("Polling done, temps.log written")

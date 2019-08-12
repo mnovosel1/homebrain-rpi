@@ -14,8 +14,8 @@ class Weather {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
         //$miData = explode("|", LAN::SSH("kodi", "cat /home/hbrain/mitemp/temps.log"));
-        $miData = explode("|", exec("cat ". DIR ."/mitemp/temps.log"));
-        exec(DIR ."/mitemp/temps.py &");
+        $miData = explode("|", exec("cat ". DIR ."/var/mitemps.log"));
+        exec(DIR ."/classes/helpers/mitemp/getmitemps.py &");
 
         $oldData = SQLITE::query("SELECT tempin, humidin, light, sound
                                     FROM datalog

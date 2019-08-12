@@ -10,12 +10,6 @@ from btlewrap import BluepyBackend
 from mitemp_bt.mitemp_bt_poller import MiTempBtPoller, \
     MI_TEMPERATURE, MI_HUMIDITY, MI_BATTERY
 
-class DevNull:
-    def write(self, msg):
-        pass
-
-sys.stderr = DevNull()
-
 def main():
     i = 1
     while i < 2:

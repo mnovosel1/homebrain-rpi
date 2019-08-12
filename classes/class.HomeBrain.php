@@ -447,53 +447,53 @@ class HomeBrain {
 	$alarmTime = strtotime(Configs::get("ALARM"));
 
         if (date("H:i", strtotime("+9 min")) == date("H:i", $alarmTime)) {
-		MPD::off();
-		sleep(20);
+            MPD::off();
+            sleep(20);
 
-		Amp::on();
-		Amp::volDown(30);
-		sleep(10);
-		Amp::volDown(30);
+            Amp::on();
+            Amp::volDown(30);
+            sleep(10);
+            Amp::volDown(30);
         }
 
         else if (date("H:i", strtotime("+3 min")) == date("H:i", $alarmTime)) {
-		MPD::on();
+            MPD::on();
 
-                Amp::volUp(3);
-                sleep(5);
-                Amp::volUp(3);
-                sleep(5);
-                Amp::volUp(3);
-                sleep(5);
-                Amp::volUp(3);
-                sleep(5);
-                Amp::volUp(3);
+            Amp::volUp(3);
+            sleep(5);
+            Amp::volUp(3);
+            sleep(5);
+            Amp::volUp(3);
+            sleep(5);
+            Amp::volUp(3);
+            sleep(5);
+            Amp::volUp(3);
         }
 
         else if (date("H:i", strtotime("+1 min")) == date("H:i", $alarmTime)) {
-		Amp::volUp(5);
-		sleep(15);
-                Amp::volUp(5);
-                sleep(15);
-                Amp::volUp(5);
+            Amp::volUp(5);
+            sleep(15);
+            Amp::volUp(5);
+            sleep(15);
+            Amp::volUp(5);
         }
 
         else if (date("H:i") == date("H:i", $alarmTime)) {
-                Amp::volUp(5);
-                Notifier::alert(7);
+            Amp::volUp(5);
+            Notifier::alert(7);
         }
 
         else if (date("H:i", strtotime("-1 min")) == date("H:i", $alarmTime)) {
-                Amp::volUp(5);
-                Notifier::alert(7);
+            Amp::volUp(5);
+            Notifier::alert(7);
         }
 
         else if (date("H:i", strtotime("-9 min")) == date("H:i", $alarmTime)) {
-                Amp::volUp(5);
+            Amp::volUp(5);
         }
 
         else if (date("H:i", strtotime("-50 min")) == date("H:i", $alarmTime)) {
-		MPD::off();
+		    MPD::off();
 	}
     }
 

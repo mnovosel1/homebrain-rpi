@@ -29,14 +29,6 @@ class Amp {
             exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA158A7 &");
     }
 
-    public static function volUp1() {
-        Amp::volUp(1);
-    }
-
-    public static function volUp2() {
-        Amp::volUp(2);
-    }
-
     public static function mute() {
         // MUTE
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA138C7 &");
@@ -50,22 +42,18 @@ class Amp {
             exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1D827 &");
     }
 
-    public static function volDown1() {
-        Amp::volDown(1);
-    }
-
-    public static function volDown2() {
-        Amp::volDown(2);
-    }
-
     public static function mpd() {
         // MD_CDR_INPUT
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1936C &");
     }
 
-    public static function kodi() {
+    public static function tv() {
         // D-TV_CBL_INPUT
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA12AD5 &");
+    }
+
+    public static function kodi() {
+        self::tv();
     }
 
     public static function aux() {

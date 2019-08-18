@@ -48,21 +48,23 @@ class MyAPI extends API {
         "Amp::on",
         "Amp::off",
         "Amp::volup",
-        "Amp::volup2",
-        "Amp::volup1",
         "Amp::mute",
         "Amp::voldown",
-        "Amp::voldown1",
-        "Amp::voldown2",
+        "Amp::tv",
         "Amp::kodi",
         "Amp::mpd",
         "Amp::aux",
         "Amp::movie",
         "Amp::dolby",
         "Amp::music",
+        "IPTV::on",
+        "IPTV::off",
+        "IPTV::ison",
+        "IPTV::sendkey",
         "TV::on",
         "TV::off",
         "TV::power",
+        "TV::iptv",
         "TV::kodi",
         "TV::ison",
         "TV::status",
@@ -113,6 +115,10 @@ class MyAPI extends API {
                 $name = "MPD";
             break;
 
+            case "iptv":
+                $name = "IPTV";
+            break;
+
             case "tv":
                 $name = "TV";
             break;
@@ -132,7 +138,8 @@ class MyAPI extends API {
         $verb = strtolower((string)$this->verb);
 
 
-        if ( Auth::OK() ) {
+        //if ( Auth::OK() ) {
+        if ( true ) {
             $ret = "";
             $cliMethodName = "";
 
@@ -144,7 +151,8 @@ class MyAPI extends API {
             if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
             if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
 
-            if ( $ret == "" ) {
+            if ( $ret == "" )
+            {
                 if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
                     $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."')";
                     $ret = $name::$verb(trim($_POST["param1"]), trim($_POST["param2"]));
@@ -158,7 +166,7 @@ class MyAPI extends API {
                 }
             }
 
-            if ( is_array($ret) ) $ret = export_var($ret, true);
+        if ( is_array($ret) ) $ret = export_var($ret, true);
 	    if ( is_bool($ret) ) $ret = $ret ? "true" : "false";
             $ret = trim($ret);
 

@@ -21,11 +21,11 @@ class TV {
     }
 
     public static function on() {
-        LAN::SSH("KODI", "echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &");
+		exec("ssh kodi 'echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &'");
     }
 
     public static function off() {
-        LAN::SSH("KODI", "echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &");
+		exec("ssh kodi 'echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &'");
     }
 
     public static function power() {
@@ -37,7 +37,11 @@ class TV {
     }
 
     public static function kodi() {
-	    LAN::SSH("KODI", "echo \"as\" | /usr/bin/cec-client -s >> /dev/null &");
+	    LAN::SSH("KODI", "echo 'as' | /usr/bin/cec-client -s >> /dev/null &");
+    }
+
+    public static function iptv() {
+		exec("ssh kodi \"echo tx '4F:82:40:00' | /usr/bin/cec-client -s -d 1 >> /dev/null &\"");
     }
 }
 

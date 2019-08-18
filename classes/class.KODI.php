@@ -38,6 +38,9 @@ class KODI {
 
 	public static function on() {
 		exec("ssh kodi sudo /bin/systemctl restart kodi");
+		exec("ssh kodi 'echo kodi > /home/hbrain/remote/mode'");
+		TV::kodi();
+		Amp::on();
 		Amp::kodi();
 		return "true";
     }

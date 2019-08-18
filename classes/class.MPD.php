@@ -13,6 +13,7 @@ class MPD {
     public static function on() {
 
         Amp::on();
+		exec("ssh kodi 'echo mpd > /home/hbrain/remote/mode'");
 
         if (MPD::playing() == "false") {
             LAN::SSH("KODI", "/usr/bin/mpc clear");

@@ -8,6 +8,7 @@ alias gd='git diff'
 alias hbalert='/srv/HomeBrain/homebrain th hbrain alert'
 alias hbamp='/srv/HomeBrain/homebrain th amp'
 alias hbtv='/srv/HomeBrain/homebrain th tv'
+alias hbiptv='/srv/HomeBrain/homebrain iptv'
 
 alias hbdir='cd /srv/HomeBrain/'
 alias hblog='tail -f -n 50 /srv/HomeBrain/var/hbrain.log'

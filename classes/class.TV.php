@@ -21,11 +21,11 @@ class TV {
     }
 
     public static function on() {
-		exec("ssh kodi 'echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &'");
+        exec("ssh kodi 'echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &'");
     }
 
     public static function off() {
-		exec("ssh kodi 'echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &'");
+        exec("ssh kodi 'echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &'");
     }
 
     public static function power() {

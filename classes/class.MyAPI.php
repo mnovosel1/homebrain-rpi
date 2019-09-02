@@ -137,54 +137,36 @@ class MyAPI extends API {
 
         $verb = strtolower((string)$this->verb);
 
+        $ret = "";
+        $cliMethodName = "";
 
-        //if ( Auth::OK() ) {
-        if ( true ) {
-            $ret = "";
-            $cliMethodName = "";
+        if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
+        if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
 
-            if ( ($verb != 'h' && $verb != 'help') && !self::isCallable($name, $verb) ) {
-                $ret .= $name.'::'.$verb." not callable ";
-                hbrain_log(__METHOD__.":".__LINE__, $name.'::'.$verb .' is not callable.');
+        if ( $ret == "" )
+        {
+            if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
+                $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."')";
+                $ret = $name::$verb(trim($_POST["param1"]), trim($_POST["param2"]));
             }
-
-            if ( !class_exists($name)  ) $ret .= "no class: ".$name." ";
-            if ( !method_exists($name, $verb) ) $ret .= "no method: ".$verb." ";
-
-            if ( $ret == "" )
-            {
-                if (trim($_POST["param2"]) != "" && trim($_POST["param2"]) != "null") {
-                    $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."', '".$_POST["param2"]."')";
-                    $ret = $name::$verb(trim($_POST["param1"]), trim($_POST["param2"]));
-                }
-                else if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
-                    $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."')";
-                    $ret = $name::$verb(trim($_POST["param1"]));
-                } else {
-                    $cliMethodName = $name."::".$this->verb."()";
-                    $ret = $name::$verb();
-                }
-            }
-
-        if ( is_array($ret) ) $ret = export_var($ret, true);
-	    if ( is_bool($ret) ) $ret = $ret ? "true" : "false";
-            $ret = trim($ret);
-
-            hbrain_log("API ". $cliMethodName." MyAPI:".__LINE__, '$ret='. substr($ret, 0, 100));
-
-            if ($ret != "") {
-                return $ret;
+            else if (trim($_POST["param1"]) != "" && trim($_POST["param1"]) != "null") {
+                $cliMethodName = $name."::".$this->verb."('".$_POST["param1"]."')";
+                $ret = $name::$verb(trim($_POST["param1"]));
+            } else {
+                $cliMethodName = $name."::".$this->verb."()";
+                $ret = $name::$verb();
             }
         }
 
-        else hbrain_log(__METHOD__.":".__LINE__, "AUTH not OK.");
+        if ( is_array($ret) ) $ret = export_var($ret, true);
+        if ( is_bool($ret) ) $ret = $ret ? "true" : "false";
+        $ret = trim($ret);
 
-        return false;
-    }
+        hbrain_log("API ". $cliMethodName." MyAPI:".__LINE__, '$ret='. substr($ret, 0, 100));
 
-    public static function isCallable($class, $method) {
-	    debug_log(__METHOD__.":".__LINE__, $class.'::'.$method);
-        return (array_search($class.'::'.$method, MyAPI::$callable) !== false);
+        if ($ret != "") {
+            return $ret;
+        }
     }
 
     public static function help($class) {
@@ -193,8 +175,7 @@ class MyAPI extends API {
 
         $ret = $class .': ';
         foreach ($methods as $method) {
-            if (MyApi::isCallable($class, strtolower($method)))
-                $ret .= $method .", ";
+            $ret .= $method .", ";
         }
 
         return substr($ret, 0, strlen($ret)-2);

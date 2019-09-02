@@ -18,7 +18,7 @@ class MPD {
         if (MPD::playing() == "false") {
             LAN::SSH("KODI", "/usr/bin/mpc clear");
             LAN::SSH("KODI", "/usr/bin/mpc repeat on");
-            LAN::SSH("KODI", "/usr/bin/mpc random on");
+            //LAN::SSH("KODI", "/usr/bin/mpc random on");
             LAN::SSH("KODI", "/usr/bin/mpc single off");
             LAN::SSH("KODI", "/usr/bin/mpc consume off");
             LAN::SSH("KODI", "/usr/bin/mpc load radio");

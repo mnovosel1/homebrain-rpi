@@ -54,8 +54,10 @@ class IPTV {
     }
 
     public static function on() {
-		exec("ssh kodi 'echo iptv > /home/hbrain/remote/mode'");
         self::sendKey("KEY_POWER");
+        TV::on();
+		if (trim(exec("ssh kodi 'cat /home/hbrain/remote/mode'")) == "kodi") KODI::off();
+		exec("ssh kodi 'echo iptv > /home/hbrain/remote/mode' &");
         TV::iptv();
         Amp::on();
         Amp::tv();

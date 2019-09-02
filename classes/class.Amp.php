@@ -50,6 +50,7 @@ class Amp {
     public static function tv() {
         // D-TV_CBL_INPUT
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA12AD5 &");
+        self::dolby();
     }
 
     public static function kodi() {

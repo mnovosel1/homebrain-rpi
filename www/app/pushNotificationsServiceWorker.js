@@ -6,6 +6,7 @@ self.addEventListener("push", function(event) {
       const notificationOptions = {
         body: event.data.text(),
         icon: 'images/homebrain.png',
+        badge:  'images/homebrain_96x96.png',
         sound: 'sounds/r2d2_a.wav'
       };
   

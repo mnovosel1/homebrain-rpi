@@ -25,7 +25,7 @@ class Reg {
     }
 
     public static function verify() {
-        $tokens = SQLITE::fetch("fcm", ["token"], "approved = 'false' AND email = '".$_POST["email"]."'");
+        $tokens = SQLITE::query("SELECT token FROM fcm WHERE approved = 'false' AND email = '".$_POST["email"]."'");
         $verified = false;
 
         foreach ( $tokens as $token ) {

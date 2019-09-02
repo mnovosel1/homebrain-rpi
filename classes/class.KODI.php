@@ -38,6 +38,7 @@ class KODI {
 
 	public static function on() {
 		exec("ssh kodi sudo /bin/systemctl restart kodi");
+		if (trim(exec("ssh kodi 'cat /home/hbrain/remote/mode'")) == "iptv") IPTV::sendKey("KEY_POWER");
 		exec("ssh kodi 'echo kodi > /home/hbrain/remote/mode'");
 		TV::kodi();
 		Amp::on();

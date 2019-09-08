@@ -38,6 +38,7 @@ class MyAPI extends API {
         "HomeServer::ison",
         "HomeServer::timetowake",
         "HomeServer::keepon",
+        "HomeServer::auto",
         "MPD::on",
         "MPD::off",
         "MPD::play",

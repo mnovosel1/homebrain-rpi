@@ -24,12 +24,14 @@ class HomeServer {
 		}
 	}
 
-	public static function keepOn($val) {
-		if ($val != 1) {
-			$val = 0;
-		}
+	public static function keepOn() {
 
-		exec('echo '.$val.' > '.DIR.'/var/serverKeepOn');
+		exec('echo 1 > '.DIR.'/var/serverKeepOn');
+	}
+
+	public static function auto() {
+
+		exec('echo 0 > '.DIR.'/var/serverKeepOn');
 	}
 
 	public static function busy() {

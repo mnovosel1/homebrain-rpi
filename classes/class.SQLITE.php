@@ -77,16 +77,15 @@ class SQLITE {
 
         $sqlite = new SQLite3(DIR.'/var/'.Configs::get("HOMEBRAIN", "DB"));
         $tmp = "";
-
-        debug_log(__METHOD__.":".__LINE__, $sqlite->lastErrorMsg ());
-        debug_log(__METHOD__.":".__LINE__, $sql);
+        $count = 0;
 
         do {
-            debug_log(__METHOD__.":".__LINE__, "SQL: ". $sql);
+            debug_log(__METHOD__.":".__LINE__, $sql);
             $res = $sqlite->query($sql);
             $ret = $sqlite->lastErrorMsg();
             sleep(1);
-        } while ($ret != "not an error");
+            $count++;
+        } while ($count <= 5 && $ret != "not an error");
 
 	if (strtoupper(substr($sql, 0 , 6)) == "INSERT") {
         debug_log(__METHOD__.":".__LINE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());

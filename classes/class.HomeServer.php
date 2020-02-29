@@ -121,8 +121,8 @@ class HomeServer {
 		if ( Auth::allowedIP() && HomeServer::isOn() ) {
 			LAN::SSH("HomeServer", "shutdown");
 
-			if ( $reason == "" ) {
-				if ( isset($_POST["param1"]) && $_POST["param1"] != "null" ) $reason = ": ".$_POST["param1"];
+			if ( trim($reason) == "null" || trim($reason) == "" ) {
+				if ( isset($_POST["param1"]) && (trim($_POST["param1"] != "null") && trim($_POST["param1"] != "")) ) $reason = ": ".$_POST["param1"];
 				else $reason = "..";
 			} else $reason = ": ".$reason;
 

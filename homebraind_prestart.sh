@@ -2,6 +2,8 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
+/usr/bin/mosquitto_pub -h 10.10.10.12 -t 'hbrain/stat/hbrain/' -m 'online' -q 2 -r
+
 if [[ ! -L $DIR/www/api.php ]]; then
 	rm -rf $DIR/www/api.php
 	ln -s $DIR/classes/api.php $DIR/www/api.php

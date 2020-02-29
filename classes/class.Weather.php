@@ -13,8 +13,9 @@ class Weather {
     public static function tempIn($timestamp = null) {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
-        //$miData = explode("|", LAN::SSH("kodi", "cat /home/hbrain/mitemp/temps.log"));
         $miData = explode("|", exec("cat ". DIR ."/var/mitemps.log"));
+        debug_log(__METHOD__.":".__LINE__, implode("|", $miData));
+        
         exec(DIR ."/classes/helpers/mitemp/getmitemps.py &");
 
         $oldData = SQLITE::query("SELECT tempin, humidin, light, sound
@@ -22,22 +23,33 @@ class Weather {
                                      WHERE tempin != 'NULL'
                                       AND humidin != 'NULL'
                                       AND light != 'NULL'
+                                      AND sound != 'NULL'
                                      ORDER BY timestamp DESC LIMIT 1");
+        //MQTTclient::publish("hassio/sens1/", '{ "temperature": '. $oldData[0]["tempin"] .', "humidity": '. $oldData[0]["humidin"] .', "light": '. (int)$oldData[0]["light"] .', "sound": '. $oldData[0]["sound"] .' }');
 
         $newData = exec("sudo ". DIR ."/bin/nrf 1 sens");
         $newData = explode(":", $newData);
 
-        $tempIn = abs($oldData[0]["tempin"] - $newData[0]) > 10 ? $oldData[0]["tempin"] : $newData[0];
-        $humidIn = abs($oldData[0]["humidin"] - $newData[1]) > 20 ? $oldData[0]["humidin"] : $newData[1];
-        $light = abs($oldData[0]["light"] - $newData[2]) > 1000 ? $oldData[0]["light"] : $newData[2];
-        $sound = abs($oldData[0]["sound"] - $newData[3]) > 40 ? $oldData[0]["sound"] : $newData[3];
+        debug_log(__METHOD__.":".__LINE__, $oldData);
+        debug_log(__METHOD__.":".__LINE__, $newData);
 
-        $tempLivingRoom = $miData[4];
-        $humidLivingRoom = $miData[5];
-        $tempBahtRoom = $miData[8];
-        $humidBathRoom = $miData[9];
+        $tempIn = abs($oldData[0]["tempin"] - $newData[0]) > 15 ? $oldData[0]["tempin"] : $newData[0];
+        $humidIn = abs($oldData[0]["humidin"] - $newData[1]) > 25 ? $oldData[0]["humidin"] : $newData[1];
+        $light = $newData[2] == 0 || abs($oldData[0]["light"] - $newData[2]) > 750 ? (int)$oldData[0]["light"] : (int)$newData[2];
+        $sound = abs($oldData[0]["sound"] - $newData[3]) > 50 ? $oldData[0]["sound"] : $newData[3];
+        //$sound = $newData[3];
 
-        return ($tempIn - 1) .":". $humidIn .":". $light .":". $sound .":". $tempLivingRoom .":". $humidLivingRoom .":". $tempBahtRoom .":". $humidBathRoom;
+        MQTTclient::publish("hassio/sens1/", '{ "temperature": '. $tempIn .', "humidity": '. $humidIn .', "light": '. $light .', "sound": '. $sound .' }');
+
+        $tempLivingRoom = empty($miData[4]) ? 'NULL' : $miData[4];
+        $humidLivingRoom = empty($miData[5]) ? 'NULL' : $miData[5];
+        $tempBahtRoom = empty($miData[8]) ? 'NULL' : $miData[8];
+        $humidBathRoom = empty($miData[9]) ? 'NULL' : $miData[9];
+
+        $ret = ($tempIn - 1) .":". $humidIn .":". $light .":". $sound .":". $tempLivingRoom .":". $humidLivingRoom .":". $tempBahtRoom .":". $humidBathRoom;
+        debug_log(__METHOD__.":".__LINE__, $ret);
+
+        return $ret;
     }
 
     public static function heatIndex($temperature, $humidity) {
@@ -54,11 +66,13 @@ class Weather {
 
         $html = file_get_html('http://meteo.hr/podaci.php?section=podaci_vrijeme&prikaz=abc');
 
-        foreach ($html->find('tr') as $row) {
-            if (trim($row->children(0)->innertext) == "Zagreb-Maksimir") {
-                $wind = $row->children(1);
-                $temp = $row->children(2);
-                $humid = $row->children(3);
+        if ($html !== false) {
+            foreach ($html->find('tr') as $row) {
+                if (trim($row->children(0)->innertext) == "Zagreb-Maksimir") {
+                    $wind = $row->children(1);
+                    $temp = $row->children(2);
+                    $humid = $row->children(3);
+                }
             }
         }
 

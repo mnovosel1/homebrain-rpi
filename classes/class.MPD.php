@@ -13,24 +13,36 @@ class MPD {
     public static function on() {
 
         Amp::on();
-		exec("ssh kodi 'echo mpd > /home/hbrain/remote/mode'");
+		exec("echo mpd > /srv/HomeBrain/remote/mode &");
+        MQTTclient::publish("hbrain/stat/mpd/", "on", true);
 
         if (MPD::playing() == "false") {
-            LAN::SSH("KODI", "/usr/bin/mpc clear");
-            LAN::SSH("KODI", "/usr/bin/mpc repeat on");
-            //LAN::SSH("KODI", "/usr/bin/mpc random on");
-            LAN::SSH("KODI", "/usr/bin/mpc single off");
-            LAN::SSH("KODI", "/usr/bin/mpc consume off");
-            LAN::SSH("KODI", "/usr/bin/mpc load radio");
-            LAN::SSH("KODI", "/usr/bin/mpc play 1");
-        }
 
+            $command = "";
+            $command .= "/usr/bin/mpc clear";
+            $command .= " && ";
+            $command .= "/usr/bin/mpc repeat on";
+            $command .= " && ";
+            $command .= "/usr/bin/mpc random on";
+            $command .= " && ";
+            $command .= "/usr/bin/mpc single off";
+            $command .= " && ";
+            $command .= "/usr/bin/mpc consume off";
+            $command .= " && ";
+            $command .= "/usr/bin/mpc load radio";
+            $command .= " && ";
+            $command .= "/usr/bin/mpc play 1";
+
+            LAN::SSH("KODI", $command);
+        }
         Amp::mpd();
     }
 
     public static function off() {
-        LAN::SSH("KODI", "/usr/bin/mpc clear");
-        Amp::off();
+        MQTTclient::publish("hbrain/stat/mpd/", "off", true);
+
+        LAN::SSH("KODI", "/usr/bin/mpc clear &");
+        //Amp::off();        
 
         HomeBrain::wakecheck();
     }
@@ -61,9 +73,11 @@ class MPD {
 
         if ($mpdplay == "") {
             SQLITE::update("states", "active", 0, "name='MPD playing'");
+            MQTTclient::publish("hbrain/stat/mpd/", "off", true);
             return "false";
         } else {
             SQLITE::update("states", "active", 1, "name='MPD playing'");
+            MQTTclient::publish("hbrain/stat/mpd/", "on", true);
             return $mpdplay;
         }
     }

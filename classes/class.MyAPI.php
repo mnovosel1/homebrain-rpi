@@ -1,5 +1,7 @@
 <?php
 
+require_once "helpers/functions.php";
+
 class MyAPI extends API {
     public static $debug = true;
 
@@ -28,8 +30,7 @@ class MyAPI extends API {
         "HomeBrain::email",
         "HomeBrain::wifi",
         "HomeBrain::debug",
-        "HomeBrain::killinet",
-        "HomeBrain::allowinet",
+        "HomeBrain::clock",
         "HomeServer::power",
         "HomeServer::wake",
         "HomeServer::shut",
@@ -64,6 +65,7 @@ class MyAPI extends API {
         "IPTV::sendkey",
         "TV::on",
         "TV::off",
+        "TV::watch",
         "TV::power",
         "TV::iptv",
         "TV::kodi",
@@ -82,8 +84,12 @@ class MyAPI extends API {
         "FinMan::add",
         "Notifier::kodi",
         "Notifier::rgb",
-	"Sound::isloud",
-	"Sound::ison"
+        "Notifier::notifyclock1",
+        "Sound::isloud",
+        "Sound::ison",
+        "Light::on",
+        "Light::off",
+        "Person::setstate"
     );
 
     public function __construct($request, $origin) {
@@ -91,51 +97,7 @@ class MyAPI extends API {
     }
 
     public function __call($name, $args) {
-        switch (strtolower($name)) {
-            case "hsrv":
-            case "hserv":
-            case "homeserver":
-                $name = "HomeServer";
-            break;
-
-            case "hbr":
-            case "hbrain":
-            case "homebrain":
-                $name = "HomeBrain";
-            break;
-
-            case "heat":
-                $name = "Heating";
-            break;
-
-            case "kodi":
-                $name = "KODI";
-            break;
-
-            case "mpd":
-                $name = "MPD";
-            break;
-
-            case "iptv":
-                $name = "IPTV";
-            break;
-
-            case "tv":
-                $name = "TV";
-            break;
-
-            case "lan":
-               $name = "LAN";
-            break;
-
-            case "finman":
-                $name = "FinMan";
-            break;
-
-            default:
-                $name = ucfirst(strtolower($name));
-        }
-
+        $name = getClassName($name);
         $verb = strtolower((string)$this->verb);
 
         $ret = "";

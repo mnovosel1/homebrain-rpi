@@ -14,11 +14,13 @@ class Amp {
     public static function on() {        
         // SYSTEM_POWER
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1B847 &");
+        //MQTTclient::publish("hbrain/stat/amp/", "On", true);
     }
     
     public static function off() {
         // STANDBY
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA17887 &");
+        MQTTclient::publish("hbrain/stat/amp/", "Off", true);
     }
 
     public static function volUp($count = 1) {
@@ -44,21 +46,30 @@ class Amp {
 
     public static function mpd() {
         // MD_CDR_INPUT
+        Amp::on();
+        MQTTclient::publish("hbrain/stat/amp/", "MPD", true);
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1936C &");
     }
 
     public static function tv() {
         // D-TV_CBL_INPUT
+        Amp::on();
+        MQTTclient::publish("hbrain/stat/amp/", "TV", true);
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA12AD5 &");
         self::dolby();
     }
 
     public static function kodi() {
-        self::tv();
+        // D-TV_CBL_INPUT
+        Amp::on();
+        MQTTclient::publish("hbrain/stat/amp/", "KODI", true);
+        exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA12AD5 &");
+        self::dolby();
     }
 
     public static function aux() {
         // V-AUX_INPUT
+        MQTTclient::publish("hbrain/stat/amp/", "AUX", true);
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1AA55 &");
     }
 

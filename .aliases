@@ -23,3 +23,6 @@ alias hbmedvedi='/srv/HomeBrain/homebrain medvedi'
 
 alias hblan='/srv/HomeBrain/homebrain lan'
 
+alias hbclock1='sudo ./bin/nrf 8'
+
+alias hblight='/srv/HomeBrain/homebrain light'

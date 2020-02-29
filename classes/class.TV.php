@@ -22,10 +22,16 @@ class TV {
 
     public static function on() {
         exec("ssh kodi 'echo 'on 0' | /usr/bin/cec-client -s >> /dev/null &'");
+        MQTTclient::publish("hbrain/stat/tv/", "on", true);
     }
 
     public static function off() {
         exec("ssh kodi 'echo 'standby 0' | /usr/bin/cec-client -s >> /dev/null &'");
+        MQTTclient::publish("hbrain/stat/tv/", "off", true);
+    }
+
+    public static function watch() {
+        exec("echo tv > /srv/HomeBrain/remote/mode");
     }
 
     public static function power() {

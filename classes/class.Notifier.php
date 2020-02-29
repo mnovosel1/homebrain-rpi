@@ -5,6 +5,7 @@ define('TTL', 86400);
 
 class Notifier {
     public static $debug = false;
+    static $clock1Notifying = false;
 
     public static function h() {
         return MyAPI::help(Notifier::class);
@@ -16,7 +17,7 @@ class Notifier {
 
     public static function notify($msg, $title = "HomeBrain") {
         debug_log(__METHOD__.":".__LINE__, $msg);
-	Notifier::kodi($msg, $title);
+	    Notifier::kodi($msg, $title);
 
         $msg = str_replace("_", " ", $msg);
         if ( Notifier::fcmBcast($title, $msg) ) return null;
@@ -32,7 +33,7 @@ class Notifier {
         return true;
     }
 
-    public static function fcmBcast($title, $msg, $data = null) {
+    public static function fcmBcast($title, $msg, $data = "none") {
         // if ( !Auth::allowedIP() ) return false;
         if ( $title === null ) $title = "HomeBrain";
 
@@ -92,6 +93,28 @@ class Notifier {
         if ($b !== NULL) exec(DIR ."/bin/blue ". $b);
     }
 
+    public static function notifyClock1 ($text, $beep = 0) {        
+
+        if (HomeBrain::isSilentTime()) return;
+
+        while (Notifier::$clock1Notifying) sleep(5);
+        Notifier::$clock1Notifying = true;
+
+        debug_log(__METHOD__.":".__LINE__, $text);
+
+        $text = str_split($text, 25);
+        $lines = count($text);
+        if ($lines > 9) $lines = 9;
+
+        foreach($text as $key => $line) {
+            exec("sudo ". DIR ."/bin/nrf 8 'no". ($key+1) . $lines. $beep .":". $line ."'");
+            sleep(1);
+            if ($key+1 == 9) break;
+        }
+        
+        Notifier::$clock1Notifying = false;
+    }
+
     //* private helper methods *///////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////////////////////////////
     public static function sendFcm ($title, $msg, $data, $token, $ttl = null) {
@@ -104,7 +127,6 @@ class Notifier {
 
         // NOTIFICATION only message
         if ( $data === null ) {
-
             $fields["notification"]["title"]    = $title;
             $fields["notification"]["body"]     = $msg;
             $fields["notification"]["sound"]    = strtolower($title);
@@ -112,10 +134,7 @@ class Notifier {
 
         // DATA message
         else {
-            if ( $data !== null ) {
-                $fields['data'] = $data;
-            }
-
+            $fields['data']['data']     = $data;
             $fields['data']['title']    = $title;
             $fields['data']['body'] 	= $msg;
         }

@@ -43,6 +43,9 @@ class HomeBrain {
         Amp::volDown(10);
         Amp::off();
         KODI::off();
+        Light::off("light/tv");
+        Light::off("light/lr", 1);
+        Light::off("light/lr", 2);
     }
 
     public static function dbBackup() {
@@ -384,6 +387,10 @@ class HomeBrain {
         $tempSet = Heating::getSetTemp();
         $hindex = Weather::heatIndex($inArr[0], $inArr[1]);
 
+        exec("sudo ". DIR ."/bin/nrf 8 'te:". $inArr[0] .":". $inArr[1] .":". $inArr[2] ."' &");
+
+        debug_log(__METHOD__.":".__LINE__, $inArr[4] ." ". $inArr[5]);
+
         SQLITE::insert("datalog",
                         ["timestamp",
                         "tempset",
@@ -432,6 +439,7 @@ class HomeBrain {
 
         Sound::isLoud();
 
+        hbrain_log(__METHOD__.":".__LINE__, $in .":". $out .":". $hindex);
         return $in .":". $out .":". $hindex;
     }
 
@@ -444,7 +452,7 @@ class HomeBrain {
 
         if ( date("N") > 5 ) return;
 
-	$alarmTime = strtotime(Configs::get("ALARM"));
+	    $alarmTime = strtotime(Configs::get("ALARM"));
 
         if (date("H:i", strtotime("+9 min")) == date("H:i", $alarmTime)) {
             MPD::off();
@@ -511,23 +519,55 @@ class HomeBrain {
     }
 
     public static function debug($set = "") {
-	switch($set) {
+        switch($set) {
 
-		case "1":
-		case "on":
-			Configs::set("DEBUG", "true");
-		break;
+            case "1":
+            case "on":
+                Configs::set("DEBUG", "true");
+            break;
 
-		case "0":
-		case "off":
-			Configs::set("DEBUG", "false");
-		break;
+            case "0":
+            case "off":
+                Configs::set("DEBUG", "false");
+            break;
 
-		default:
-			return Configs::get("DEBUG");
-	}
+            default:
+                return Configs::get("DEBUG");
+        }
     }
 
+    public static function clock() {
+        $light = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
+        $notifyText = "";
+
+        if ($light <= Configs::get("LIGHT", "MIN") || HomeBrain::isSilentTime()) {
+            exec("sudo ". DIR ."/bin/nrf 8 'in:0'"); 
+        }
+
+        else {
+            exec("sudo ". DIR ."/bin/nrf 8 'in:1'");
+
+            if (date("d") == 1 && date("m") == 1 ) {
+                $notifyText = "Sretna nova ". (date("Y")) ." godina!";
+
+            } else if (date("d") == 13 && date("m") == 1) {
+                $notifyText = "Marela sretan ti rođendan!";
+                
+            } else if (date("d") == 1 && date("m") == 10) {
+                $notifyText = "Marijo sretan ti rođendan!";
+
+            } else if (date("d") == 21 && date("m") == 11) {
+                $notifyText = "Gabi sretan ti rođendan!";
+
+            } else if (date("d") == 25 && date("m") == 12) {
+                $notifyText = "Sretan Božić!";
+            }
+
+            if ($notifyText != "") {
+                Notifier::notifyClock1($notifyText);
+            }
+        }
+    }
 }
 
 ?>

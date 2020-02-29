@@ -69,6 +69,7 @@ class Amp {
 
     public static function aux() {
         // V-AUX_INPUT
+        Amp::on();
         MQTTclient::publish("hbrain/stat/amp/", "AUX", true);
         exec("sudo ". DIR ."/bin/nrf 1 irnec:5EA1AA55 &");
     }

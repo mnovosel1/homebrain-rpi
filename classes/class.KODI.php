@@ -32,7 +32,6 @@ class KODI {
 		exec("ssh kodi sudo /bin/systemctl restart kodi");
 		if (IPTV::isOn()) IPTV::sendKey("KEY_POWER");
 		TV::kodi();
-		Amp::on();
 		Amp::kodi();
         MQTTclient::publish("hbrain/stat/kodi/", "on", true);
 		return "true";

@@ -60,7 +60,6 @@ class IPTV {
 		if (KODI::isOn()) KODI::off();
         MQTTclient::publish("hbrain/stat/iptv/", "on", true);
         TV::iptv();
-        Amp::on();
         Amp::tv();
     }
 

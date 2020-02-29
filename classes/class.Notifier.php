@@ -16,7 +16,7 @@ class Notifier {
     }
 
     public static function notify($msg, $title = "HomeBrain") {
-        debug_log(__METHOD__.":".__LINE__, $msg);
+        //debug_log(__METHOD__.":".__LINE__, $msg);
 	    Notifier::kodi($msg, $title);
 
         $msg = str_replace("_", " ", $msg);
@@ -25,7 +25,7 @@ class Notifier {
     }
 
     public static function kodi($msg, $title = "HomeBrain") {
-	debug_log(__METHOD__.":".__LINE__, $msg);
+	//debug_log(__METHOD__.":".__LINE__, $msg);
         // if ( !Auth::allowedIP() ) return false;
         $data = Notifier::getPostData();
         LAN::SSH("KODI", "/usr/bin/kodi-send -a 'Notification(". $title .", ". $msg .")'");
@@ -86,7 +86,7 @@ class Notifier {
             }
         }
 
-        debug_log(__METHOD__.":".__LINE__, "RGB: ". $r .", ". $g .", ". $b);
+        //debug_log(__METHOD__.":".__LINE__, "RGB: ". $r .", ". $g .", ". $b);
 
         if ($r !== NULL) exec(DIR ."/bin/red ". $r);
         if ($g !== NULL) exec(DIR ."/bin/green ". $g);
@@ -100,7 +100,7 @@ class Notifier {
         while (Notifier::$clock1Notifying) sleep(5);
         Notifier::$clock1Notifying = true;
 
-        debug_log(__METHOD__.":".__LINE__, $text);
+        //debug_log(__METHOD__.":".__LINE__, $text);
 
         $text = str_split($text, 25);
         $lines = count($text);
@@ -142,7 +142,7 @@ class Notifier {
         $fields["to"]               = $token;
         $fields["time_to_live"]     = $ttl;
 
-        debug_log(__METHOD__.":".__LINE__, $fields);
+        //debug_log(__METHOD__.":".__LINE__, $fields);
 
         $headers[] = 'Authorization: key='.Configs::getFCM("API_KEY");
         $headers[] = 'Content-Type: application/json';
@@ -161,7 +161,7 @@ class Notifier {
         else $success = true;
 
         $fields["success"] = $success;
-        debug_log(__METHOD__.":".__LINE__, json_encode( $fields ));
+        //debug_log(__METHOD__.":".__LINE__, json_encode( $fields ));
 
         if (!$success) SQLITE::query("DELETE FROM fcm WHERE token = '".$token."'");
 

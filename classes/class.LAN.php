@@ -33,7 +33,7 @@ class LAN {
             }
             */
 		}
-		debug_log(__METHOD__.":".__LINE__, "WiFi is ". $out);
+		//debug_log(__METHOD__.":".__LINE__, "WiFi is ". $out);
 	}
 	else {
 		switch ($what) {
@@ -41,7 +41,7 @@ class LAN {
                         case "0":
 				exec(DIR ."/bin/wifi.sh active ". $what ." | awk '!/P660HW-T3>/ && /wlan active/' &");
 				HomeBrain::notify(date("H:i") ." Switching WiFi ". ($what == 1 ? "on" : "off"));
-				debug_log(__METHOD__.":".__LINE__, "Switching WiFi ". ($what == 1 ? "on" : "off"));
+				//debug_log(__METHOD__.":".__LINE__, "Switching WiFi ". ($what == 1 ? "on" : "off"));
                         break;
 
 			case "scan":
@@ -55,7 +55,7 @@ class LAN {
 					}
 					if (strpos($v, "Recommend Channel") !== false) $found = false;
 				}
-				debug_log(__METHOD__.":".__LINE__, "WiFi scanning.");
+				//debug_log(__METHOD__.":".__LINE__, "WiFi scanning.");
 			break;
 		}
 	}
@@ -65,10 +65,10 @@ class LAN {
     public static function ping($host) {
         $live = exec("ping -c1 ".Configs::getIP($host)." | grep 'received' | awk -F ',' '{print $2}' | awk '{ print $1}'");
 		if ($live > 0) {
-            debug_log(__METHOD__.":".__LINE__, $host . " is live!");
+            //debug_log(__METHOD__.":".__LINE__, $host . " is live!");
             return true;
         }
-        debug_log(__METHOD__.":".__LINE__, $host . " is not live.");
+        //debug_log(__METHOD__.":".__LINE__, $host . " is not live.");
 	    return false;
     }
 
@@ -83,11 +83,11 @@ class LAN {
         socket_set_option($s, SOL_SOCKET, SO_BROADCAST, 1);
 
         if ( socket_sendto($s, $msg, strlen($msg), 0, "255.255.255.255", 1223) !== false ) {
-            debug_log(__METHOD__.":".__LINE__, "WOL sent to: ". $mac);
+            //debug_log(__METHOD__.":".__LINE__, "WOL sent to: ". $mac);
             return true;
         }
         else {
-            debug_log(__METHOD__.":".__LINE__, "WOL not sent..");
+            //debug_log(__METHOD__.":".__LINE__, "WOL not sent..");
             return false;
         }
     }
@@ -95,7 +95,7 @@ class LAN {
     public static function SSH($host, $command) {
         $connection = @ssh2_connect(Configs::getIP($host), 22, array('hostkey'=>'ssh-rsa'));
         if ( $connection === false ) {
-            debug_log(__METHOD__.":".__LINE__, "SSH connection failed on ". $host);
+            //debug_log(__METHOD__.":".__LINE__, "SSH connection failed on ". $host);
             return false;
         }
         if (!ssh2_auth_pubkey_file($connection,
@@ -104,7 +104,7 @@ class LAN {
                                     Configs::get("HOMEBRAIN", "PRIVKEY"))) {
             
             think("I'm not authorized to connect Mr. ". ucfirst($host) . ", you know ?!");
-            debug_log(__METHOD__.":".__LINE__, "SSH auth failed on ". $host);
+            //debug_log(__METHOD__.":".__LINE__, "SSH auth failed on ". $host);
             return false;
         }
 
@@ -141,7 +141,7 @@ class LAN {
             }
         }
 
-        debug_log(__METHOD__.":".__LINE__ ." MACs = ", $MACs);
+        //debug_log(__METHOD__.":".__LINE__ ." MACs = ", $MACs);
 
         $ret = "";
         for ($i = 0; $i < count($MACs); $i++) {

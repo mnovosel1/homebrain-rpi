@@ -54,7 +54,22 @@ function procmsg($topic, $msg) {
 }
 
 function status($obj, $stat) {
+
+    $states = include(DIR ."/var/objStates.php");
+    $states[$obj] = $stat;
+
+    debug_log(__FILE__.":".__LINE__, "Status: ". $obj ." ". $stat);
+
     echo "Status: ". $obj ." ". $stat .PHP_EOL;
+
+    $statesWrite = '<?php'. PHP_EOL .'return ['. PHP_EOL;
+    foreach ($states as $key => $state) {
+        $statesWrite .= "    '". $key ."' => '". $state ."', ". PHP_EOL;
+    }
+    $statesWrite = substr($statesWrite, 0, -3);
+    $statesWrite .= PHP_EOL .'];'. PHP_EOL .'?>'. PHP_EOL;
+
+    file_put_contents(DIR ."/var/objStates.php", $statesWrite);
 }
 
 function cmnd($obj, $cmnd) {

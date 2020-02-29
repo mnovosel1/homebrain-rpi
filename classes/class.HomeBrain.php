@@ -89,7 +89,7 @@ class HomeBrain {
 
     public static function wakeCheck() {
 
-        debug_log(__METHOD__.":".__LINE__, "WakeChecking..");
+        //debug_log(__METHOD__.":".__LINE__, "WakeChecking..");
 
         // get old states from db
         $rows = SQLITE::query("SELECT name, auto, active FROM states");
@@ -104,7 +104,7 @@ class HomeBrain {
 
             if ( strpos($hostName, " ") === false ) {
                 $class = $hostName;
-                debug_log(__METHOD__.":".__LINE__, $class ."::isOn();");
+                //debug_log(__METHOD__.":".__LINE__, $class ."::isOn();");
                 $newState = ($class::isOn() == "false") ? 0 : 1;
             }
 
@@ -112,7 +112,7 @@ class HomeBrain {
                 $object = explode(" ", $hostName);
                 $class = trim($object[0]);
                 $method = trim($object[1]);
-                debug_log(__METHOD__.":".__LINE__, $class ."::". $method ."();");
+                //debug_log(__METHOD__.":".__LINE__, $class ."::". $method ."();");
                 $newState = ($class::$method() == "false") ? 0 : 1;
             }
 
@@ -248,10 +248,11 @@ class HomeBrain {
             	$msg = ["is off..", "is on!"];
         }
         hbrain_log(__METHOD__.":".__LINE__, $row["state"] ." ". $msg[$row["changedto"]]);
-        debug_log(__METHOD__.":".__LINE__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
+        //debug_log(__METHOD__.":".__LINE__, $row["state"] .'{"table":"changelog","values":'.json_encode($row).'}');
 
         $dbUpdates["table"] = "changelog";
         $dbUpdates["values"] = $row;
+        MQTTclient::publish("hbrain/stat/". strtolower($row["state"]) ."/", $row["changedto"] == 1 ? "on" : "off", true);
         Notifier::fcmBcast($row["state"], $msg[$row["changedto"]], array("dbupdates" => $dbUpdates));
     }
 
@@ -326,7 +327,7 @@ class HomeBrain {
                         "'".$row['state']."', ".
                         $row['changedto'].")";
 
-            // debug_log(__METHOD__.":".__LINE__, $sql);
+            // //debug_log(__METHOD__.":".__LINE__, $sql);
             SQLITE::mySqlQuery($sql);
         }
     }
@@ -368,7 +369,7 @@ class HomeBrain {
                     $row['sound'].", ".
                     $row['hindex'].")";
 
-            debug_log(__METHOD__.":".__LINE__, $sql);
+            //debug_log(__METHOD__.":".__LINE__, $sql);
             SQLITE::mySqlQuery($sql);
         }
     }
@@ -389,7 +390,7 @@ class HomeBrain {
 
         exec("sudo ". DIR ."/bin/nrf 8 'te:". $inArr[0] .":". $inArr[1] .":". $inArr[2] ."' &");
 
-        debug_log(__METHOD__.":".__LINE__, $inArr[4] ." ". $inArr[5]);
+        //debug_log(__METHOD__.":".__LINE__, $inArr[4] ." ". $inArr[5]);
 
         SQLITE::insert("datalog",
                         ["timestamp",

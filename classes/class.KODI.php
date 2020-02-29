@@ -12,7 +12,7 @@ class KODI {
     }
 
     public static function status() {
-		return isOn();
+		return KODI::isOn();
 	}
 
 	public static function watch() {
@@ -24,22 +24,13 @@ class KODI {
 	}
 
 	public static function isOn() {
-
-			if ( exec("ssh ". Configs::getIP("KODI") ." 'if pgrep -x \'kodi\' >/dev/null; then echo '\on\'; else echo \'off\'; fi'") == "on" ) {
-				SQLITE::update("states", "active", 1, "name='KODI'");
-				return "true";
-			}
-
-			else {
-				SQLITE::update("states", "active", 0, "name='KODI'");
-				return "false";
-			}
+        $states = include(DIR ."/var/objStates.php");
+        return ($states["kodi"] != 'off');
 	}
 
 	public static function on() {
 		exec("ssh kodi sudo /bin/systemctl restart kodi");
-		if (trim(exec("cat /srv/HomeBrain/remote/mode")) == "iptv") IPTV::sendKey("KEY_POWER");
-		exec("echo kodi > /srv/HomeBrain/remote/mode");
+		if (IPTV::isOn()) IPTV::sendKey("KEY_POWER");
 		TV::kodi();
 		Amp::on();
 		Amp::kodi();
@@ -56,7 +47,6 @@ class KODI {
         MQTTclient::publish("hbrain/stat/kodi/", "off", true);
 		return "true";
     }
-
 }
 
 ?>

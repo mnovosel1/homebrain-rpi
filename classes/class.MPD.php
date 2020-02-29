@@ -12,8 +12,6 @@ class MPD {
 
     public static function on() {
 
-        Amp::on();
-		exec("echo mpd > /srv/HomeBrain/remote/mode &");
         MQTTclient::publish("hbrain/stat/mpd/", "on", true);
 
         if (MPD::playing() == "false") {
@@ -31,7 +29,7 @@ class MPD {
             $command .= " && ";
             $command .= "/usr/bin/mpc load radio";
             $command .= " && ";
-            $command .= "/usr/bin/mpc play 1";
+            $command .= "/usr/bin/mpc play";
 
             LAN::SSH("KODI", $command);
         }
@@ -41,10 +39,15 @@ class MPD {
     public static function off() {
         MQTTclient::publish("hbrain/stat/mpd/", "off", true);
 
-        LAN::SSH("KODI", "/usr/bin/mpc clear &");
+        LAN::SSH("KODI", "/usr/bin/mpc stop &");
         //Amp::off();        
 
         HomeBrain::wakecheck();
+    }
+
+    public static function isOn() {
+        $states = include(DIR ."/var/objStates.php");
+        return ($states["mpd"] != 'off');
     }
 
     public static function play() {
@@ -73,11 +76,9 @@ class MPD {
 
         if ($mpdplay == "") {
             SQLITE::update("states", "active", 0, "name='MPD playing'");
-            MQTTclient::publish("hbrain/stat/mpd/", "off", true);
             return "false";
         } else {
             SQLITE::update("states", "active", 1, "name='MPD playing'");
-            MQTTclient::publish("hbrain/stat/mpd/", "on", true);
             return $mpdplay;
         }
     }

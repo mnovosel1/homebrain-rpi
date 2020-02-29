@@ -30,7 +30,10 @@ if [ ! -f $DIR/var/srvWakeTime.log ]; then
 fi
 
 if [ ! -f $DIR/var/medvedi.log ]; then
-  cp $DIR/saved_var/medvedi.log $DIR/var/medvedi.log
+  cp 
+
+if [ ! -f $DIR/var/objStates.php ]; then
+  cp $DIR/saved_var/objStates.php $DIR/var/objStates.php
 fi
 
 /bin/chown -R hbrain:hbrain $DIR/var/*

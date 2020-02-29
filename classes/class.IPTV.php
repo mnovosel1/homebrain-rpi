@@ -50,14 +50,14 @@ class IPTV {
     }
 
     public static function isOn() {
-        return exec("cat /srv/HomeBrain/remote/mode") == "iptv" ? true : false;
+        $states = include(DIR ."/var/objStates.php");
+        return ($states["iptv"] != 'off');
     }
 
     public static function on() {
         self::sendKey("KEY_POWER");
         TV::on();
-		if (trim(exec("cat /srv/HomeBrain/remote/mode")) == "kodi") KODI::off();
-		exec("echo iptv > /srv/HomeBrain/remote/mode");
+		if (KODI::isOn()) KODI::off();
         MQTTclient::publish("hbrain/stat/iptv/", "on", true);
         TV::iptv();
         Amp::on();
@@ -66,7 +66,7 @@ class IPTV {
 
     public static function off() {
         MQTTclient::publish("hbrain/stat/iptv/", "off", true);
-        if (exec("cat /srv/HomeBrain/remote/mode") == "iptv") {
+        if (IPTV::isOn()) {
             self::sendKey("KEY_POWER");
         }
     }

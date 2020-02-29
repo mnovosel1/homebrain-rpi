@@ -28,7 +28,7 @@ class SQLITE {
     public static function update($table, $attribute, $value, $condition = null) {
         if ( $condition === null ) return false;
 
-	    debug_log(__METHOD__.":".__LINE__, $attribute ."='". $value ."' WHERE ". $condition);
+	    //debug_log(__METHOD__.":".__LINE__, $attribute ."='". $value ."' WHERE ". $condition);
 
         if ( $table == "states" ) {
             SQLITE::query("SELECT * FROM states WHERE ".$condition);
@@ -80,7 +80,7 @@ class SQLITE {
         $count = 0;
 
         do {
-            debug_log(__METHOD__.":".__LINE__, $sql);
+            //debug_log(__METHOD__.":".__LINE__, $sql);
             $res = $sqlite->query($sql);
             $ret = $sqlite->lastErrorMsg();
             sleep(1);
@@ -88,8 +88,8 @@ class SQLITE {
         } while ($count <= 5 && $ret != "not an error");
 
 	if (strtoupper(substr($sql, 0 , 6)) == "INSERT") {
-        debug_log(__METHOD__.":".__LINE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
-        // debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
+        //debug_log(__METHOD__.":".__LINE__, "lastInsertRowID(): ". $sqlite->lastInsertRowID());
+        // //debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". str_replace("OR REPLACE ", "", $sql) ."\"'");
         // exec("/usr/bin/ssh bubulescu.org '/home/bubul/mydb \"". $sql ."\"'");
     }
 
@@ -114,7 +114,7 @@ class SQLITE {
     public static function mySqlQuery($sql) {
         $sql = preg_replace('# {2,}#', ' ', (str_replace(array("\r\n","\r","\n"),' ',trim($sql))));
         exec("/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"", $ret);
-        debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
+        //debug_log(__METHOD__.":".__LINE__, "/usr/bin/ssh bubulescu.org \"/home/bubul/mydb ".'\\'."\"". $sql ."".'\\'."\"\"");
         return $ret;
     }
 

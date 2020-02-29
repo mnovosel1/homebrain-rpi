@@ -10,10 +10,13 @@ class TV {
     }
 
     public static function status() {
-		return isOn();
+		return TV::isOn();
     }
 
     public static function isOn() {
+        $states = include(DIR ."/var/objStates.php");
+        return ($states["tv"] != 'off');
+        
         if ( LAN::SSH("KODI", "echo 'pow 0' | /usr/bin/cec-client -s | grep 'power status:' | sed 's/power status: //'") == "on" ) {
             return "true";
         }
@@ -31,7 +34,7 @@ class TV {
     }
 
     public static function watch() {
-        exec("echo tv > /srv/HomeBrain/remote/mode");
+        return 1;
     }
 
     public static function power() {

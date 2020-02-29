@@ -14,7 +14,7 @@ class Weather {
         if ($timestamp === null) $timestamp = date("Y-m-d H:i:00");
 
         $miData = explode("|", exec("cat ". DIR ."/var/mitemps.log"));
-        debug_log(__METHOD__.":".__LINE__, implode("|", $miData));
+        //debug_log(__METHOD__.":".__LINE__, implode("|", $miData));
         
         exec(DIR ."/classes/helpers/mitemp/getmitemps.py &");
 
@@ -30,8 +30,8 @@ class Weather {
         $newData = exec("sudo ". DIR ."/bin/nrf 1 sens");
         $newData = explode(":", $newData);
 
-        debug_log(__METHOD__.":".__LINE__, $oldData);
-        debug_log(__METHOD__.":".__LINE__, $newData);
+        //debug_log(__METHOD__.":".__LINE__, $oldData);
+        //debug_log(__METHOD__.":".__LINE__, $newData);
 
         $tempIn = abs($oldData[0]["tempin"] - $newData[0]) > 15 ? $oldData[0]["tempin"] : $newData[0];
         $humidIn = abs($oldData[0]["humidin"] - $newData[1]) > 25 ? $oldData[0]["humidin"] : $newData[1];
@@ -47,7 +47,7 @@ class Weather {
         $humidBathRoom = empty($miData[9]) ? 'NULL' : $miData[9];
 
         $ret = ($tempIn - 1) .":". $humidIn .":". $light .":". $sound .":". $tempLivingRoom .":". $humidLivingRoom .":". $tempBahtRoom .":". $humidBathRoom;
-        debug_log(__METHOD__.":".__LINE__, $ret);
+        //debug_log(__METHOD__.":".__LINE__, $ret);
 
         return $ret;
     }

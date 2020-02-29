@@ -15,7 +15,7 @@ class Medvedi {
     }
 
     public static function check() {
-        debug_log(__METHOD__.":".__LINE__, "Checking..");
+        //debug_log(__METHOD__.":".__LINE__, "Checking..");
         Medvedi::getData();
 
         if (Medvedi::$newData["medvedGolova"] > 0 && Medvedi::$newData["medvedGolova"] > Medvedi::$logData["medvedGolova"]) {
@@ -112,7 +112,7 @@ class Medvedi {
             $games = $week["s"];
 
             foreach ($games as $game) {
-                // debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
+                // //debug_log(__METHOD__.":".__LINE__, $game["datum"] .": ".  $game["th_name"] ." vs. ". $game["tg_name"]);
                 // if (strpos($game["team_heim_kuerzel"], "MZA") !== false || strpos($game["team_gast_kuerzel"], "MZA") !== false ) {
 
 		$game["datum"] = str_replace(",", "", $game["datum"]);
@@ -198,7 +198,7 @@ class Medvedi {
         Medvedi::getData();
 
         $gameTime = strtotime(Medvedi::$newData["date"] ." ". Medvedi::$newData["time"]);
-        debug_log(__METHOD__.":".__LINE__, $gameTime);
+        //debug_log(__METHOD__.":".__LINE__, $gameTime);
 
 		$howlong = '';
 		$seconds = $gameTime - time(); 
@@ -221,7 +221,7 @@ class Medvedi {
 
     private static function isGameDay() {
         if (date("d.m.Y.") == Medvedi::$logData["date"]) {
-            debug_log(__METHOD__.":".__LINE__, "It's GameDay!!");
+            //debug_log(__METHOD__.":".__LINE__, "It's GameDay!!");
             return true;
         }
         return false;

@@ -1,0 +1,17 @@
+[Unit]
+Description=HomeBrain
+After=multi-user.target
+
+[Service]
+Type=simple
+User=hbrain
+Group=hbrain
+ExecStartPre=/srv/HomeBrain/homebraind_prestart.sh
+ExecStart=/srv/HomeBrain/homebraind.sh
+ExecStopPost=/srv/HomeBrain/homebraind_poststop.sh
+Restart=on-abort
+PIDFile=/var/run/homebrain.pid
+
+[Install]
+WantedBy=multi-user.target
+

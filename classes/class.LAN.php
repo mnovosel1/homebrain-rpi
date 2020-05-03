@@ -73,6 +73,8 @@ class LAN {
     }
 
     public static function WOL($mac) {
+        debug_log(__METHOD__.":".__LINE__, "WOL to: ". $mac);
+
         $addr_byte = explode(':', $mac);
         $hw_addr = '';
         for ($a=0; $a <6; $a++) $hw_addr .= chr(hexdec($addr_byte[$a]));
@@ -83,11 +85,11 @@ class LAN {
         socket_set_option($s, SOL_SOCKET, SO_BROADCAST, 1);
 
         if ( socket_sendto($s, $msg, strlen($msg), 0, "255.255.255.255", 1223) !== false ) {
-            //debug_log(__METHOD__.":".__LINE__, "WOL sent to: ". $mac);
+            debug_log(__METHOD__.":".__LINE__, "WOL sent to: ". $mac);
             return true;
         }
         else {
-            //debug_log(__METHOD__.":".__LINE__, "WOL not sent..");
+            debug_log(__METHOD__.":".__LINE__, "WOL not sent..");
             return false;
         }
     }

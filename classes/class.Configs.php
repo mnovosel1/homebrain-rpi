@@ -16,6 +16,8 @@ class Configs {
             else $ret = false;
         }
 
+        debug_log(__METHOD__.":".__LINE__, $ret);
+
         return $ret;
     }
 

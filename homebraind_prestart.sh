@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-/usr/bin/mosquitto_pub -h 10.10.10.12 -t 'hbrain/stat/hbrain/' -m 'online' -q 2 -r
+/usr/bin/mosquitto_pub -h 10.10.10.11 -u hassio -P sonopass -t 'hbrain/stat/hbrain/' -m 'online' -q 2 -r
 
 if [[ ! -L $DIR/www/api.php ]]; then
 	rm -rf $DIR/www/api.php
@@ -30,11 +30,12 @@ if [ ! -f $DIR/var/srvWakeTime.log ]; then
 fi
 
 if [ ! -f $DIR/var/medvedi.log ]; then
-  cp 
-
-if [ ! -f $DIR/var/objStates.php ]; then
-  cp $DIR/saved_var/objStates.php $DIR/var/objStates.php
+  cp $DIR/saved_var/medvedi.log $DIR/var/medvedi.log
 fi
+
+#if [ ! -f $DIR/var/objStates.php ]; then
+  #cp $DIR/saved_var/objStates.php $DIR/var/objStates.php
+#fi
 
 /bin/chown -R hbrain:hbrain $DIR/var/*
 /bin/chmod -R 0770 $DIR/var/*

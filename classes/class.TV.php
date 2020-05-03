@@ -2,11 +2,11 @@
 
 class TV {
     public static function h() {
-        return MyAPI::help(self::class);
+        return HomeBrain::help(self::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return HomeBrain::help(self::class);
     }
 
     public static function status() {

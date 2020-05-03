@@ -2,11 +2,11 @@
 
 class Heating {
     public static function h() {
-        return MyAPI::help(Heating::class);
+        return HomeBrain::help(Heating::class);
     }
 
     public static function help() {
-        return MyAPI::help(Heating::class);
+        return HomeBrain::help(Heating::class);
     }
 
     public static function on() {

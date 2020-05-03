@@ -4,11 +4,11 @@ class KODI {
     public static $debug = false;
 
     public static function h() {
-        return MyAPI::help(KODI::class);
+        return HomeBrain::help(KODI::class);
     }
 
     public static function help() {
-        return MyAPI::help(KODI::class);
+        return HomeBrain::help(KODI::class);
     }
 
     public static function status() {

@@ -3,11 +3,11 @@
 class HomeServer {
 
     public static function h() {
-        return MyAPI::help(HomeServer::class);
+        return HomeBrain::help(HomeServer::class);
     }
 
     public static function help() {
-        return MyAPI::help(HomeServer::class);
+        return HomeBrain::help(HomeServer::class);
     }
 
 	public static function power() {

@@ -2,12 +2,20 @@
 
 class HomeBrain {
 
-    public static function h() {
-        return MyAPI::help(HomeBrain::class);
+    public static function h($class = self::class) {
+        return self::help($class);
     }
 
-    public static function help() {
-        return MyAPI::help(HomeBrain::class);
+    public static function help($class = self::class) {
+
+        $methods = get_class_methods($class);
+
+        $ret = $class .': ';
+        foreach ($methods as $method) {
+            $ret .= $method .", ";
+        }
+
+        return substr($ret, 0, strlen($ret)-2);
     }
 
     public static function toDo() {

@@ -4,11 +4,11 @@ class LAN {
     public static $debug = false;
 
     public static function h() {
-        return MyAPI::help(self::class);
+        return HomeBrain::help(self::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return HomeBrain::help(self::class);
     }
 
    public static function wifi($what = "") {

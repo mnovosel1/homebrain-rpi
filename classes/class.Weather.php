@@ -3,11 +3,11 @@
 class Weather {
 
     public static function h() {
-        return MyAPI::help(Weather::class);
+        return HomeBrain::help(Weather::class);
     }
 
     public static function help() {
-        return MyAPI::help(Weather::class);
+        return HomeBrain::help(Weather::class);
     }
 
     public static function tempIn($timestamp = null) {
@@ -16,7 +16,7 @@ class Weather {
         $miData = explode("|", exec("cat ". DIR ."/var/mitemps.log"));
         //debug_log(__METHOD__.":".__LINE__, implode("|", $miData));
         
-        exec(DIR ."/classes/helpers/mitemp/getmitemps.py &");
+        exec(DIR ."/helpers/mitemp/getmitemps.py &");
 
         $oldData = SQLITE::query("SELECT tempin, humidin, light, sound
                                     FROM datalog

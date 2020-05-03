@@ -8,11 +8,11 @@ class Notifier {
     static $clock1Notifying = false;
 
     public static function h() {
-        return MyAPI::help(Notifier::class);
+        return HomeBrain::help(Notifier::class);
     }
 
     public static function help() {
-        return MyAPI::help(Notifier::class);
+        return HomeBrain::help(Notifier::class);
     }
 
     public static function notify($msg, $title = "HomeBrain") {

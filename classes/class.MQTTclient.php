@@ -3,11 +3,11 @@
 class MQTTclient {
 
     public static function h() {
-        return MyAPI::help(Weather::class);
+        return HomeBrain::help(Weather::class);
     }
 
     public static function help() {
-        return MyAPI::help(Weather::class);
+        return HomeBrain::help(Weather::class);
     }
 
     public static function publish($topic, $message, $retain = false) {

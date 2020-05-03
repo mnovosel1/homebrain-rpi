@@ -42,11 +42,11 @@ define("KEY_DELETE",               "807F08F7");
 
 class IPTV {
     public static function h() {
-        return MyAPI::help(self::class);
+        return HomeBrain::help(self::class);
     }
 
     public static function help() {
-        return MyAPI::help(self::class);
+        return HomeBrain::help(self::class);
     }
 
     public static function isOn() {

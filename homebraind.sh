@@ -4,7 +4,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 date=$(date +%d-%m-%Y)
 lasttime=""
 
-exit 0;
+#exit 0;
 
 sudo /usr/bin/pigpiod &
 # /srv/HomeBrain/remote/remote.py &

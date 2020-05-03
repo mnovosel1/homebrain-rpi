@@ -6,7 +6,7 @@ require_once "functions.php";
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 //* autoload CLASS definitions *///////////////////////////////////////////////////////////////////
 spl_autoload_register(function ($class_name) {
-	error_log("Autoloading: "."/classes/class.".$class_name.".php");
+	//error_log("Autoloading: "."/classes/class.".$class_name.".php");
 	require_once DIR ."/classes/class.".$class_name.".php";
 });
 

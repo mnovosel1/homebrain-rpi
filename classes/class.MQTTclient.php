@@ -15,8 +15,8 @@ class MQTTclient {
             $end = " -r";
         else $end = "";
 
-        exec("/usr/bin/mosquitto_pub -h 10.10.10.12 -t $topic -m '". $message ."' -q 2". $end ." &");
-        hbrain_log(__METHOD__.":".__LINE__, "mosquitto_pub -h 10.10.10.12 -t $topic -m '". $message ."' -q 2". $end ." &");
+        exec("/usr/bin/mosquitto_pub -h 10.10.10.11 -u hassio -P sonopass -t $topic -m '". $message ."' -q 2". $end ." &");
+        hbrain_log(__METHOD__.":".__LINE__, "mosquitto_pub -h 10.10.10.11 -t $topic -m '". $message ."' -q 2". $end ." &");
     }
 }
 

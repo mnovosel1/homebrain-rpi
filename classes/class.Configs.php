@@ -22,16 +22,11 @@ class Configs {
 
     public static function getMAC($host) {
         $mac = SQLITE::query("SELECT mac FROM lan WHERE name = '". strtolower($host) ."'");
-        think("Searching for MAC for ". $host .". Looks like it's ". $mac[0]["mac"] .".");
-        error_log(__METHOD__.":".__LINE__ ." ". $host ." MAC: ". var_export($mac, true));
-
         return $mac[0]["mac"];
     }
 
     public static function getIP($host) {
         $ip = SQLITE::query("SELECT ip FROM lan WHERE name = '". strtolower($host) ."'")[0]["ip"];
-        // think("Searching for ". $host ."'s IP address. Looks like it's ". $ip .".");
-        error_log(__METHOD__.":".__LINE__ ." ". $host ." IP: ". var_export($ip, true));
         return $ip;
     }
 
@@ -53,7 +48,6 @@ class Configs {
         $key = strtoupper($key);
 
         if (!array_key_exists($key, $configs)) {
-            error_log(__METHOD__.":".__LINE__ ." ". $key ."=>". $value ." doesn't exist..");
             return false;
         }
 

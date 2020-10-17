@@ -136,12 +136,12 @@ class HomeBrain {
             // wake HomeServer if:
             $reason = "";
             switch (true) {
-                case ((bool)$newStates["KODI"]["active"]):
+/*                case ((bool)$newStates["KODI"]["active"]):
                     think("KODI is on, I'm waking up Homeserver!");
                     hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, KODI is on.");
                     $reason .= "KODI ";
                 break;
-
+*/
                 case (($srvWakeTime-time()) < 1800):
                     think("It's time to wake HomeServer: ". date("H:i d.m.", $srvWakeTime) .".");
                     hbrain_log(__METHOD__.":".__LINE__, "Waking HomeServer, it's WakeTime: ".date("H:i d.m.", $srvWakeTime));

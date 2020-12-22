@@ -35,9 +35,10 @@ class Weather {
 
         $tempIn = abs($oldData[0]["tempin"] - $newData[0]) > 15 ? $oldData[0]["tempin"] : $newData[0];
         $humidIn = abs($oldData[0]["humidin"] - $newData[1]) > 25 ? $oldData[0]["humidin"] : $newData[1];
-        $light = $newData[2] == 0 || abs($oldData[0]["light"] - $newData[2]) > 750 ? (int)$oldData[0]["light"] : (int)$newData[2];
-        $sound = abs($oldData[0]["sound"] - $newData[3]) > 50 ? $oldData[0]["sound"] : $newData[3];
-        //$sound = $newData[3];
+
+        $lightSound = explode(":", exec(DIR . "/helpers/getsndnlight.sh"))
+        $light = trim($lightSound[0]);
+        $sound = trim($lightSound[1]);
 
         MQTTclient::publish("hassio/sens1/", '{ "temperature": '. $tempIn .', "humidity": '. $humidIn .', "light": '. $light .', "sound": '. $sound .' }');
 

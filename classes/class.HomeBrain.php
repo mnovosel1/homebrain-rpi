@@ -396,7 +396,9 @@ class HomeBrain {
         $tempSet = Heating::getSetTemp();
         $hindex = Weather::heatIndex($inArr[0], $inArr[1]);
 
-        exec("sudo ". DIR ."/bin/nrf 8 'te:". $inArr[0] .":". $inArr[1] .":". $inArr[2] ."' &");
+        $sndLight = explode(":", trim(exec("cat ". DIR ."/helpers/getsndnlight.sh")));
+
+        //exec("sudo ". DIR ."/bin/nrf 8 'te:". $inArr[0] .":". $inArr[1] .":". $inArr[2] ."' &");
 
         //debug_log(__METHOD__.":".__LINE__, $inArr[4] ." ". $inArr[5]);
 
@@ -422,8 +424,8 @@ class HomeBrain {
                         $heatingOn,
                         $inArr[1],
                         $outArr[1],
-                        $inArr[2],
-                        $inArr[3],
+                        $sndLight[0],
+                        $sndLight[1],
                         $hindex,
                         $inArr[4],
                         $inArr[5],

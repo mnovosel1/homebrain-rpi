@@ -69,7 +69,8 @@ if [ "$lasttime" != "$nowtime" ]; then
   #### every 5 minutes
   case $nowtime in (*:*[05])
     $DIR/homebrain hbrain wakecheck &
-    $DIR/homebrain hbrain gettemps &
+    #$DIR/homebrain hbrain gettemps &
+    $DIR/helpers/getsndnlight.sh &
 	;;
   esac
 

@@ -21,7 +21,7 @@ class IR {
 
     private static function irsend($command, $parameter, $count = 1) {
         for ($i = 0; $i < $count; $i++)
-            exec("sudo /usr/bin/nrf 1 ".$command.":".$parameter);
+            //exec("sudo /usr/bin/nrf 1 ".$command.":".$parameter);
 
         //debug_log(__METHOD__.":".__LINE__, "sudo /usr/bin/nrf 1 ".$command.":".$parameter);
     }

@@ -552,11 +552,11 @@ class HomeBrain {
         $notifyText = "";
 
         if ($light <= Configs::get("LIGHT", "MIN") || HomeBrain::isSilentTime()) {
-            exec("sudo ". DIR ."/bin/nrf 8 'in:0'"); 
+            //exec("sudo ". DIR ."/bin/nrf 8 'in:0'"); 
         }
 
         else {
-            exec("sudo ". DIR ."/bin/nrf 8 'in:1'");
+            //exec("sudo ". DIR ."/bin/nrf 8 'in:1'");
 
             if (date("d") == 1 && date("m") == 1 ) {
                 $notifyText = "Sretna nova ". (date("Y")) ." godina!";

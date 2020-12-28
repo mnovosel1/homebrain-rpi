@@ -12,7 +12,6 @@ alias hbiptv='/srv/HomeBrain/homebrain iptv'
 
 alias hbdir='cd /srv/HomeBrain/'
 alias hblog='tail -f -n 50 /srv/HomeBrain/var/hbrain.log'
-alias hbnrf='sudo /srv/HomeBrain/bin/nrf'
 
 alias hbrain='/srv/HomeBrain/homebrain hbrain'
 alias hbserv='/srv/HomeBrain/homebrain hserv'
@@ -22,7 +21,5 @@ alias hbtemps='/srv/HomeBrain/homebrain hbrain gettemps'
 alias hbmedvedi='/srv/HomeBrain/homebrain medvedi'
 
 alias hblan='/srv/HomeBrain/homebrain lan'
-
-alias hbclock1='sudo ./bin/nrf 8'
 
 alias hblight='/srv/HomeBrain/homebrain light'

@@ -6,12 +6,18 @@ lasttime=""
 
 #exit 0;
 
-sudo /usr/bin/pigpiod &
+# sudo /usr/bin/pigpiod &
 # /srv/HomeBrain/remote/remote.py &
 
-if !(ps -C "php mqttlistener.php" > /dev/null)
+if !(ps -C "/usr/bin/php "$DIR"/mqttlistener.php" > /dev/null)
 then
     $DIR/mqttlistener.php &
+fi
+
+if !(ps -C "python3 "$DIR"/helpers/getsndnlight.py" > /dev/null)
+then
+    touch $DIR/helpers/arduinocmd
+    $DIR/helpers/getsndnlight.py &
 fi
 
 while true
@@ -59,9 +65,14 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every 10 minutes
   case $nowtime in (*:*[0])
-    if !(ps -C "php mqttlistener.php" > /dev/null)
+    if !(ps -C "/usr/bin/php "$DIR"/mqttlistener.php" > /dev/null)
     then
-        $DIR/classes/mqttlistener.php &
+        $DIR/mqttlistener.php &
+    fi
+
+    if !(ps -C "python3 "$DIR"/helpers/getsndnlight.py" > /dev/null)
+    then
+        $DIR/helpers/getsndnlight.py &
     fi
 	;;
   esac
@@ -70,13 +81,11 @@ if [ "$lasttime" != "$nowtime" ]; then
   case $nowtime in (*:*[05])
     $DIR/homebrain hbrain wakecheck &
     #$DIR/homebrain hbrain gettemps &
-    $DIR/helpers/getsndnlight.sh &
 	;;
   esac
 
   #### every 2 minutes
   case $nowtime in (*:*[02468])
-
 	;;
   esac
 

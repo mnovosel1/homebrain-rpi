@@ -38,11 +38,11 @@ class TV {
     }
 
     public static function power() {
-        exec("sudo ". DIR ."/bin/nrf 1 irsony:0A90 &");
+        //exec("sudo ". DIR ."/bin/nrf 1 irsony:0A90 &");
     }
 
     public static function input() {
-        exec("sudo ". DIR ."/bin/nrf 1 irsony:0A50 &");
+        //exec("sudo ". DIR ."/bin/nrf 1 irsony:0A50 &");
     }
 
     public static function kodi() {

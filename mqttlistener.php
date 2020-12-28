@@ -16,6 +16,7 @@ $client_id = "phpMQTT-hbrain";
 $mqtt = new phpMQTT($server, $port, $client_id);
 
 if(!$mqtt->connect(true, NULL, $username, $password)) {
+    echo "Connect to $server mqtt unsucessful.";
 	exit(1);
 }
 

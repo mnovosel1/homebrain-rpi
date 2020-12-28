@@ -553,9 +553,13 @@ class HomeBrain {
         if (date("H:i") == "04:58") Notifier::setClockTime();
 
         if (date("i") % 15 == 0) {
-            if (date("d") == 1 && date("m") == 1 ) {
-                $notifyText = "Sretna nova ". (date("Y")) ." godina!";
 
+            if (date("d") == 31 && date("m") == 12 ) {
+                $notifyText = "Sretna nova ". (date("Y")+1) ." godina!";
+
+            } else if (date("d") == 1 && date("m") == 1 ) {
+                $notifyText = "Sretna nova ". (date("Y")) ." godina!";
+    
             } else if (date("d") == 13 && date("m") == 1) {
                 $notifyText = "Marela sretan ti rođendan!";
                 
@@ -565,7 +569,7 @@ class HomeBrain {
             } else if (date("d") == 21 && date("m") == 11) {
                 $notifyText = "Gabi sretan ti rođendan!";
 
-            } else if (date("d") == 28 && date("m") == 12) {
+            } else if (date("d") == 25 && date("m") == 12) {
                 $notifyText = "Sretan Božić!";
             }
         }

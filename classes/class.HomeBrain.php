@@ -548,16 +548,11 @@ class HomeBrain {
     }
 
     public static function clock() {
-        $light = SQLITE::query("SELECT light FROM datalog ORDER BY timestamp DESC LIMIT 1")[0]["light"];
         $notifyText = "";
 
-        if ($light <= Configs::get("LIGHT", "MIN") || HomeBrain::isSilentTime()) {
-            //exec("sudo ". DIR ."/bin/nrf 8 'in:0'"); 
-        }
+        if (date("H:i") == "04:58") Notifier::setClockTime();
 
-        else {
-            //exec("sudo ". DIR ."/bin/nrf 8 'in:1'");
-
+        if (date("i") % 15 == 0) {
             if (date("d") == 1 && date("m") == 1 ) {
                 $notifyText = "Sretna nova ". (date("Y")) ." godina!";
 
@@ -570,13 +565,13 @@ class HomeBrain {
             } else if (date("d") == 21 && date("m") == 11) {
                 $notifyText = "Gabi sretan ti rođendan!";
 
-            } else if (date("d") == 25 && date("m") == 12) {
+            } else if (date("d") == 28 && date("m") == 12) {
                 $notifyText = "Sretan Božić!";
             }
+        }
 
-            if ($notifyText != "") {
-                Notifier::notifyClock1($notifyText);
-            }
+        if ($notifyText != "") {
+            Notifier::notifyClock($notifyText);
         }
     }
 }

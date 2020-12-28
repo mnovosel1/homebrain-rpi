@@ -51,6 +51,8 @@ function procmsg($topic, $msg) {
 
 function status($obj, $stat) {
 
+    return;
+    
     $states = include(DIR ."/var/objStates.php");
     $states[$obj] = $stat;
 
@@ -65,7 +67,7 @@ function status($obj, $stat) {
     $statesWrite = substr($statesWrite, 0, -3);
     $statesWrite .= PHP_EOL .'];'. PHP_EOL .'?>'. PHP_EOL;
 
-    file_put_contents(DIR ."/var/objStates.php", $statesWrite);
+    if (count($states) > 1) file_put_contents(DIR ."/var/objStates.php", $statesWrite);
 }
 
 function cmnd($obj, $cmnd) {

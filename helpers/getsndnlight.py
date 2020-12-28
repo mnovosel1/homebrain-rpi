@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import os, serial
 import time
 import json
@@ -9,10 +10,9 @@ dir = os.path.dirname(os.path.realpath(__file__))
 tmp = ""
 lastPrint = 0
 millis = lambda: int(round(time.time() * 1000))
+
 mqttClient = mqtt.Client()
 mqttClient.username_pw_set("hassio", "sonopass")
-
-print (dir +"arduinocmd")
 
 f = open(dir +"/arduinocmd", "r+")
 
@@ -22,7 +22,6 @@ if __name__ == '__main__':
 
     while True:
         cmd = "get"
-
         tmp = f.readline()
 
         if tmp != "":
@@ -31,7 +30,7 @@ if __name__ == '__main__':
             f.write("")
             f.truncate()
 
-        if cmd != "get" or millis() - lastPrint > 120000:
+        if cmd != "get" or (millis() - lastPrint) > 300000:
             
             ser.write(str(cmd + "\n").encode('utf'))
             line = ser.readline().decode('utf-8').strip()

@@ -88,31 +88,43 @@ class Notifier {
 
         //debug_log(__METHOD__.":".__LINE__, "RGB: ". $r .", ". $g .", ". $b);
 
-        if ($r !== NULL) exec(DIR ."/bin/red ". $r);
-        if ($g !== NULL) exec(DIR ."/bin/green ". $g);
-        if ($b !== NULL) exec(DIR ."/bin/blue ". $b);
+        //if ($r !== NULL) exec(DIR ."/bin/red ". $r);
+        //if ($g !== NULL) exec(DIR ."/bin/green ". $g);
+        //if ($b !== NULL) exec(DIR ."/bin/blue ". $b);
     }
 
-    public static function notifyClock1 ($text, $beep = 0) {        
+    public static function sendToClock ($msg) {
+        if (trim($msg) != "") {
+            hbrain_log(__METHOD__.":".__LINE__, "Sending to clock: ". $msg);
+            exec('echo "'. $msg .'" > '. DIR .'/helpers/arduinocmd');
+        }
+    }
+
+    public static function notifyClock ($text) {        
 
         if (HomeBrain::isSilentTime()) return;
 
-        while (Notifier::$clock1Notifying) sleep(5);
+        while (Notifier::$clock1Notifying) sleep(1);
         Notifier::$clock1Notifying = true;
 
-        //debug_log(__METHOD__.":".__LINE__, $text);
-
         $text = str_split($text, 25);
-        $lines = count($text);
-        if ($lines > 9) $lines = 9;
+        $lines = count($text) >= 5 ? 5 : count($text);
 
         foreach($text as $key => $line) {
-            exec("sudo ". DIR ."/bin/nrf 8 'no". ($key+1) . $lines. $beep .":". $line ."'");
+            Notifier::sendToClock('no'. ($key+1) . $lines .':'. $line);
             sleep(1);
-            if ($key+1 == 9) break;
         }
         
         Notifier::$clock1Notifying = false;
+    }
+
+    public static function setClockTime () {
+        while (date("s") != 0) sleep(1);
+        Notifier::sendToClock("ti:". date("H:i"));
+    }
+
+    public static function setClockDate () {
+        Notifier::sendToClock("da:". date("d:m:y"));
     }
 
     //* private helper methods *///////////////////////////////////////////////////////////////////

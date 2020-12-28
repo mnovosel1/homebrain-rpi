@@ -11,12 +11,14 @@ lasttime=""
 
 if !(ps -C "/usr/bin/php "$DIR"/mqttlistener.php" > /dev/null)
 then
+    sleep 1m
     $DIR/mqttlistener.php &
 fi
 
 if !(ps -C "python3 "$DIR"/helpers/getsndnlight.py" > /dev/null)
 then
     touch $DIR/helpers/arduinocmd
+    sleep 1m
     $DIR/helpers/getsndnlight.py &
 fi
 
@@ -29,7 +31,14 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   lasttime=$nowtime
 
-  #### every nigth at 2:30
+  #### every night at 4:59
+  case $nowtime in (04:59)
+    $DIR/homebrain notifier setClockDate
+    $DIR/homebrain notifier setClockTime &
+  ;;
+  esac
+
+  #### every night at 2:30
   case $nowtime in (02:30)
     $DIR/homebrain hbrain allOff
 
@@ -79,7 +88,7 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every 5 minutes
   case $nowtime in (*:*[05])
-    $DIR/homebrain hbrain wakecheck &
+    #$DIR/homebrain hbrain wakecheck &
     #$DIR/homebrain hbrain gettemps &
 	;;
   esac

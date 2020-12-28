@@ -5,11 +5,6 @@ alias gc='git commit'
 alias gco='git checkout'
 alias gd='git diff'
 
-alias hbalert='/srv/HomeBrain/homebrain th hbrain alert'
-alias hbamp='/srv/HomeBrain/homebrain th amp'
-alias hbtv='/srv/HomeBrain/homebrain th tv'
-alias hbiptv='/srv/HomeBrain/homebrain iptv'
-
 alias hbdir='cd /srv/HomeBrain/'
 alias hblog='tail -f -n 50 /srv/HomeBrain/var/hbrain.log'
 
@@ -19,7 +14,6 @@ alias hbmpd='/srv/HomeBrain/homebrain mpd'
 alias hbkodi='/srv/HomeBrain/homebrain kodi'
 alias hbtemps='/srv/HomeBrain/homebrain hbrain gettemps'
 alias hbmedvedi='/srv/HomeBrain/homebrain medvedi'
-
 alias hblan='/srv/HomeBrain/homebrain lan'
-
 alias hblight='/srv/HomeBrain/homebrain light'
+alias hbclocknotify='/srv/HomeBrain/homebrain notifier notifyClock'

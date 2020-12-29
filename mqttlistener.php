@@ -7,7 +7,7 @@ require_once "functions.php";
 //* MQTT */////////////////////////////////////////////////////////////////////////////////////////
 require(DIR ."/helpers/phpMQTT.php");
 
-$server = "10.10.10.11";
+$server = "10.10.10.13";
 $port = 1883;
 $username = "hassio";
 $password = "sonopass";

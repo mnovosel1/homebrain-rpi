@@ -2,7 +2,7 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-/usr/bin/mosquitto_pub -h 10.10.10.11 -u hassio -P sonopass -t 'hbrain/stat/hbrain/' -m 'online' -q 2 -r
+/usr/bin/mosquitto_pub -h 10.10.10.13 -u hassio -P sonopass -t 'hbrain/stat/hbrain/' -m 'online' -q 2 -r
 
 if [[ ! -L $DIR/www/api.php ]]; then
 	rm -rf $DIR/www/api.php

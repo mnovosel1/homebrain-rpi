@@ -9,7 +9,7 @@ lasttime=""
 # sudo /usr/bin/pigpiod &
 # /srv/HomeBrain/remote/remote.py &
 
-if !(ps -C "/usr/bin/php "$DIR"/mqttlistener.php" > /dev/null)
+if !(pidof -x "mqttlistener.php" > /dev/null)
 then
     sleep 1m
     $DIR/mqttlistener.php &
@@ -74,7 +74,7 @@ if [ "$lasttime" != "$nowtime" ]; then
 
   #### every 10 minutes
   case $nowtime in (*:*[0])
-    if !(ps -C "/usr/bin/php "$DIR"/mqttlistener.php" > /dev/null)
+    if !(pidof -x "mqttlistener.php" > /dev/null)
     then
         $DIR/mqttlistener.php &
     fi

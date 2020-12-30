@@ -30,19 +30,18 @@ if __name__ == '__main__':
             f.write("")
             f.truncate()
 
-        if cmd != "get" or (millis() - lastPrint) > 300000:
+        if lastPrint == 0 or cmd != "get" or (millis() - lastPrint) > 120000:
 
             ser.write(str(cmd + "\n").encode('utf'))
+            time.sleep(0.3)
             line = ser.readline().decode('utf-8').strip()
 
             if cmd == "get":
                 lastPrint = millis()
                 if line != "":
                     line = line.split(":")
-                    line = '{"light":'+ line[0].split(".")[0] +', "sound":'+ line[1].split(".")[0] +'}'
                     mqttClient.connect("10.10.10.13")
-                    mqttClient.publish("hassio/sens1/", line)
-                    print("mqtt publishing: hassio/sens1/ " + line)
+                    mqttClient.publish("hbrain/sens1/", '{"light":'+ line[0].split(".")[0] +', "sound":'+ line[1].split(".")[0] +'}')
                     mqttClient.disconnect()
 
             print(line)
